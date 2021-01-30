@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { Box } from "@chakra-ui/react";
 
 function App() {
-  const AppHeader = styled.header`
+  const AppContainer = styled.div`
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
@@ -14,9 +15,11 @@ function App() {
   `;
 
   return (
-    <div className="App">
-      <AppHeader>Hello!</AppHeader>
-    </div>
+    <AppContainer>
+      <Box bg="tomato" color="black" p={4}>
+        Hello!
+      </Box>
+    </AppContainer>
   );
 }
 
