@@ -9,7 +9,7 @@ export default class PeerConnectionManager {
   private static _dataHandlers = List<(data: any) => void>();
 
   static register(peerId?: string): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       PeerConnectionManager.conn = new Peer(peerId);
 
       PeerConnectionManager.conn.on("connection", (conn) => {
@@ -18,6 +18,7 @@ export default class PeerConnectionManager {
       });
 
       PeerConnectionManager.conn.on("open", resolve);
+      PeerConnectionManager.conn.on("error", reject);
     });
   }
 

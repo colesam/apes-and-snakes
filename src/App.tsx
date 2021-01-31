@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import Peer from "peerjs";
 import styled from "styled-components";
-import {
-  Text,
-  Box,
-  Divider,
-  HStack,
-  PinInput,
-  PinInputField,
-  Flex,
-} from "@chakra-ui/react";
+import { Text, Box, Flex, Input, Button, Stack } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import PeerConnectionManager from "./peer/PeerConnectionManager";
 
@@ -23,54 +14,60 @@ import PeerConnectionManager from "./peer/PeerConnectionManager";
 
 const roomCode = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
+const AppContainer = styled.div`
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+`;
+
 function App() {
   const [connected, setConnected] = useState(false);
-  const [pin, setPin] = useState("");
+  const [name, setName] = useState("");
 
-  function handlePinComplete(p: string) {
-    setPin(p);
-    PeerConnectionManager.register(`${roomCode}::${p}`).then(() =>
-      setConnected(true)
-    );
+  function handleConnect() {
+    PeerConnectionManager.register(`${roomCode} ${name}`)
+      .then(() => {
+        setConnected(true);
+      })
+      .catch((err) => console.error(err));
   }
-
-  const AppContainer = styled.div`
-    background-color: #282c34;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  `;
 
   return (
     <AppContainer>
-      <Box bg="white" color="black" p={4}>
-        <Text m={0}>
-          {pin ? `Your PIN is: ${pin}` : "You do not have a PIN"}
-        </Text>
-        <Divider my={3} />
-        {pin && (
-          <Flex display="flex" align="center" justify="space-between">
-            <Text>Connected</Text> <CheckCircleIcon color="green.500" />
+      <Box bg="white" color="black" p={4} mb={60} w={200}>
+        {connected && (
+          <Flex
+            display="flex"
+            align="center"
+            justify="space-between"
+            bg="green.500"
+            px={3}
+            mb={1}
+            fontSize="lg"
+            color="white"
+          >
+            <Text>Connected</Text> <CheckCircleIcon />
           </Flex>
         )}
-        {!pin && (
-          <HStack>
-            <PinInput
-              type="alphanumeric"
-              size="sm"
-              onComplete={handlePinComplete}
-              autoFocus
-            >
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-            </PinInput>
-          </HStack>
+
+        {!connected && (
+          <Stack direction="column" spacing={3}>
+            <Input
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="off"
+              id="name"
+              key="name"
+            />
+            <Button colorScheme="blue" onClick={handleConnect}>
+              Connect
+            </Button>
+          </Stack>
         )}
       </Box>
     </AppContainer>
