@@ -23,7 +23,11 @@ export default class PeerConnectionManager {
       PeerConnectionManager.conn = new Peer(peerId);
 
       PeerConnectionManager.conn.on("connection", (conn) => {
-        PeerConnectionManager.peers.set(conn.peer, conn);
+        console.log(`New connection from peer ${conn.peer}`);
+        PeerConnectionManager.peers = PeerConnectionManager.peers.set(
+          conn.peer,
+          conn
+        );
         conn.on("data", PeerConnectionManager._handleReceiveData);
       });
 
@@ -40,7 +44,10 @@ export default class PeerConnectionManager {
       }
 
       const peerConn = PeerConnectionManager.conn.connect(peerId);
-      PeerConnectionManager.peers.set(peerId, peerConn);
+      PeerConnectionManager.peers = PeerConnectionManager.peers.set(
+        peerId,
+        peerConn
+      );
 
       peerConn.on("data", PeerConnectionManager._handleReceiveData);
       peerConn.on("open", resolve);
@@ -58,7 +65,9 @@ export default class PeerConnectionManager {
 
   // Event handlers
   static onReceiveData(fn: (data: any) => void) {
-    PeerConnectionManager._dataHandlers.push(fn);
+    PeerConnectionManager._dataHandlers = PeerConnectionManager._dataHandlers.push(
+      fn
+    );
   }
 
   static onReceiveConnection(
