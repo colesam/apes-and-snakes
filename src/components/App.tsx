@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Text, Box, Flex } from "@chakra-ui/react";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { Box, Button, Divider, Stack } from "@chakra-ui/react";
+import { Link as RouterLink, Route } from "wouter";
 import PeerConnectionManager from "./peer/PeerConnectionManager";
-import JoinForm from "./forms/JoinForm";
+import MainMenu from "./pages/MainMenu";
+import Host from "./pages/Host";
+import Join from "./pages/Join";
 
 const namespace = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
@@ -33,25 +35,18 @@ function App() {
 
   return (
     <AppContainer>
-      <Box bg="white" color="black" p={4} mb={60} w={275}>
-        {connected && (
-          <Flex
-            display="flex"
-            align="center"
-            justify="space-between"
-            bg="green.500"
-            px={3}
-            mb={1}
-            fontSize="lg"
-            color="white"
-          >
-            <Text>Connected</Text> <CheckCircleIcon />
-          </Flex>
-        )}
+      <Box bg="white" color="black" p={4} mb={60} w={275} boxShadow="xl">
+        <Route path="/host">
+          <Host />
+        </Route>
 
-        {!connected && (
-          <JoinForm isSubmitting={isConnecting} onSubmit={handleConnect} />
-        )}
+        <Route path="/join">
+          <Join />
+        </Route>
+
+        <Route path="/">
+          <MainMenu />
+        </Route>
       </Box>
     </AppContainer>
   );
