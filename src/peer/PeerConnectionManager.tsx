@@ -2,10 +2,20 @@ import Peer from "peerjs";
 import { Map, List } from "immutable";
 
 export default class PeerConnectionManager {
+  /**
+   * This client's connection.
+   */
   static conn?: Peer;
 
+  /**
+   * Map of peer connections. Key is peer id, connection object is value.
+   */
   static peers = Map<string, Peer.DataConnection>();
 
+  /**
+   * List of functions that are called when data is received.
+   * @private
+   */
   private static _dataHandlers = List<(data: any) => void>();
 
   static register(peerId?: string): Promise<string> {
