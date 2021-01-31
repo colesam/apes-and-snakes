@@ -20,8 +20,11 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
   const [roomCode, setRoomCode] = useState("");
   const [name, setName] = useState("");
 
-  const handleRoomCodeComplete = (roomCode: string) => {
-    setRoomCode(roomCode);
+  const handleRoomCodeChange = (roomCode: string) => {
+    setRoomCode(roomCode.toUpperCase());
+  };
+
+  const handleRoomCodeComplete = () => {
     nameInput.current?.focus();
   };
 
@@ -37,7 +40,12 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
         <FormControl id="room-code">
           <FormLabel>Room Code:</FormLabel>
           <HStack justifyContent="space-between">
-            <PinInput type="alphanumeric" onComplete={handleRoomCodeComplete}>
+            <PinInput
+              type="alphanumeric"
+              value={roomCode}
+              onChange={handleRoomCodeChange}
+              onComplete={handleRoomCodeComplete}
+            >
               <PinInputField />
               <PinInputField />
               <PinInputField />
