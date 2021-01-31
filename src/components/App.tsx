@@ -1,17 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Text, Box, Flex, Input, Button, Stack } from "@chakra-ui/react";
+import { Text, Box, Flex } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import PeerConnectionManager from "./peer/PeerConnectionManager";
 import JoinForm from "./forms/JoinForm";
-
-/**
- * TODO:
- * - Create input for setting own peer id, register as peer under roomCode::myPeerId
- * - Create input for connecting to other peer, roomCode::myPeerId
- * - OPTIONAL: store in localStorage if it's getting annoying to re-enter every refresh
- * - Get a button to switch from green -> blue -> green when either client presses it
- */
 
 const namespace = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
