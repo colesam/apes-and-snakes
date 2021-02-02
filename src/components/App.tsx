@@ -5,6 +5,7 @@ import { Route } from "wouter";
 import MainMenu from "./pages/MainMenu";
 import Host from "./pages/Host";
 import Join from "./pages/Join";
+import Lobby from "./pages/Lobby";
 
 const AppContainer = styled.div`
   background-color: #282c34;
@@ -26,6 +27,10 @@ function App() {
 
         <Route path="/join">
           <Join />
+        </Route>
+
+        <Route path="/lobby">
+          <Lobby />
         </Route>
 
         <Route path="/">

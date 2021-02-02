@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import generateRoomCode from "../../core/generateRoomCode";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
+import { useStore } from "../../core/store/Store";
+import { useLocation } from "wouter";
 
 function Host() {
-  const [roomCode, setRoomCode] = useState("");
+  const [roomCode, host] = useStore((s) => [s.roomCode, s.host]);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (!roomCode) {
       const newRoomCode = generateRoomCode();
       PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
-        .then(() => setRoomCode(newRoomCode))
+        .then(() => {
+          // Weird bug: connections to host don't resolve if they happen too quickly?
+          host(newRoomCode);
+          setLocation("/lobby");
+        })
         .catch((err) => console.error(err));
     }
   });
