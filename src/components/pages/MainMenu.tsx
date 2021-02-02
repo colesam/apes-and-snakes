@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Divider, Stack } from "@chakra-ui/react";
-import { Link as RouterLink, Route } from "wouter";
+import { Link as RouterLink } from "wouter";
 
 function MainMenu() {
   return (
