@@ -4,7 +4,7 @@ import { Map, List } from "immutable";
 import { serialize } from "json-immutable/lib/serialize";
 // @ts-ignore
 import { deserialize } from "json-immutable/lib/deserialize";
-import { Player } from "../store/types/Player";
+import recordTypes from "../store/types/recordTypes";
 
 export default class PeerConnectionManager {
   /**
@@ -147,7 +147,7 @@ export default class PeerConnectionManager {
     console.log(`[DEBUG] From peer: ${peerId}`);
 
     PeerConnectionManager._dataHandlers.forEach(fn => {
-      fn(peerId, deserialize(data, { recordTypes: { Player: Player } }));
+      fn(peerId, deserialize(data, { recordTypes }));
     });
   }
 

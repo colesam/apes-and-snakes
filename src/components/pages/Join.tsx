@@ -5,8 +5,11 @@ import { namespace } from "../../config";
 import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
 import { useSharedStore } from "../../core/store/sharedStore";
+import { usePrivateStore } from "../../core/store/privateStore";
+import { nanoid } from "nanoid";
 
 function Join() {
+  const personalKey = usePrivateStore(s => s.personalKey);
   const roomCode = useSharedStore(s => s.roomCode);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -18,16 +21,17 @@ function Join() {
     setIsConnecting(true);
 
     const hostPeerId = `${namespace} ${roomCode}`;
+    const peerId = `${hostPeerId} ${nanoid()}`;
 
     // Register self
-    PeerConnectionManager.register(`${hostPeerId} ${name}`)
+    PeerConnectionManager.register(peerId)
       .then(() => {
         // Connect to room
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             peerActions.ping(hostPeerId);
-            peerActions.join(hostPeerId, name);
-            peerActions.pullData(hostPeerId);
+            peerActions.join(hostPeerId, personalKey, name);
+            peerActions.pullShared(hostPeerId);
           })
           .catch(err => console.error(err))
           .finally(() => setIsConnecting(false));
