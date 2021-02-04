@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import JoinForm from "../forms/JoinForm";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
-import { useStore } from "../../core/store/Store";
+import { useSharedStore } from "../../core/store/Store";
 import { Redirect } from "wouter";
-import { join, ping } from "../../core/store/PeerDataSync";
+import { join, ping } from "../../core/peer/PeerDataSync";
 
 function Join() {
-  const roomCode = useStore((s) => s.roomCode);
+  const roomCode = useSharedStore(s => s.roomCode);
   const [isConnecting, setIsConnecting] = useState(false);
 
   if (roomCode) {
@@ -25,16 +25,13 @@ function Join() {
         // Connect to room
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
-            setInterval(() => {
-              ping(hostPeerId);
-            }, 2000);
-
+            ping(hostPeerId);
             join(hostPeerId, name);
           })
-          .catch((err) => console.error(err))
+          .catch(err => console.error(err))
           .finally(() => setIsConnecting(false));
       })
-      .catch((err) => console.error(err));
+      .catch(err => console.error(err));
   };
 
   return <JoinForm isSubmitting={isConnecting} onSubmit={handleConnect} />;

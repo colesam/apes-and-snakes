@@ -59,7 +59,7 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
           <Input
             placeholder="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             autoComplete="off"
             id="name"
             key="name"
