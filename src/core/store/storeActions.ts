@@ -1,6 +1,6 @@
-import { RPlayer } from "./types/Player";
 import { getPrivate, setPrivate } from "./privateStore";
 import { getShared, setShared } from "./sharedStore";
+import { RPlayer } from "./types/Player";
 import peerActions from "../peer/peerActions";
 
 // Many actions use both store, so they all live in this file for now
@@ -24,6 +24,22 @@ const storeActions = {
     setShared({ players: players.push(player) });
 
     if (isHost) peerActions.broadcastData(newState);
+  },
+
+  pushPlayerKey: (key: string, playerId: string) => {
+    const { playerKeyMap } = getPrivate();
+
+    if (playerKeyMap.has(key)) {
+      throw new Error(`Cannot push key->playerId entry, key already exists.`);
+    }
+
+    if (playerKeyMap.includes(playerId)) {
+      throw new Error(
+        `Cannot push key->playerId entry, playerId ${playerId} already exists.`
+      );
+    }
+
+    setPrivate({ playerKeyMap: playerKeyMap.set(key, playerId) });
   },
 };
 
