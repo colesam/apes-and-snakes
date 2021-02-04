@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import JoinForm from "../forms/JoinForm";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
-import { useSharedStore } from "../../core/store/Store";
 import { Redirect } from "wouter";
-import { join, ping } from "../../core/peer/PeerDataSync";
+import peerActions from "../../core/peer/peerActions";
+import { useSharedStore } from "../../core/store/sharedStore";
 
 function Join() {
   const roomCode = useSharedStore(s => s.roomCode);
@@ -25,8 +25,9 @@ function Join() {
         // Connect to room
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
-            ping(hostPeerId);
-            join(hostPeerId, name);
+            peerActions.ping(hostPeerId);
+            peerActions.join(hostPeerId, name);
+            peerActions.pullData(hostPeerId);
           })
           .catch(err => console.error(err))
           .finally(() => setIsConnecting(false));
