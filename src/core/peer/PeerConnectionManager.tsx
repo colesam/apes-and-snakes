@@ -4,6 +4,7 @@ import { Map, List } from "immutable";
 import { serialize } from "json-immutable/lib/serialize";
 // @ts-ignore
 import { deserialize } from "json-immutable/lib/deserialize";
+import { Player } from "../store/types/Player";
 
 export default class PeerConnectionManager {
   /**
@@ -38,7 +39,7 @@ export default class PeerConnectionManager {
       );
 
       PeerConnectionManager.conn.on("open", resolve);
-      PeerConnectionManager.conn.on("error", (err) => {
+      PeerConnectionManager.conn.on("error", err => {
         console.error(err);
         reject();
       });
@@ -77,6 +78,8 @@ export default class PeerConnectionManager {
         `Cannot send message to ${peerId}, no connection exists.`
       );
     }
+    console.log(`[DEBUG] Sending payload: `);
+    console.log(serialize(payload));
     PeerConnectionManager.peers.get(peerId)!.send(serialize(payload));
   }
 
@@ -104,7 +107,7 @@ export default class PeerConnectionManager {
         if (!PeerConnectionManager.peers.has(peerId)) {
           console.log(`[DEBUG] Peer connection opened to: ${peerId}`);
 
-          peerConn.on("data", (data) =>
+          peerConn.on("data", data =>
             PeerConnectionManager._handleReceiveData(peerId, data)
           );
 
@@ -117,7 +120,7 @@ export default class PeerConnectionManager {
         }
       });
 
-      peerConn.on("error", (err) => {
+      peerConn.on("error", err => {
         console.error(err);
         reject(err);
       });
@@ -143,8 +146,8 @@ export default class PeerConnectionManager {
     console.log(`[DEBUG] Received data: ${data}`);
     console.log(`[DEBUG] From peer: ${peerId}`);
 
-    PeerConnectionManager._dataHandlers.forEach((fn) => {
-      fn(peerId, deserialize(data));
+    PeerConnectionManager._dataHandlers.forEach(fn => {
+      fn(peerId, deserialize(data, { recordTypes: { Player: Player } }));
     });
   }
 
@@ -156,11 +159,11 @@ export default class PeerConnectionManager {
       conn
     );
 
-    conn.on("data", (data) =>
+    conn.on("data", data =>
       PeerConnectionManager._handleReceiveData(conn.peer, data)
     );
 
-    PeerConnectionManager._connectionHandlers.forEach((fn) => {
+    PeerConnectionManager._connectionHandlers.forEach(fn => {
       fn(conn);
     });
   }

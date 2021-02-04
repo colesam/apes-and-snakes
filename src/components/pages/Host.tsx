@@ -3,11 +3,11 @@ import generateRoomCode from "../../core/generateRoomCode";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
-import { useStore } from "../../core/store/Store";
+import { useSharedStore, hostGame } from "../../core/store/Store";
 import { useLocation } from "wouter";
 
 function Host() {
-  const [roomCode, host] = useStore((s) => [s.roomCode, s.host]);
+  const roomCode = useSharedStore(s => s.roomCode);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -15,11 +15,10 @@ function Host() {
       const newRoomCode = generateRoomCode();
       PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
         .then(() => {
-          // Weird bug: connections to host don't resolve if they happen too quickly?
-          host(newRoomCode);
+          hostGame(newRoomCode);
           setLocation("/lobby");
         })
-        .catch((err) => console.error(err));
+        .catch(err => console.error(err));
     }
   });
 

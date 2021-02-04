@@ -7,17 +7,21 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
-import { useStore } from "../../core/store/Store";
+import { useSharedStore } from "../../core/store/Store";
 import { Redirect } from "wouter";
+import shallow from "zustand/shallow";
 
 function Lobby() {
-  const [roomCode, players] = useStore((s) => [s.roomCode, s.players]);
+  const [roomCode, players] = useSharedStore(
+    s => [s.roomCode, s.players],
+    shallow
+  );
 
   if (!roomCode) {
     return <Redirect to="/" />;
   }
 
-  const playerElems = players.map((player) => (
+  const playerElems = players.map(player => (
     <ListItem key={player.id}>{player.name}</ListItem>
   ));
 
