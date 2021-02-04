@@ -7,7 +7,7 @@ import {
   UnorderedList,
   ListItem,
 } from "@chakra-ui/react";
-import { useSharedStore } from "../../core/store/Store";
+import { useSharedStore } from "../../core/store/sharedStore";
 import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
 
