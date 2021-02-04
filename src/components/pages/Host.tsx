@@ -3,8 +3,9 @@ import generateRoomCode from "../../core/generateRoomCode";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
-import { useSharedStore, hostGame } from "../../core/store/Store";
 import { useLocation } from "wouter";
+import { useSharedStore } from "../../core/store/sharedStore";
+import storeActions from "../../core/store/storeActions";
 
 function Host() {
   const roomCode = useSharedStore(s => s.roomCode);
@@ -15,7 +16,7 @@ function Host() {
       const newRoomCode = generateRoomCode();
       PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
         .then(() => {
-          hostGame(newRoomCode);
+          storeActions.hostGame(newRoomCode);
           setLocation("/lobby");
         })
         .catch(err => console.error(err));
