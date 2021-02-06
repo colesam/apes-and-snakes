@@ -13,7 +13,7 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 export type PrivateState = {
   // Host state
   isHost: boolean;
-  playerKeyMap: Map<string, string>;
+  keyPlayerIdMap: Map<string, string>; // personalKey -> playerId
 
   // Player state
   personalKey: string;
@@ -22,7 +22,7 @@ export type PrivateState = {
 
 const privateState = {
   isHost: storageGet("isHost") || false,
-  playerKeyMap: Map<string, string>(),
+  keyPlayerIdMap: storageGet("keyPlayerIdMap") || Map(),
   personalKey: storageGet("personalKey") || nanoid(), // TODO: Save this on initialization
   playerId: storageGet("playerId") || "",
 };
@@ -34,14 +34,13 @@ export const usePrivateStore = create<PrivateState>(
 export const getPrivate = usePrivateStore.getState;
 export const setPrivate = usePrivateStore.setState;
 
-if (window.localStorage) {
-  usePrivateStore.subscribe((newState, oldState) => {
-    // This middleware assumes that I am not dynamically adding keys to the root of the store
-    for (const [key, value] of Object.entries(newState)) {
-      // @ts-ignore
-      if (!oldState.hasOwnProperty(key) || oldState[key] !== value) {
-        storageSet(key, value);
-      }
+// Set up local storage persistance
+usePrivateStore.subscribe((newState, oldState) => {
+  // This middleware assumes that I am not dynamically adding keys to the root of the store
+  for (const [key, value] of Object.entries(newState)) {
+    // @ts-ignore
+    if (!oldState.hasOwnProperty(key) || oldState[key] !== value) {
+      storageSet(key, value);
     }
-  });
-}
+  }
+});
