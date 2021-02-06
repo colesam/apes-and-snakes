@@ -4,6 +4,7 @@ import { Link as RouterLink } from "wouter";
 import { usePrivateStore } from "../../core/store/privateStore";
 
 function MainMenu() {
+  const isHost = usePrivateStore(s => s.isHost);
   const hostPeerId = usePrivateStore(s => s.hostPeerId);
 
   return (
@@ -11,17 +12,19 @@ function MainMenu() {
       <Button colorScheme="green" href="/host" as={RouterLink}>
         Host Game
       </Button>
+      {isHost && (
+        <Button colorScheme="orange" href="/rehost">
+          Rehost
+        </Button>
+      )}
       <Divider />
       <Button colorScheme="blue" href="/join" as={RouterLink}>
         Join Game
       </Button>
-      {hostPeerId && (
-        <>
-          <Divider />
-          <Button colorScheme="orange" href="/reconnect" as={RouterLink}>
-            Reconnect to Previous Host
-          </Button>
-        </>
+      {!isHost && hostPeerId && (
+        <Button colorScheme="orange" href="/reconnect" as={RouterLink}>
+          Reconnect to Previous Host
+        </Button>
       )}
     </Stack>
   );

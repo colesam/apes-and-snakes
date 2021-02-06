@@ -22,3 +22,4 @@ export const useSharedStore = create<SharedState>(
 
 export const getShared = useSharedStore.getState;
 export const setShared = useSharedStore.setState;
+export const resetSharedStore = () => setShared(sharedState);
