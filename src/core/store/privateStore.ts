@@ -17,6 +17,7 @@ export type PrivateState = {
   playerIdPeerIdMap: Map<string, string>; // playerId -> peerId
 
   // Player state
+  hostPeerId: string;
   secretKey: string;
   playerId: string;
 };
@@ -26,6 +27,7 @@ const privateState = {
   secretKeyPlayerIdMap: storageGet("secretKeyPlayerIdMap") || Map(),
   playerIdPeerIdMap: storageGet("playerIdPeerIdMap") || Map(),
 
+  hostPeerId: storageGet("hostPeerId") || "",
   secretKey: storageGet("secretKey") || storageSet("secretKey", nanoid()),
   playerId: storageGet("playerId") || "",
 };

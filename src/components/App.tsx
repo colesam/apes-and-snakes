@@ -6,6 +6,7 @@ import MainMenu from "./pages/MainMenu";
 import Host from "./pages/Host";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
+import Reconnect from "./pages/Reconnect";
 
 const AppContainer = styled.div`
   background-color: #282c34;
@@ -27,6 +28,10 @@ function App() {
 
         <Route path="/join">
           <Join />
+        </Route>
+
+        <Route path="/reconnect">
+          <Reconnect />
         </Route>
 
         <Route path="/lobby">

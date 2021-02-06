@@ -29,7 +29,7 @@ const peerActions = {
   reconnect: (peerId: string, secretKey: string) =>
     send(peerId, {
       action: PeerAction.RECONNECT,
-      secretKey,
+      payload: { secretKey },
     }),
 
   pushShared: (peerId: string, state: Partial<SharedState>) =>
