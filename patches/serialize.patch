@@ -1,0 +1,11 @@
+--- node_modules/json-immutable/lib/serialize.js	2020-10-12 05:55:27.000000000 -0500
++++ patches/serialize.js	2021-02-03 18:56:54.000000000 -0600
+@@ -112,7 +112,7 @@
+ 
+   var emptyRec = new rec.constructor();
+ 
+-  var recordDataMap = rec.toMap();
++  var recordDataMap = rec.toSeq();
+   var recordData = {};
+ 
+   recordDataMap.forEach(function (value, key) {
