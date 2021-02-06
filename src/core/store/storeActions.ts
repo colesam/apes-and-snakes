@@ -1,5 +1,5 @@
-import { getPrivate, setPrivate } from "./privateStore";
-import { getShared, setShared } from "./sharedStore";
+import { getPrivate, resetPrivateStore, setPrivate } from "./privateStore";
+import { getShared, resetSharedStore, setShared } from "./sharedStore";
 import { RPlayer } from "./types/Player";
 import peerActions from "../peer/peerActions";
 import { Map } from "immutable";
@@ -43,6 +43,11 @@ const storeActions = {
   },
 
   setHostPeerId: (hostPeerId: string) => setPrivate({ hostPeerId }),
+
+  resetStores: () => {
+    resetSharedStore();
+    resetPrivateStore();
+  },
 };
 
 export default storeActions;

@@ -8,13 +8,12 @@ import {
   ListItem,
   Button,
 } from "@chakra-ui/react";
-import { resetSharedStore, useSharedStore } from "../../core/store/sharedStore";
+import { useSharedStore } from "../../core/store/sharedStore";
 import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
-import {
-  resetPrivateStore,
-  usePrivateStore,
-} from "../../core/store/privateStore";
+import { usePrivateStore } from "../../core/store/privateStore";
+import peerActions from "../../core/peer/peerActions";
+import storeActions from "../../core/store/storeActions";
 
 function Lobby() {
   // State
@@ -31,8 +30,8 @@ function Lobby() {
 
   // Handlers
   const handleEndGame = () => {
-    resetPrivateStore();
-    resetSharedStore();
+    peerActions.endGame();
+    storeActions.resetStores();
   };
 
   // Computed
