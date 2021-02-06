@@ -8,7 +8,7 @@ import { Map } from "immutable";
 // GOAL: Don't call peerActions from here, use middleware change listeners for that
 const storeActions = {
   hostGame: (roomCode: string) => {
-    setPrivate({ isHost: true, keyPlayerIdMap: Map() });
+    setPrivate({ isHost: true, secretKeyPlayerIdMap: Map() });
     setShared({ roomCode });
   },
 
@@ -27,20 +27,19 @@ const storeActions = {
     if (isHost) peerActions.broadcastShared(newState);
   },
 
-  pushPlayerKey: (key: string, playerId: string) => {
-    const { keyPlayerIdMap } = getPrivate();
+  mapSecretKeyPlayerId: (key: string, playerId: string) => {
+    const { secretKeyPlayerIdMap } = getPrivate();
 
-    if (keyPlayerIdMap.has(key)) {
-      throw new Error(`Cannot push key->playerId entry, key already exists.`);
-    }
+    setPrivate({
+      secretKeyPlayerIdMap: secretKeyPlayerIdMap.set(key, playerId),
+    });
+  },
 
-    if (keyPlayerIdMap.includes(playerId)) {
-      throw new Error(
-        `Cannot push key->playerId entry, playerId ${playerId} already exists.`
-      );
-    }
-
-    setPrivate({ keyPlayerIdMap: keyPlayerIdMap.set(key, playerId) });
+  mapPlayerIdPeerId: (playerId: string, peerId: string) => {
+    const { playerIdPeerIdMap } = getPrivate();
+    setPrivate({
+      playerIdPeerIdMap: playerIdPeerIdMap.set(playerId, peerId),
+    });
   },
 };
 

@@ -13,17 +13,20 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 export type PrivateState = {
   // Host state
   isHost: boolean;
-  keyPlayerIdMap: Map<string, string>; // personalKey -> playerId
+  secretKeyPlayerIdMap: Map<string, string>; // secretKey -> playerId
+  playerIdPeerIdMap: Map<string, string>; // playerId -> peerId
 
   // Player state
-  personalKey: string;
+  secretKey: string;
   playerId: string;
 };
 
 const privateState = {
   isHost: storageGet("isHost") || false,
-  keyPlayerIdMap: storageGet("keyPlayerIdMap") || Map(),
-  personalKey: storageGet("personalKey") || storageSet("personalKey", nanoid()),
+  secretKeyPlayerIdMap: storageGet("secretKeyPlayerIdMap") || Map(),
+  playerIdPeerIdMap: storageGet("playerIdPeerIdMap") || Map(),
+
+  secretKey: storageGet("secretKey") || storageSet("secretKey", nanoid()),
   playerId: storageGet("playerId") || "",
 };
 
