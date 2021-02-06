@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Text } from "@chakra-ui/react";
+import React, { useState } from "react";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
@@ -51,6 +50,7 @@ function Reconnect() {
       .catch(err => console.error(err));
   };
 
+  // Render
   return (
     <ReconnectForm
       initialRoomCode={previousRoomCode}

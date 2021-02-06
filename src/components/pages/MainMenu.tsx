@@ -3,9 +3,14 @@ import { Button, Divider, Stack } from "@chakra-ui/react";
 import { Link as RouterLink } from "wouter";
 import { usePrivateStore } from "../../core/store/privateStore";
 import { useSharedStore } from "../../core/store/sharedStore";
+import shallow from "zustand/shallow";
 
 function MainMenu() {
-  const [isHost, hostPeerId] = usePrivateStore(s => [s.isHost, s.hostPeerId]);
+  // State
+  const [isHost, hostPeerId] = usePrivateStore(
+    s => [s.isHost, s.hostPeerId],
+    shallow
+  );
   const roomCode = useSharedStore(s => s.roomCode);
 
   return (
