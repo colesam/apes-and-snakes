@@ -3,7 +3,7 @@ import { Player } from "../store/types/Player";
 import peerActions, { PeerAction } from "./peerActions";
 import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
-import { nanoid } from "nanoid";
+import generateId from "../generateId";
 import { getPrivate, setPrivate } from "../store/privateStore";
 
 // TODO: eventually break this up
@@ -23,7 +23,7 @@ const initSync = () => {
 
       case PeerAction.JOIN:
         const newPlayer = Player({
-          id: nanoid(),
+          id: generateId(),
           name: payload.playerName,
         });
 

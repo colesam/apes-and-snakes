@@ -1,7 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import initStorage from "../localStorage";
-import { nanoid } from "nanoid";
+import generateId from "../generateId";
 import { Map } from "immutable";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
@@ -28,7 +28,7 @@ const privateState = {
   playerIdPeerIdMap: storageGet("playerIdPeerIdMap") || Map(),
 
   hostPeerId: storageGet("hostPeerId") || "",
-  secretKey: storageGet("secretKey") || storageSet("secretKey", nanoid()),
+  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
   playerId: storageGet("playerId") || "",
 };
 
