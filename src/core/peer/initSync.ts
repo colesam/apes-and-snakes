@@ -4,7 +4,7 @@ import peerActions, { PeerAction } from "./peerActions";
 import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
 import { nanoid } from "nanoid";
-import { setPrivate } from "../store/privateStore";
+import { getPrivate, setPrivate } from "../store/privateStore";
 
 // TODO: eventually break this up
 // Performs actions on the store in response to received peerActions
@@ -28,9 +28,23 @@ const initSync = () => {
         });
 
         storeActions.pushPlayer(newPlayer);
-        storeActions.pushPlayerKey(payload.personalKey, newPlayer.id);
+        storeActions.mapSecretKeyPlayerId(payload.secretKey, newPlayer.id);
+        storeActions.mapPlayerIdPeerId(newPlayer.id, peerId);
 
         peerActions.pushPrivate(peerId, { playerId: newPlayer.id });
+
+        break;
+
+      case PeerAction.RECONNECT:
+        const { secretKeyPlayerIdMap } = getPrivate();
+
+        const playerId = secretKeyPlayerIdMap.get(payload.secretKey);
+
+        if (!playerId) {
+          throw new Error("Could not find playerId. Failed to reconnect.");
+        }
+
+        storeActions.mapPlayerIdPeerId(playerId, peerId);
 
         break;
 

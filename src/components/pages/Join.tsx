@@ -9,7 +9,7 @@ import { usePrivateStore } from "../../core/store/privateStore";
 import { nanoid } from "nanoid";
 
 function Join() {
-  const personalKey = usePrivateStore(s => s.personalKey);
+  const secretKey = usePrivateStore(s => s.secretKey);
   const roomCode = useSharedStore(s => s.roomCode);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -30,7 +30,7 @@ function Join() {
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             peerActions.ping(hostPeerId);
-            peerActions.join(hostPeerId, personalKey, name);
+            peerActions.join(hostPeerId, secretKey, name);
             peerActions.pullShared(hostPeerId);
           })
           .catch(err => console.error(err))

@@ -8,6 +8,7 @@ export enum PeerAction {
   PING = "PING",
   PONG = "PONG",
   JOIN = "JOIN",
+  RECONNECT = "RECONNECT",
   PUSH_SHARED = "PUSH_SHARED",
   PULL_SHARED = "PULL_SHARED",
   PUSH_PRIVATE = "PUSH_PRIVATE",
@@ -19,10 +20,16 @@ const peerActions = {
 
   pong: (peerId: string) => send(peerId, { action: PeerAction.PONG }),
 
-  join: (peerId: string, personalKey: string, playerName: string) =>
+  join: (peerId: string, secretKey: string, playerName: string) =>
     send(peerId, {
       action: PeerAction.JOIN,
-      payload: { personalKey, playerName },
+      payload: { secretKey, playerName },
+    }),
+
+  reconnect: (peerId: string, secretKey: string) =>
+    send(peerId, {
+      action: PeerAction.RECONNECT,
+      secretKey,
     }),
 
   pushShared: (peerId: string, state: Partial<SharedState>) =>
