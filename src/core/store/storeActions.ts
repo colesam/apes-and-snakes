@@ -9,10 +9,13 @@ import { Map } from "immutable";
 const storeActions = {
   hostGame: (roomCode: string) => {
     setPrivate({ isHost: true, secretKeyPlayerIdMap: Map() });
-    setShared({ roomCode });
+    storeActions.setRoomCode(roomCode);
   },
 
-  setRoomCode: (roomCode: string) => setShared({ roomCode }),
+  setRoomCode: (roomCode: string) => {
+    setShared({ roomCode });
+    setPrivate({ previousRoomCode: roomCode });
+  },
 
   pushPlayer: (player: RPlayer) => {
     const { isHost } = getPrivate();

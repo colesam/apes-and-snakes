@@ -9,13 +9,18 @@ import generateId from "../../core/generateId";
 import ReconnectForm from "../forms/ReconnectForm";
 import { namespace } from "../../config";
 import storeActions from "../../core/store/storeActions";
+import shallow from "zustand/shallow";
 
 function Reconnect() {
   // State
-  const secretKey = usePrivateStore(s => s.secretKey);
+  const [secretKey, previousRoomCode] = usePrivateStore(
+    s => [s.secretKey, s.previousRoomCode],
+    shallow
+  );
   const roomCode = useSharedStore(s => s.roomCode);
   const [isConnecting, setIsConnecting] = useState(false);
 
+  // Redirects
   if (roomCode) {
     return <Redirect to="/lobby" />;
   }
@@ -34,6 +39,8 @@ function Reconnect() {
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             storeActions.setHostPeerId(hostPeerId);
+            storeActions.setRoomCode(roomCode);
+
             peerActions.ping(hostPeerId);
             peerActions.reconnect(hostPeerId, secretKey);
             peerActions.pullShared(hostPeerId);
@@ -46,7 +53,7 @@ function Reconnect() {
 
   return (
     <ReconnectForm
-      initialRoomCode={roomCode}
+      initialRoomCode={previousRoomCode}
       isSubmitting={isConnecting}
       onSubmit={handleConnect}
     />
