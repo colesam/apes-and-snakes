@@ -7,6 +7,7 @@ import peerActions from "../../core/peer/peerActions";
 import { useSharedStore } from "../../core/store/sharedStore";
 import { usePrivateStore } from "../../core/store/privateStore";
 import { nanoid } from "nanoid";
+import storeActions from "../../core/store/storeActions";
 
 function Join() {
   const secretKey = usePrivateStore(s => s.secretKey);
@@ -29,6 +30,7 @@ function Join() {
         // Connect to room
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
+            storeActions.setHostPeerId(hostPeerId);
             peerActions.ping(hostPeerId);
             peerActions.join(hostPeerId, secretKey, name);
             peerActions.pullShared(hostPeerId);

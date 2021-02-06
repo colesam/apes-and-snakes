@@ -41,6 +41,8 @@ const storeActions = {
       playerIdPeerIdMap: playerIdPeerIdMap.set(playerId, peerId),
     });
   },
+
+  setHostPeerId: (hostPeerId: string) => setPrivate({ hostPeerId }),
 };
 
 export default storeActions;
