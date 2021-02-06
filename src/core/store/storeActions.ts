@@ -7,8 +7,11 @@ import { Map } from "immutable";
 // Many actions use both store, so they all live in this file for now
 // GOAL: Don't call peerActions from here, use middleware change listeners for that
 const storeActions = {
-  hostGame: (roomCode: string) => {
-    setPrivate({ isHost: true, secretKeyPlayerIdMap: Map() });
+  hostGame: (roomCode: string, resetPlayerKeys = true) => {
+    setPrivate({
+      isHost: true,
+      ...(resetPlayerKeys && { secretKeyPlayerIdMap: Map<string, string>() }),
+    });
     storeActions.setRoomCode(roomCode);
   },
 
