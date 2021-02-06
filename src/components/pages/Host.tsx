@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import generateRoomCode from "../../core/generateRoomCode";
+import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
