@@ -6,7 +6,7 @@ import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
 import { useSharedStore } from "../../core/store/sharedStore";
 import { usePrivateStore } from "../../core/store/privateStore";
-import { nanoid } from "nanoid";
+import generateId from "../../core/generateId";
 import storeActions from "../../core/store/storeActions";
 
 function Join() {
@@ -22,7 +22,7 @@ function Join() {
     setIsConnecting(true);
 
     const hostPeerId = `${namespace} ${roomCode}`;
-    const peerId = `${hostPeerId} ${nanoid()}`;
+    const peerId = `${hostPeerId} ${generateId()}`;
 
     // Register self
     PeerConnectionManager.register(peerId)

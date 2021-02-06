@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Text } from "@chakra-ui/react";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
 import { useSharedStore } from "../../core/store/sharedStore";
 import { usePrivateStore } from "../../core/store/privateStore";
-import { nanoid } from "nanoid";
+import generateId from "../../core/generateId";
 
 function Reconnect() {
   const [secretKey, hostPeerId] = usePrivateStore(s => [
@@ -18,7 +18,7 @@ function Reconnect() {
   useEffect(() => {
     console.log(`[DEBUG] Reconnecting to ${hostPeerId}`);
     // Register self
-    PeerConnectionManager.register(`${hostPeerId} ${nanoid()}`)
+    PeerConnectionManager.register(`${hostPeerId} ${generateId()}`)
       .then(() => {
         // Connect to room
         PeerConnectionManager.connect(hostPeerId)
