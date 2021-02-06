@@ -12,6 +12,7 @@ export enum PeerAction {
   PUSH_SHARED = "PUSH_SHARED",
   PULL_SHARED = "PULL_SHARED",
   PUSH_PRIVATE = "PUSH_PRIVATE",
+  END_GAME = "END_GAME",
 }
 
 // NOTE: Peer actions send only, do not update store or state
@@ -43,6 +44,8 @@ const peerActions = {
 
   pushPrivate: (peerId: string, state: Partial<PrivateState>) =>
     send(peerId, { action: PeerAction.PUSH_PRIVATE, payload: state }),
+
+  endGame: () => broadcast({ action: PeerAction.END_GAME }),
 };
 
 export default peerActions;

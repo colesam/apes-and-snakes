@@ -1,5 +1,5 @@
-import { getPrivate, setPrivate } from "./privateStore";
-import { getShared, setShared } from "./sharedStore";
+import { getPrivate, resetPrivateStore, setPrivate } from "./privateStore";
+import { getShared, resetSharedStore, setShared } from "./sharedStore";
 import { RPlayer } from "./types/Player";
 import peerActions from "../peer/peerActions";
 import { Map } from "immutable";
@@ -7,12 +7,18 @@ import { Map } from "immutable";
 // Many actions use both store, so they all live in this file for now
 // GOAL: Don't call peerActions from here, use middleware change listeners for that
 const storeActions = {
-  hostGame: (roomCode: string) => {
-    setPrivate({ isHost: true, secretKeyPlayerIdMap: Map() });
-    setShared({ roomCode });
+  hostGame: (roomCode: string, resetPlayerKeys = true) => {
+    setPrivate({
+      isHost: true,
+      ...(resetPlayerKeys && { secretKeyPlayerIdMap: Map<string, string>() }),
+    });
+    storeActions.setRoomCode(roomCode);
   },
 
-  setRoomCode: (roomCode: string) => setShared({ roomCode }),
+  setRoomCode: (roomCode: string) => {
+    setShared({ roomCode });
+    setPrivate({ previousRoomCode: roomCode });
+  },
 
   pushPlayer: (player: RPlayer) => {
     const { isHost } = getPrivate();
@@ -43,6 +49,11 @@ const storeActions = {
   },
 
   setHostPeerId: (hostPeerId: string) => setPrivate({ hostPeerId }),
+
+  resetStores: () => {
+    resetSharedStore();
+    resetPrivateStore();
+  },
 };
 
 export default storeActions;

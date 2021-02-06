@@ -62,6 +62,10 @@ const initSync = () => {
         setPrivate(payload);
         break;
 
+      case PeerAction.END_GAME:
+        storeActions.resetStores();
+        break;
+
       default:
         console.error(`Unknown peer data action: ${action}`);
     }
