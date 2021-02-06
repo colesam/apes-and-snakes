@@ -13,7 +13,7 @@ function Rehost() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
       .then(() => {
-        storeActions.hostGame(newRoomCode);
+        storeActions.hostGame(newRoomCode, false);
         setLocation("/lobby");
       })
       .catch(err => console.error(err));
