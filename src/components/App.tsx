@@ -4,6 +4,7 @@ import { Box } from "@chakra-ui/react";
 import { Route } from "wouter";
 import MainMenu from "./pages/MainMenu";
 import Host from "./pages/Host";
+import Rehost from "./pages/Rehost";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
 import Reconnect from "./pages/Reconnect";
@@ -24,6 +25,10 @@ function App() {
       <Box bg="white" color="black" p={4} mb={60} w={275} boxShadow="xl">
         <Route path="/host">
           <Host />
+        </Route>
+
+        <Route path="/rehost">
+          <Rehost />
         </Route>
 
         <Route path="/join">
