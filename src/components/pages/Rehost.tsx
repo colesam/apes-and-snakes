@@ -22,7 +22,7 @@ function Rehost() {
   return (
     <Alert status="info" fontSize="xl">
       <Spinner color="blue.500" thickness="3px" mr={7} />{" "}
-      <Text>Rehosting Room...</Text>
+      <Text>Rehosting...</Text>
     </Alert>
   );
 }
