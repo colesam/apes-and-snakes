@@ -23,13 +23,13 @@ export type PrivateState = {
 };
 
 const privateState = {
-  isHost: storageGet("isHost") || false,
-  secretKeyPlayerIdMap: storageGet("secretKeyPlayerIdMap") || Map(),
-  playerIdPeerIdMap: storageGet("playerIdPeerIdMap") || Map(),
+  isHost: false,
+  secretKeyPlayerIdMap: Map<string, string>(),
+  playerIdPeerIdMap: Map<string, string>(),
 
-  hostPeerId: storageGet("hostPeerId") || "",
-  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
-  playerId: storageGet("playerId") || "",
+  hostPeerId: "",
+  secretKey: storageSet("secretKey", generateId()),
+  playerId: "",
 };
 
 export const usePrivateStore = create<PrivateState>(
@@ -38,6 +38,19 @@ export const usePrivateStore = create<PrivateState>(
 
 export const getPrivate = usePrivateStore.getState;
 export const setPrivate = usePrivateStore.setState;
+export const resetPrivateStore = () => setPrivate(privateState);
+
+// TODO: Refactor below into some sort of middleware
+// Initialize state from local storage
+const initialStorageState = {};
+for (const key in privateState) {
+  const val = storageGet(key);
+  if (val !== null) {
+    // @ts-ignore
+    initialStorageState[key] = val;
+  }
+}
+setPrivate(initialStorageState);
 
 // Set up local storage persistance
 usePrivateStore.subscribe((newState, oldState) => {
