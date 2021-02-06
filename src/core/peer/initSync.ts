@@ -4,7 +4,7 @@ import peerActions, { PeerAction } from "./peerActions";
 import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
 import { nanoid } from "nanoid";
-import { getPrivate, setPrivate } from "../store/privateStore";
+import { setPrivate } from "../store/privateStore";
 
 // TODO: eventually break this up
 // Performs actions on the store in response to received peerActions

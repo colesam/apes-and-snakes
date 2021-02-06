@@ -23,7 +23,7 @@ export type PrivateState = {
 const privateState = {
   isHost: storageGet("isHost") || false,
   keyPlayerIdMap: storageGet("keyPlayerIdMap") || Map(),
-  personalKey: storageGet("personalKey") || nanoid(), // TODO: Save this on initialization
+  personalKey: storageGet("personalKey") || storageSet("personalKey", nanoid()),
   playerId: storageGet("playerId") || "",
 };
 
