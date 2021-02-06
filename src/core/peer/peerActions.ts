@@ -1,4 +1,6 @@
 import PeerConnectionManager from "./PeerConnectionManager";
+import { SharedState } from "../store/sharedStore";
+import { PrivateState } from "../store/privateStore";
 
 const { send, broadcast } = PeerConnectionManager;
 
@@ -23,17 +25,17 @@ const peerActions = {
       payload: { personalKey, playerName },
     }),
 
-  pushShared: (peerId: string, mutation: any) =>
-    send(peerId, { action: PeerAction.PUSH_SHARED, payload: mutation }),
+  pushShared: (peerId: string, state: Partial<SharedState>) =>
+    send(peerId, { action: PeerAction.PUSH_SHARED, payload: state }),
+
+  broadcastShared: (data: Partial<SharedState>) =>
+    broadcast({ action: PeerAction.PUSH_SHARED, payload: data }),
 
   pullShared: (peerId: string) =>
     send(peerId, { action: PeerAction.PULL_SHARED }),
 
-  pushPrivate: (peerId: string, mutation: any) =>
-    send(peerId, { action: PeerAction.PUSH_PRIVATE, payload: mutation }),
-
-  broadcastData: (data: any) =>
-    broadcast({ action: PeerAction.PUSH_SHARED, payload: data }),
+  pushPrivate: (peerId: string, state: Partial<PrivateState>) =>
+    send(peerId, { action: PeerAction.PUSH_PRIVATE, payload: state }),
 };
 
 export default peerActions;
