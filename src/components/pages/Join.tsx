@@ -31,6 +31,8 @@ function Join() {
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             storeActions.setHostPeerId(hostPeerId);
+            storeActions.setRoomCode(roomCode);
+
             peerActions.ping(hostPeerId);
             peerActions.join(hostPeerId, secretKey, name);
             peerActions.pullShared(hostPeerId);
