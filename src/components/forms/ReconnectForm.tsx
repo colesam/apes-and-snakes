@@ -21,8 +21,10 @@ function ReconnectForm({
   isSubmitting = false,
   onSubmit,
 }: PropTypes) {
+  // State
   const [roomCode, setRoomCode] = useState(initialRoomCode);
 
+  // Handlers
   const handleRoomCodeChange = (roomCode: string) => {
     setRoomCode(roomCode.toUpperCase());
   };
@@ -33,6 +35,7 @@ function ReconnectForm({
     }
   };
 
+  // Render
   return (
     <>
       <FormControl id="room-code" mb={5}>

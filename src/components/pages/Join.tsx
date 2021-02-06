@@ -10,14 +10,17 @@ import generateId from "../../core/generateId";
 import storeActions from "../../core/store/storeActions";
 
 function Join() {
+  // State
   const secretKey = usePrivateStore(s => s.secretKey);
   const roomCode = useSharedStore(s => s.roomCode);
   const [isConnecting, setIsConnecting] = useState(false);
 
+  // Redirects
   if (roomCode) {
     return <Redirect to="/lobby" />;
   }
 
+  // Handlers
   const handleConnect = (roomCode: string, name: string) => {
     setIsConnecting(true);
 
@@ -43,6 +46,7 @@ function Join() {
       .catch(err => console.error(err));
   };
 
+  // Render
   return <JoinForm isSubmitting={isConnecting} onSubmit={handleConnect} />;
 }
 

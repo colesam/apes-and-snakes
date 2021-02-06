@@ -7,8 +7,10 @@ import { useLocation } from "wouter";
 import storeActions from "../../core/store/storeActions";
 
 function Rehost() {
+  // State
   const [, setLocation] = useLocation();
 
+  // Side effects
   useEffect(() => {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
@@ -19,6 +21,7 @@ function Rehost() {
       .catch(err => console.error(err));
   }, []);
 
+  // Render
   return (
     <Alert status="info" fontSize="xl">
       <Spinner color="blue.500" thickness="3px" mr={7} />{" "}

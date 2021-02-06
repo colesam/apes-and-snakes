@@ -39,6 +39,7 @@ function Lobby() {
     <ListItem key={player.id}>{player.name}</ListItem>
   ));
 
+  // Render
   return (
     <Stack spacing={4}>
       <Alert status="success" justifyContent="space-between" fontSize="xl">

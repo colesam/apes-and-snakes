@@ -4,6 +4,8 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPrivate } from "./privateStore";
 import initStorage from "../localStorage";
+import peerActions from "../peer/peerActions";
+import { diff } from "../helpers";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
 
@@ -30,11 +32,10 @@ export const resetSharedStore = () => setShared(sharedState);
 
 // TODO: Refactor below into some sort of middleware
 // Initialize state from local storage
-const initialStorageState = {};
+const initialStorageState: any = {};
 for (const key in sharedState) {
   const val = storageGet(key);
   if (val !== null) {
-    // @ts-ignore
     initialStorageState[key] = val;
   }
 }
@@ -43,12 +44,17 @@ setShared(initialStorageState);
 // Set up local storage persistance
 useSharedStore.subscribe((newState, oldState) => {
   if (getPrivate().isHost) {
-    // This middleware assumes that I am not dynamically adding keys to the root of the store
-    for (const [key, value] of Object.entries(newState)) {
-      // @ts-ignore
-      if (!oldState.hasOwnProperty(key) || oldState[key] !== value) {
-        storageSet(key, value);
-      }
+    const stateChanges = diff(newState, oldState);
+    for (const [key, value] of Object.entries(stateChanges)) {
+      storageSet(key, value);
     }
+  }
+});
+
+// Automatically emit changes to all peers, if hosting
+useSharedStore.subscribe((newState, oldState) => {
+  if (getPrivate().isHost) {
+    const stateChanges = diff(newState, oldState);
+    peerActions.broadcastShared(stateChanges);
   }
 });

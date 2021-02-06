@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import initStorage from "../localStorage";
 import generateId from "../generateId";
 import { Map } from "immutable";
+import { diff } from "../helpers";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -13,26 +14,26 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 export type PrivateState = {
   // Host state
   isHost: boolean;
-  secretKeyPlayerIdMap: Map<string, string>; // secretKey -> playerId
-  playerIdPeerIdMap: Map<string, string>; // playerId -> peerId
+  secretKeyPlayerIdMap: Map<string, string>;
+  playerIdPeerIdMap: Map<string, string>;
 
   // Player state
   hostPeerId: string;
   previousRoomCode: string;
   playerId: string;
-
   secretKey: string;
 };
 
 const privateState = {
+  // Host state
   isHost: false,
   secretKeyPlayerIdMap: Map<string, string>(),
   playerIdPeerIdMap: Map<string, string>(),
 
+  // Player state
   hostPeerId: "",
   previousRoomCode: "",
   playerId: "",
-
   secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
 };
 
@@ -46,11 +47,10 @@ export const resetPrivateStore = () => setPrivate(privateState);
 
 // TODO: Refactor below into some sort of middleware
 // Initialize state from local storage
-const initialStorageState = {};
+const initialStorageState: any = {};
 for (const key in privateState) {
   const val = storageGet(key);
   if (val !== null) {
-    // @ts-ignore
     initialStorageState[key] = val;
   }
 }
@@ -58,11 +58,8 @@ setPrivate(initialStorageState);
 
 // Set up local storage persistance
 usePrivateStore.subscribe((newState, oldState) => {
-  // This middleware assumes that I am not dynamically adding keys to the root of the store
-  for (const [key, value] of Object.entries(newState)) {
-    // @ts-ignore
-    if (!oldState.hasOwnProperty(key) || oldState[key] !== value) {
-      storageSet(key, value);
-    }
+  const stateChanges = diff(newState, oldState);
+  for (const [key, value] of Object.entries(stateChanges)) {
+    storageSet(key, value);
   }
 });

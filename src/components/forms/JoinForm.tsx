@@ -16,10 +16,12 @@ type PropTypes = {
 };
 
 function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
+  // State
   const nameInput = useRef<HTMLInputElement>(null);
   const [roomCode, setRoomCode] = useState("");
   const [name, setName] = useState("");
 
+  // Handlers
   const handleRoomCodeChange = (roomCode: string) => {
     setRoomCode(roomCode.toUpperCase());
   };
@@ -34,6 +36,7 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
     }
   };
 
+  // Render
   return (
     <>
       <Stack direction="column" spacing={3} mb={5}>
