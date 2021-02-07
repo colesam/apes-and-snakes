@@ -2,6 +2,7 @@ import Peer, { DataConnection } from "peerjs";
 import { Map, List } from "immutable";
 import MessageHandler from "./MessageHandler";
 import handleAction from "./handleAction";
+import GeneralError from "../error/GeneralError";
 
 export default class PeerConnectionManager {
   /**
@@ -66,7 +67,6 @@ export default class PeerConnectionManager {
   }
 
   static async send(peerId: string, payload: any): Promise<any> {
-    let res;
     const peerConn = PeerConnectionManager.peers.get(peerId);
 
     if (!peerConn) {
@@ -75,18 +75,16 @@ export default class PeerConnectionManager {
       );
     }
 
-    try {
-      res = await PeerConnectionManager._messageHandler.send(peerConn, payload);
-    } catch (e) {
-      // eslint-disable-next-line no-throw-literal
-      throw {
-        message: e.message || "Unknown network error",
-        code: e.code || "UNKNOWN_NETWORK_ERROR",
-      };
-    }
+    const res = await PeerConnectionManager._messageHandler.send(
+      peerConn,
+      payload
+    );
 
     if (!res.success) {
-      throw res.error; // TODO: create type for { message: string, code: string }
+      console.log(`[DEBUG] Response:`);
+      console.log(res);
+      const { name, message } = res.error;
+      throw new GeneralError(message, name);
     }
 
     return res.payload;
@@ -164,13 +162,13 @@ export default class PeerConnectionManager {
           messageId
         );
       };
-      const error = (message: string, code: string) => {
+      const error = (error: GeneralError) => {
         this._messageHandler.respond(
           conn,
           {
             action,
             success: false,
-            error: { message, code },
+            error: error.toJSON(), // json-immutable doesn't seem to handle this automatically
           },
           messageId
         );

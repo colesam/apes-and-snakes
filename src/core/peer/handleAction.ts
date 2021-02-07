@@ -4,6 +4,8 @@ import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
 import generateId from "../generateId";
 import { getPrivate, setPrivate } from "../store/privateStore";
+import GeneralError from "../error/GeneralError";
+import NameTakenError from "../error/NameTakenError";
 
 // TODO: eventually break this up
 // Performs actions on the store in response to received peerActions
@@ -12,14 +14,19 @@ const handleAction = (
   peerId: string, // TODO: ditch this param
   payload: any,
   respond: (payload?: any) => void,
-  error: (message: string, code: string) => void
+  error: (e: GeneralError) => void
 ) => {
   switch (action) {
     case PeerAction.PING:
-      respond();
-      break;
+      return respond();
 
     case PeerAction.JOIN:
+      const { players } = getShared();
+      const playerName = payload.playerName.trim();
+
+      const existingPlayer = players.find(({ name }) => name === playerName);
+      if (existingPlayer) return error(new NameTakenError(playerName));
+
       const newPlayer = Player({
         id: generateId(),
         name: payload.playerName,
@@ -29,8 +36,7 @@ const handleAction = (
       storeActions.mapSecretKeyPlayerId(payload.secretKey, newPlayer.id);
       storeActions.mapPlayerIdPeerId(newPlayer.id, peerId);
 
-      respond({ playerId: newPlayer.id });
-      break;
+      return respond({ playerId: newPlayer.id });
 
     case PeerAction.RECONNECT:
       const { secretKeyPlayerIdMap } = getPrivate();
@@ -43,29 +49,24 @@ const handleAction = (
 
       storeActions.mapPlayerIdPeerId(playerId, peerId);
 
-      respond();
-      break;
+      return respond();
 
     case PeerAction.PULL_SHARED:
-      respond({ sharedState: getShared() });
-      break;
+      return respond({ sharedState: getShared() });
 
     case PeerAction.PUSH_SHARED:
       // Update shared store with new data
       setShared(payload);
-      respond();
-      break;
+      return respond();
 
     case PeerAction.PUSH_PRIVATE:
       // Update private store with new data
       setPrivate(payload);
-      respond();
-      break;
+      return respond();
 
     case PeerAction.END_GAME:
       storeActions.resetStores();
-      respond();
-      break;
+      return respond();
 
     default:
       console.error(`Unknown peer data action: ${action}`);
