@@ -4,7 +4,6 @@ import App from "./components/App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
-import initSync from "./core/peer/initSync";
 
 ReactDOM.render(
   <ChakraProvider>
@@ -14,8 +13,6 @@ ReactDOM.render(
   </ChakraProvider>,
   document.getElementById("root")
 );
-
-initSync();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
