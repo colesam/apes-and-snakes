@@ -6,7 +6,6 @@ const { send, broadcast } = PeerConnectionManager;
 
 export enum PeerAction {
   PING = "PING",
-  PONG = "PONG",
   JOIN = "JOIN",
   RECONNECT = "RECONNECT",
   PUSH_SHARED = "PUSH_SHARED",
@@ -15,11 +14,9 @@ export enum PeerAction {
   END_GAME = "END_GAME",
 }
 
-// NOTE: Peer actions send only, do not update store or state
+// Rule: Actions may only call the send or broadcast methods
 const peerActions = {
   ping: (peerId: string) => send(peerId, { action: PeerAction.PING }),
-
-  pong: (peerId: string) => send(peerId, { action: PeerAction.PONG }),
 
   join: (peerId: string, secretKey: string, playerName: string) =>
     send(peerId, {

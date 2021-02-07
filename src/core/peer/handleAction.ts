@@ -18,6 +18,7 @@ const handleAction = (
 ) => {
   switch (action) {
     case PeerAction.PING:
+      console.log(`[DEBUG] Received PING from: ${peerId}`);
       return respond();
 
     case PeerAction.JOIN:
