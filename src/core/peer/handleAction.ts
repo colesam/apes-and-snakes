@@ -1,5 +1,5 @@
 import { Player } from "../store/types/Player";
-import peerActions, { PeerAction } from "./peerActions";
+import { PeerAction } from "./peerActions";
 import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
 import generateId from "../generateId";

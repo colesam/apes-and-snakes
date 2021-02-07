@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import JoinForm from "../forms/JoinForm";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
-import { Redirect, useLocation } from "wouter";
-import peerActions from "../../core/peer/peerActions";
-import { setShared, useSharedStore } from "../../core/store/sharedStore";
-import { setPrivate, usePrivateStore } from "../../core/store/privateStore";
+import { useLocation } from "wouter";
+import { usePrivateStore } from "../../core/store/privateStore";
 import generateId from "../../core/generateId";
 import storeActions from "../../core/store/storeActions";
-import NameTakenError, {
-  NAME_TAKEN_ERROR,
-} from "../../core/error/NameTakenError";
+import { NAME_TAKEN_ERROR } from "../../core/error/NameTakenError";
 import { errorLog } from "../../core/helpers";
 import shallow from "zustand/shallow";
 import peerRoutines from "../../core/peer/peerRoutines";
