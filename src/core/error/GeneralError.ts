@@ -1,12 +1,14 @@
 export default class GeneralError extends Error {
-  public code;
-
-  constructor(message: string, code: string) {
+  constructor(message: string, name?: string) {
     super(message);
-    this.code = code;
+    if (name) this.name = name;
+  }
+
+  toJSON() {
+    return { name: this.name, message: this.message };
   }
 
   toString() {
-    return `[${this.code}] ${this.message}`;
+    return `[${this.name}] ${this.message}`;
   }
 }
