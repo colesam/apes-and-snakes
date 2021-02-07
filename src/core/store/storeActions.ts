@@ -38,6 +38,23 @@ const storeActions = {
     });
   },
 
+  updateLastPing: (playerId: string) => {
+    setPrivate({
+      playerIdLastPingMap: getPrivate().playerIdLastPingMap.set(
+        playerId,
+        new Date()
+      ),
+    });
+  },
+
+  authPlayerAction: (secretKey: string, playerId: string) => {
+    const { secretKeyPlayerIdMap } = getPrivate();
+    return (
+      secretKeyPlayerIdMap.has(secretKey) &&
+      secretKeyPlayerIdMap.get(secretKey) === playerId
+    );
+  },
+
   setHostPeerId: (hostPeerId: string) => setPrivate({ hostPeerId }),
 
   resetStores: () => {

@@ -16,7 +16,8 @@ export enum PeerAction {
 
 // Rule: Actions may only call the send or broadcast methods
 const peerActions = {
-  ping: (peerId: string) => send(peerId, { action: PeerAction.PING }),
+  ping: (peerId: string, secretKey: string, playerId: string) =>
+    send(peerId, { action: PeerAction.PING, payload: { secretKey, playerId } }),
 
   join: (peerId: string, secretKey: string, playerName: string) =>
     send(peerId, {

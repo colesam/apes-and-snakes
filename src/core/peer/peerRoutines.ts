@@ -27,8 +27,9 @@ const peerRoutines = {
   },
 
   establishPing(hostPeerId: string) {
+    const { secretKey, playerId } = getPrivate();
     const pingIntervalId = setInterval(() => {
-      peerActions.ping(hostPeerId);
+      peerActions.ping(hostPeerId, secretKey, playerId);
     }, pingInterval);
     setPrivate({ pingIntervalId });
   },

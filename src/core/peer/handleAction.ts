@@ -6,6 +6,7 @@ import generateId from "../generateId";
 import { getPrivate, setPrivate } from "../store/privateStore";
 import GeneralError from "../error/GeneralError";
 import NameTakenError from "../error/NameTakenError";
+import NotAuthorizedError from "../error/NotAuthorizedError";
 
 // TODO: eventually break this up
 // Performs actions on the store in response to received peerActions
@@ -19,6 +20,11 @@ const handleAction = (
   switch (action) {
     case PeerAction.PING:
       console.log(`[DEBUG] Received PING from: ${peerId}`);
+      // TODO: Turn this into a middleware
+      if (!storeActions.authPlayerAction(payload.secretKey, payload.playerId)) {
+        return error(new NotAuthorizedError(payload.playerId));
+      }
+      storeActions.updateLastPing(payload.playerId);
       return respond();
 
     case PeerAction.JOIN:
