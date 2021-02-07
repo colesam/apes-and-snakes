@@ -40,7 +40,6 @@ function Reconnect() {
             storeActions.setHostPeerId(hostPeerId);
             storeActions.setRoomCode(roomCode);
 
-            peerActions.ping(hostPeerId);
             peerActions.reconnect(hostPeerId, secretKey);
             peerActions.pullShared(hostPeerId);
           })

@@ -4,8 +4,8 @@ import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
-import { useSharedStore } from "../../core/store/sharedStore";
-import { usePrivateStore } from "../../core/store/privateStore";
+import { setShared, useSharedStore } from "../../core/store/sharedStore";
+import { setPrivate, usePrivateStore } from "../../core/store/privateStore";
 import generateId from "../../core/generateId";
 import storeActions from "../../core/store/storeActions";
 
@@ -34,11 +34,16 @@ function Join() {
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             storeActions.setHostPeerId(hostPeerId);
-            storeActions.setRoomCode(roomCode);
 
-            peerActions.ping(hostPeerId);
-            peerActions.join(hostPeerId, secretKey, name);
-            peerActions.pullShared(hostPeerId);
+            peerActions
+              .join(hostPeerId, secretKey, name)
+              .then(({ playerId }) => setPrivate({ playerId }))
+              .catch(e => console.error(e));
+
+            // This sets room code
+            peerActions
+              .pullShared(hostPeerId)
+              .then(({ sharedState }) => setShared(sharedState));
           })
           .catch(err => console.error(err))
           .finally(() => setIsConnecting(false));
