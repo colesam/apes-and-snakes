@@ -24,25 +24,25 @@ function Join() {
   // Handlers
   const handleConnect = async (roomCode: string, name: string) => {
     setIsConnecting(true);
+    const hostPID = hostPeerId || `${namespace} ${roomCode}`;
 
     // Register self
     if (!hostPeerId) {
-      const newHostPeerId = `${namespace} ${roomCode}`;
-      const peerId = `${hostPeerId} ${generateId()}`;
+      const peerId = `${hostPID} ${generateId()}`;
 
       try {
         await PeerConnectionManager.register(peerId);
-        await PeerConnectionManager.connect(newHostPeerId);
+        await PeerConnectionManager.connect(hostPID);
       } catch (e) {
         errorLog(e);
       }
 
-      storeActions.setHostPeerId(newHostPeerId);
+      storeActions.setHostPeerId(hostPID);
     }
 
     // Try to join as new player
     try {
-      await peerRoutines.join(hostPeerId, secretKey, name);
+      await peerRoutines.join(hostPID, secretKey, name);
       setLocation("/lobby");
     } catch (e) {
       if (e.name === NAME_TAKEN_ERROR) {
@@ -50,9 +50,8 @@ function Join() {
       } else {
         errorLog(e);
       }
+      setIsConnecting(false);
     }
-
-    setIsConnecting(false);
   };
 
   // Render
