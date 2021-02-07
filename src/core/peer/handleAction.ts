@@ -30,7 +30,6 @@ const handleAction = (
       storeActions.mapPlayerIdPeerId(newPlayer.id, peerId);
 
       respond({ playerId: newPlayer.id });
-
       break;
 
     case PeerAction.RECONNECT:
@@ -44,24 +43,28 @@ const handleAction = (
 
       storeActions.mapPlayerIdPeerId(playerId, peerId);
 
+      respond();
       break;
 
     case PeerAction.PULL_SHARED:
-      peerActions.pushShared(peerId, getShared());
+      respond({ sharedState: getShared() });
       break;
 
     case PeerAction.PUSH_SHARED:
       // Update shared store with new data
       setShared(payload);
+      respond();
       break;
 
     case PeerAction.PUSH_PRIVATE:
       // Update private store with new data
       setPrivate(payload);
+      respond();
       break;
 
     case PeerAction.END_GAME:
       storeActions.resetStores();
+      respond();
       break;
 
     default:
