@@ -7,15 +7,17 @@ import {
   PinInput,
   PinInputField,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
 
 type PropTypes = {
-  isSubmitting?: boolean;
-  onSubmit?: (roomCode: string, name: string) => void;
+  isSubmitting: boolean;
+  nameTakenError: boolean;
+  onSubmit: (roomCode: string, name: string) => void;
 };
 
-function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
+function JoinForm({ isSubmitting, nameTakenError, onSubmit }: PropTypes) {
   // State
   const nameInput = useRef<HTMLInputElement>(null);
   const [roomCode, setRoomCode] = useState("");
@@ -48,6 +50,7 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
               value={roomCode}
               onChange={handleRoomCodeChange}
               onComplete={handleRoomCodeComplete}
+              isDisabled={nameTakenError}
             >
               <PinInputField />
               <PinInputField />
@@ -61,6 +64,8 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
           <FormLabel>Name:</FormLabel>
           <Input
             placeholder="Name"
+            isInvalid={nameTakenError}
+            errorBorderColor="crimson"
             value={name}
             onChange={e => setName(e.target.value)}
             autoComplete="off"
@@ -68,6 +73,11 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
             key="name"
             ref={nameInput}
           />
+          {nameTakenError && (
+            <Text fontSize="sm" color="crimson">
+              This name is already taken.
+            </Text>
+          )}
         </FormControl>
       </Stack>
 
@@ -78,6 +88,7 @@ function JoinForm({ isSubmitting = false, onSubmit }: PropTypes) {
         isLoading={isSubmitting}
         loadingText="Connecting"
         variant={isSubmitting ? "outline" : "solid"}
+        isDisabled={name.length < 3}
       >
         Connect
       </Button>
