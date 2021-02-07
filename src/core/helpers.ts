@@ -1,3 +1,5 @@
+import GeneralError from "./error/GeneralError";
+
 export const diff = <T>(newState: T, oldState: T): Partial<T> => {
   const stateChanges: Partial<T> = {};
 
@@ -11,3 +13,5 @@ export const diff = <T>(newState: T, oldState: T): Partial<T> => {
 
   return stateChanges;
 };
+
+export const errorLog = (e: GeneralError) => console.error(e);

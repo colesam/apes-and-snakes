@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { Redirect } from "wouter";
 import peerActions from "../../core/peer/peerActions";
-import { useSharedStore } from "../../core/store/sharedStore";
+import { setShared, useSharedStore } from "../../core/store/sharedStore";
 import { usePrivateStore } from "../../core/store/privateStore";
 import generateId from "../../core/generateId";
 import ReconnectForm from "../forms/ReconnectForm";
 import { namespace } from "../../config";
 import storeActions from "../../core/store/storeActions";
 import shallow from "zustand/shallow";
+import { errorLog } from "../../core/helpers";
 
 function Reconnect() {
   // State
@@ -38,10 +39,14 @@ function Reconnect() {
         PeerConnectionManager.connect(hostPeerId)
           .then(() => {
             storeActions.setHostPeerId(hostPeerId);
-            storeActions.setRoomCode(roomCode);
 
-            peerActions.reconnect(hostPeerId, secretKey);
-            peerActions.pullShared(hostPeerId);
+            peerActions.reconnect(hostPeerId, secretKey).catch(errorLog);
+
+            // This sets the room code
+            peerActions
+              .pullShared(hostPeerId)
+              .then(({ sharedState }) => setShared(sharedState))
+              .catch(errorLog);
           })
           .catch(err => console.error(err))
           .finally(() => setIsConnecting(false));
