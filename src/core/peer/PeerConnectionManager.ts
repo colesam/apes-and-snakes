@@ -1,10 +1,8 @@
 import Peer, { DataConnection } from "peerjs";
 import { Map, List } from "immutable";
-// @ts-ignore
-import { serialize } from "json-immutable/lib/serialize";
-// @ts-ignore
-import { deserialize } from "json-immutable/lib/deserialize";
-import recordTypes from "../store/types/recordTypes";
+import MessageHandler from "./MessageHandler";
+import handleAction from "./handleAction";
+import GeneralError from "../error/GeneralError";
 
 export default class PeerConnectionManager {
   /**
@@ -18,16 +16,12 @@ export default class PeerConnectionManager {
   static peers = Map<string, Peer.DataConnection>();
 
   /**
-   * List of functions that are called when data is received.
-   * @private
-   */
-  private static _dataHandlers = List<(peerId: string, data: any) => void>();
-
-  /**
    * List of functions that are called when new peer connection is received.
    * @private
    */
   private static _connectionHandlers = List<(conn: DataConnection) => void>();
+
+  private static _messageHandler = new MessageHandler();
 
   static register(peerId?: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -72,21 +66,36 @@ export default class PeerConnectionManager {
     }
   }
 
-  static send(peerId: string, payload: any) {
-    if (!PeerConnectionManager.peers.has(peerId)) {
+  static async send(peerId: string, payload: any): Promise<any> {
+    const peerConn = PeerConnectionManager.peers.get(peerId);
+
+    if (!peerConn) {
       throw new Error(
         `Cannot send message to ${peerId}, no connection exists.`
       );
     }
-    console.log(`[DEBUG] Sending payload: `);
-    console.log(serialize(payload));
-    PeerConnectionManager.peers.get(peerId)!.send(serialize(payload));
+
+    const res = await PeerConnectionManager._messageHandler.send(
+      peerConn,
+      payload
+    );
+
+    if (!res.success) {
+      console.log(`[DEBUG] Response:`);
+      console.log(res);
+      const { name, message } = res.error;
+      throw new GeneralError(message, name);
+    }
+
+    return res.payload;
   }
 
-  static broadcast(payload: any) {
+  static broadcast(payload: any): Promise<any>[] {
+    const res = [];
     for (const peerId of PeerConnectionManager.peers.keys()) {
-      PeerConnectionManager.send(peerId, payload);
+      res.push(PeerConnectionManager.send(peerId, payload));
     }
+    return res;
   }
 
   private static _establishConnection(peerId: string): Promise<void> {
@@ -108,7 +117,7 @@ export default class PeerConnectionManager {
           console.log(`[DEBUG] Peer connection opened to: ${peerId}`);
 
           peerConn.on("data", data =>
-            PeerConnectionManager._handleReceiveData(peerId, data)
+            PeerConnectionManager._handleReceiveData(peerConn, data)
           );
 
           PeerConnectionManager.peers = PeerConnectionManager.peers.set(
@@ -128,12 +137,6 @@ export default class PeerConnectionManager {
   }
 
   // Event handlers
-  static onReceiveData(fn: (peerId: string, data: any) => void) {
-    PeerConnectionManager._dataHandlers = PeerConnectionManager._dataHandlers.push(
-      fn
-    );
-  }
-
   static onReceiveConnection(
     fn: (dataConnection: Peer.DataConnection) => void
   ) {
@@ -142,13 +145,36 @@ export default class PeerConnectionManager {
     );
   }
 
-  private static _handleReceiveData(peerId: string, data: any) {
-    console.log(`[DEBUG] Received data: ${data}`);
-    console.log(`[DEBUG] From peer: ${peerId}`);
-
-    PeerConnectionManager._dataHandlers.forEach(fn => {
-      fn(peerId, deserialize(data, { recordTypes }));
-    });
+  private static _handleReceiveData(conn: Peer.DataConnection, data: any) {
+    const request = this._messageHandler.handleMessage(conn, data);
+    if (request) {
+      const { messageId, action, payload } = request;
+      // Route to action
+      const respond = (payload?: any) => {
+        this._messageHandler.respond(
+          conn,
+          {
+            action,
+            success: true,
+            error: null,
+            payload,
+          },
+          messageId
+        );
+      };
+      const error = (error: GeneralError) => {
+        this._messageHandler.respond(
+          conn,
+          {
+            action,
+            success: false,
+            error: error.toJSON(), // json-immutable doesn't seem to handle this automatically
+          },
+          messageId
+        );
+      };
+      handleAction(action, conn.peer, payload, respond, error);
+    }
   }
 
   private static _handleReceiveConnection(conn: DataConnection) {
@@ -160,7 +186,7 @@ export default class PeerConnectionManager {
     );
 
     conn.on("data", data =>
-      PeerConnectionManager._handleReceiveData(conn.peer, data)
+      PeerConnectionManager._handleReceiveData(conn, data)
     );
 
     PeerConnectionManager._connectionHandlers.forEach(fn => {

@@ -3,12 +3,10 @@ import {
   FormControl,
   FormLabel,
   HStack,
-  Input,
   PinInput,
   PinInputField,
-  Stack,
 } from "@chakra-ui/react";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 type PropTypes = {
   initialRoomCode: string;
