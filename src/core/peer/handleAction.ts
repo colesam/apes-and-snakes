@@ -1,4 +1,4 @@
-import { PeerAction } from "./peerActions";
+import { PeerAction } from "./types/PeerAction";
 import { getShared, setShared } from "../store/sharedStore";
 import storeActions from "../store/storeActions";
 import { setPrivate } from "../store/privateStore";
