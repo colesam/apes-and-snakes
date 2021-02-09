@@ -45,7 +45,7 @@ function Reconnect() {
             // This sets the room code
             peerActions
               .pullShared(hostPeerId)
-              .then(({ sharedState }) => setShared(sharedState))
+              .then(sharedState => setShared(sharedState))
               .catch(errorLog);
           })
           .catch(err => console.error(err))
