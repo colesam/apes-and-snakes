@@ -4,6 +4,7 @@ import initStorage from "../localStorage";
 import generateId from "../generateId";
 import { Map } from "immutable";
 import { diff } from "../helpers";
+import { RPlayerConnection } from "./types/PlayerConnection";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -15,8 +16,7 @@ export type PrivateState = {
   // Host state
   isHost: boolean;
   secretKeyPlayerIdMap: Map<string, string>;
-  playerIdPeerIdMap: Map<string, string>;
-  playerIdLastPingMap: Map<string, Date>;
+  playerConnections: Map<string, RPlayerConnection>;
 
   // Player state
   hostPeerId: string;
@@ -30,8 +30,7 @@ const privateState = {
   // Host state
   isHost: false,
   secretKeyPlayerIdMap: Map<string, string>(),
-  playerIdPeerIdMap: Map<string, string>(),
-  playerIdLastPingMap: Map<string, Date>(),
+  playerConnections: Map<string, RPlayerConnection>(),
 
   // Player state
   hostPeerId: "",
@@ -62,12 +61,7 @@ for (const key in privateState) {
 setPrivate(initialStorageState);
 
 // Set up local storage persistance
-const exclude = [
-  "pingIntervalId",
-  "hostPeerId",
-  "playerIdPeerIdMap",
-  "playerIdLastPingMap",
-];
+const exclude = ["pingIntervalId", "hostPeerId", "playerConnections"];
 usePrivateStore.subscribe((newState, oldState) => {
   const stateChanges = diff(newState, oldState);
   for (const [key, value] of Object.entries(stateChanges)) {
@@ -76,3 +70,10 @@ usePrivateStore.subscribe((newState, oldState) => {
     }
   }
 });
+
+setInterval(() => {
+  if (getPrivate().isHost) {
+    // Query store for last ping
+    // Update connection status
+  }
+}, 500);

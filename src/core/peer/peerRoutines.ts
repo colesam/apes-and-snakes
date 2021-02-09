@@ -22,7 +22,7 @@ const peerRoutines = {
   },
 
   pullShared: async (hostPeerId: string) => {
-    const { sharedState } = await peerActions.pullShared(hostPeerId);
+    const sharedState = await peerActions.pullShared(hostPeerId);
     setShared(sharedState);
   },
 

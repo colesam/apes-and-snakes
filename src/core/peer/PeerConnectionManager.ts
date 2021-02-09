@@ -173,7 +173,7 @@ export default class PeerConnectionManager {
           messageId
         );
       };
-      handleAction(action, conn.peer, payload, respond, error);
+      handleAction(action, { peerId: conn.peer, payload, respond, error });
     }
   }
 

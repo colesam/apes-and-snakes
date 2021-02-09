@@ -2,6 +2,7 @@ import { getPrivate, resetPrivateStore, setPrivate } from "./privateStore";
 import { getShared, resetSharedStore, setShared } from "./sharedStore";
 import { RPlayer } from "./types/Player";
 import { Map } from "immutable";
+import { PlayerConnection, TPlayerConnection } from "./types/PlayerConnection";
 
 // Rule: actions may only call store methods, or other actions
 const storeActions = {
@@ -31,19 +32,14 @@ const storeActions = {
     });
   },
 
-  mapPlayerIdPeerId: (playerId: string, peerId: string) => {
-    const { playerIdPeerIdMap } = getPrivate();
+  setPlayerConnection: (
+    playerId: string,
+    updates: Partial<TPlayerConnection> = { playerId }
+  ) => {
+    const { playerConnections } = getPrivate();
+    const conn = playerConnections.get(playerId) || PlayerConnection();
     setPrivate({
-      playerIdPeerIdMap: playerIdPeerIdMap.set(playerId, peerId),
-    });
-  },
-
-  updateLastPing: (playerId: string) => {
-    setPrivate({
-      playerIdLastPingMap: getPrivate().playerIdLastPingMap.set(
-        playerId,
-        new Date()
-      ),
+      playerConnections: playerConnections.set(playerId, conn.merge(updates)),
     });
   },
 
