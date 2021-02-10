@@ -8,6 +8,7 @@ import Rehost from "./pages/Rehost";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
 import Reconnect from "./pages/Reconnect";
+import Test from "./pages/Test";
 
 const AppContainer = styled.div`
   background-color: #282c34;
@@ -41,6 +42,10 @@ function App() {
 
         <Route path="/lobby">
           <Lobby />
+        </Route>
+
+        <Route path="/test">
+          <Test />
         </Route>
 
         <Route path="/">
