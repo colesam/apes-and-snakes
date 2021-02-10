@@ -4,6 +4,7 @@ import initStorage from "../localStorage";
 import generateId from "../generateId";
 import { Map } from "immutable";
 import { diff } from "../helpers";
+import { RPlayerConnection } from "./types/PlayerConnection";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -15,12 +16,13 @@ export type PrivateState = {
   // Host state
   isHost: boolean;
   secretKeyPlayerIdMap: Map<string, string>;
-  playerIdPeerIdMap: Map<string, string>;
+  playerConnections: Map<string, RPlayerConnection>;
 
   // Player state
   hostPeerId: string;
   previousRoomCode: string;
   playerId: string;
+  pingIntervalId: NodeJS.Timeout | null;
   secretKey: string;
 };
 
@@ -28,16 +30,18 @@ const privateState = {
   // Host state
   isHost: false,
   secretKeyPlayerIdMap: Map<string, string>(),
-  playerIdPeerIdMap: Map<string, string>(),
+  playerConnections: Map<string, RPlayerConnection>(),
 
   // Player state
   hostPeerId: "",
   previousRoomCode: "",
   playerId: "",
+  pingIntervalId: null,
   secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
 };
 
 export const usePrivateStore = create<PrivateState>(
+  // @ts-ignore See: https://github.com/microsoft/TypeScript/issues/19360
   devtools(() => privateState, "Private Store")
 );
 
@@ -57,9 +61,12 @@ for (const key in privateState) {
 setPrivate(initialStorageState);
 
 // Set up local storage persistance
+const exclude = ["pingIntervalId", "hostPeerId", "playerConnections"];
 usePrivateStore.subscribe((newState, oldState) => {
   const stateChanges = diff(newState, oldState);
   for (const [key, value] of Object.entries(stateChanges)) {
-    storageSet(key, value);
+    if (!exclude.includes(key)) {
+      storageSet(key, value);
+    }
   }
 });

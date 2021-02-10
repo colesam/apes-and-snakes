@@ -81,8 +81,6 @@ export default class PeerConnectionManager {
     );
 
     if (!res.success) {
-      console.log(`[DEBUG] Response:`);
-      console.log(res);
       const { name, message } = res.error;
       throw new GeneralError(message, name);
     }
@@ -173,7 +171,7 @@ export default class PeerConnectionManager {
           messageId
         );
       };
-      handleAction(action, conn.peer, payload, respond, error);
+      handleAction(action, { peerId: conn.peer, payload, respond, error });
     }
   }
 

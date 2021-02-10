@@ -1,25 +1,13 @@
 import PeerConnectionManager from "./PeerConnectionManager";
 import { SharedState } from "../store/sharedStore";
 import { PrivateState } from "../store/privateStore";
-
+import { PeerAction } from "./types/PeerAction";
 const { send, broadcast } = PeerConnectionManager;
 
-export enum PeerAction {
-  PING = "PING",
-  PONG = "PONG",
-  JOIN = "JOIN",
-  RECONNECT = "RECONNECT",
-  PUSH_SHARED = "PUSH_SHARED",
-  PULL_SHARED = "PULL_SHARED",
-  PUSH_PRIVATE = "PUSH_PRIVATE",
-  END_GAME = "END_GAME",
-}
-
-// NOTE: Peer actions send only, do not update store or state
+// Rule: Actions may only call the send or broadcast methods
 const peerActions = {
-  ping: (peerId: string) => send(peerId, { action: PeerAction.PING }),
-
-  pong: (peerId: string) => send(peerId, { action: PeerAction.PONG }),
+  ping: (peerId: string, secretKey: string, playerId: string) =>
+    send(peerId, { action: PeerAction.PING, payload: { secretKey, playerId } }),
 
   join: (peerId: string, secretKey: string, playerName: string) =>
     send(peerId, {
