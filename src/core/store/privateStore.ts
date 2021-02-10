@@ -70,10 +70,3 @@ usePrivateStore.subscribe((newState, oldState) => {
     }
   }
 });
-
-setInterval(() => {
-  if (getPrivate().isHost) {
-    // Query store for last ping
-    // Update connection status
-  }
-}, 500);
