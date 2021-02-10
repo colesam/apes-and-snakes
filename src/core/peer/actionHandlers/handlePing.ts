@@ -1,7 +1,6 @@
 import storeActions from "../../store/storeActions";
 import { TActionHandlerProps } from "../handleAction";
 import NotAuthorizedError from "../../error/NotAuthorizedError";
-import { ConnectionStatus } from "../../store/types/PlayerConnection";
 
 const handlePing = ({
   peerId,
@@ -18,7 +17,6 @@ const handlePing = ({
 
   storeActions.setPlayerConnection(payload.playerId, {
     lastPing: new Date(),
-    connectionStatus: ConnectionStatus.CONNECTED,
   });
 
   return respond();
