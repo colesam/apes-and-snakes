@@ -4,8 +4,9 @@ import generateId from "../../generateId";
 import { Player } from "../../store/types/Player";
 import storeActions from "../../store/storeActions";
 import { TActionHandlerProps } from "../handleAction";
+import { ConnectionStatus } from "../../store/types/ConnectionStatus";
 
-const handleJoin = ({payload, respond, error}: TActionHandlerProps) => {
+const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
   const { players } = getShared();
   const playerName = payload.playerName.trim();
 
@@ -16,6 +17,7 @@ const handleJoin = ({payload, respond, error}: TActionHandlerProps) => {
   const newPlayer = Player({
     id: playerId,
     name: payload.playerName,
+    connectionStatus: ConnectionStatus.CONNECTING,
   });
 
   storeActions.pushPlayer(newPlayer);

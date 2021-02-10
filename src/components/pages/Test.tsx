@@ -1,34 +1,23 @@
 import React from "react";
-import {
-  Alert,
-  Divider,
-  Stack,
-  Text,
-  List,
-  ListItem,
-  Button,
-  Box,
-} from "@chakra-ui/react";
-import { useSharedStore } from "../../core/store/sharedStore";
-import { Redirect } from "wouter";
-import shallow from "zustand/shallow";
-import { usePrivateStore } from "../../core/store/privateStore";
 import peerActions from "../../core/peer/peerActions";
 import storeActions from "../../core/store/storeActions";
+import {
+  Alert,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  Stack,
+  Text,
+  Box,
+} from "@chakra-ui/react";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
+import { players } from "../../core/store/mockData/players";
 
-function Lobby() {
-  // State
-  const isHost = usePrivateStore(s => s.isHost);
-  const [roomCode, players] = useSharedStore(
-    s => [s.roomCode, s.players],
-    shallow
-  );
-
-  // Redirects
-  if (!roomCode) {
-    return <Redirect to="/" />;
-  }
+function Test() {
+  // Mock data
+  const isHost = true;
+  const roomCode = "TEST";
 
   // Handlers
   const handleEndGame = () => {
@@ -79,4 +68,4 @@ function Lobby() {
   );
 }
 
-export default Lobby;
+export default Test;
