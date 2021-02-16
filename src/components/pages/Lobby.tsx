@@ -13,9 +13,8 @@ import { useSharedStore } from "../../core/store/sharedStore";
 import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
 import { usePrivateStore } from "../../core/store/privateStore";
-import peerActions from "../../core/peer/peerActions";
-import storeActions from "../../core/store/storeActions";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
+import peerRoutines from "../../core/peer/peerRoutines";
 
 function Lobby() {
   // State
@@ -32,23 +31,24 @@ function Lobby() {
 
   // Handlers
   const handleEndGame = () => {
-    peerActions.endGame();
-    storeActions.resetStores();
+    if (isHost) {
+      peerRoutines.endGame();
+    }
   };
 
   // Computed
   const playerElems = players.map(player => (
     <ListItem
       display="flex"
-      justifyContent="space-between"
+      justifyContent="flex-start"
       alignItems="center"
       key={player.id}
     >
-      <Text>{player.name}</Text>
       <PlayerConnectionStatus
         connectionStatus={player.connectionStatus}
-        boxSize={6}
+        mr={4}
       />
+      <Text>{player.name}</Text>
     </ListItem>
   ));
 

@@ -1,11 +1,11 @@
 import { PeerAction } from "./types/PeerAction";
 import { getShared, setShared } from "../store/sharedStore";
-import storeActions from "../store/storeActions";
 import { setPrivate } from "../store/privateStore";
 import GeneralError from "../error/GeneralError";
 import handleJoin from "./actionHandlers/handleJoin";
 import handlePing from "./actionHandlers/handlePing";
 import handleReconnect from "./actionHandlers/handleReconnect";
+import handleEndGame from "./actionHandlers/handleEndGame";
 
 export interface TActionHandlerProps {
   peerId: string;
@@ -23,6 +23,8 @@ const actionHandlerMap: { [key in PeerAction]: TActionHandler } = {
 
   [PeerAction.RECONNECT]: handleReconnect,
 
+  [PeerAction.END_GAME]: handleEndGame,
+
   [PeerAction.PULL_SHARED]: ({ respond }) => respond(getShared()),
 
   [PeerAction.PUSH_SHARED]: ({ payload, respond }) => {
@@ -32,11 +34,6 @@ const actionHandlerMap: { [key in PeerAction]: TActionHandler } = {
 
   [PeerAction.PUSH_PRIVATE]: ({ payload, respond }) => {
     setPrivate(payload);
-    respond();
-  },
-
-  [PeerAction.END_GAME]: ({ respond }) => {
-    storeActions.resetStores();
     respond();
   },
 };

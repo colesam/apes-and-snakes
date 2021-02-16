@@ -6,6 +6,7 @@ import { Map } from "immutable";
 import Peer from "peerjs";
 import { nanoid } from "nanoid";
 import recordTypes from "../store/types/recordTypes";
+import TimeoutError from "../error/TimeoutError";
 
 export default class MessageHandler {
   constructor(public timeout: number = 10000) {}
@@ -20,14 +21,7 @@ export default class MessageHandler {
 
       this._messageResolvers = this._messageResolvers.set(messageId, resolve);
 
-      setTimeout(
-        () =>
-          reject({
-            message: `Message was sent but no response was received after ${this.timeout}ms`,
-            code: "TIMEOUT",
-          }),
-        this.timeout
-      );
+      setTimeout(() => reject(new TimeoutError(this.timeout)), this.timeout);
     });
   }
 

@@ -2,6 +2,8 @@ import peerActions from "./peerActions";
 import { getPrivate, setPrivate } from "../store/privateStore";
 import { setShared } from "../store/sharedStore";
 import { pingInterval } from "../../config";
+import storeActions from "../store/storeActions";
+import PeerConnectionManager from "./PeerConnectionManager";
 
 // Peer routines are like actions, but can compose multiple together and update store
 const peerRoutines = {
@@ -34,12 +36,20 @@ const peerRoutines = {
     setPrivate({ pingIntervalId });
   },
 
-  removePing() {
+  clearPing() {
     const { pingIntervalId } = getPrivate();
     if (pingIntervalId) {
       clearInterval(pingIntervalId);
       setPrivate({ pingIntervalId: null });
     }
+  },
+
+  // Host routines
+
+  endGame() {
+    peerActions.endGame();
+    storeActions.resetStores();
+    PeerConnectionManager.clearConnections();
   },
 };
 

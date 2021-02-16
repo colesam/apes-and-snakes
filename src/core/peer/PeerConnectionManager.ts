@@ -3,6 +3,8 @@ import { Map, List } from "immutable";
 import MessageHandler from "./MessageHandler";
 import handleAction from "./handleAction";
 import GeneralError from "../error/GeneralError";
+import { TIMEOUT_ERROR } from "../error/TimeoutError";
+import TimeoutError from "../error/TimeoutError";
 
 export default class PeerConnectionManager {
   /**
@@ -53,7 +55,7 @@ export default class PeerConnectionManager {
         await PeerConnectionManager._establishConnection(peerId);
         break;
       } catch (e) {
-        if (e === "Timeout" && attempt <= 3) {
+        if (e.name === TIMEOUT_ERROR && attempt <= 3) {
           attempt++;
         } else {
           throw e;
@@ -88,12 +90,18 @@ export default class PeerConnectionManager {
     return res.payload;
   }
 
-  static broadcast(payload: any): Promise<any>[] {
+  static broadcast(payload: any): Promise<PromiseSettledResult<any>[]> {
     const res = [];
+
     for (const peerId of PeerConnectionManager.peers.keys()) {
       res.push(PeerConnectionManager.send(peerId, payload));
     }
-    return res;
+
+    return Promise.allSettled(res);
+  }
+
+  static clearConnections() {
+    PeerConnectionManager.peers = Map();
   }
 
   private static _establishConnection(peerId: string): Promise<void> {
@@ -105,7 +113,7 @@ export default class PeerConnectionManager {
 
       const peerConn = PeerConnectionManager.conn.connect(peerId);
       const timeoutId = setTimeout(() => {
-        reject("Timeout");
+        reject(new TimeoutError(5000));
       }, 5000);
 
       peerConn.on("open", () => {
