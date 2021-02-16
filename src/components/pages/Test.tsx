@@ -29,15 +29,15 @@ function Test() {
   const playerElems = players.map(player => (
     <ListItem
       display="flex"
-      justifyContent="space-between"
+      justifyContent="flex-start"
       alignItems="center"
       key={player.id}
     >
-      <Text>{player.name}</Text>
       <PlayerConnectionStatus
         connectionStatus={player.connectionStatus}
-        boxSize={6}
+        mr={4}
       />
+      <Text>{player.name}</Text>
     </ListItem>
   ));
 

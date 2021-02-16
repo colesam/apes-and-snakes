@@ -16,7 +16,7 @@ export const players = List([
   Player({
     id: "1235",
     name: "Samwise Cole",
-    connectionStatus: ConnectionStatus.CONNECTING,
+    connectionStatus: ConnectionStatus.CONNECTED,
   }),
   Player({
     id: "1236",

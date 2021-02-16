@@ -1,22 +1,36 @@
 import React from "react";
 import { ConnectionStatus } from "../../core/store/types/ConnectionStatus";
-import { CheckIcon, WarningTwoIcon } from "@chakra-ui/icons";
-import { LayoutProps, Spinner } from "@chakra-ui/react";
+import { CheckCircleIcon, WarningTwoIcon } from "@chakra-ui/icons";
+import { LayoutProps, SpaceProps } from "@chakra-ui/react";
 
-interface PropTypes extends LayoutProps {
+interface PropTypes extends LayoutProps, SpaceProps {
   connectionStatus: ConnectionStatus;
 }
 
-function PlayerConnectionStatus({ connectionStatus, ...props }: PropTypes) {
+function PlayerConnectionStatus({
+  connectionStatus,
+  boxSize = 4,
+  ...props
+}: PropTypes) {
   switch (connectionStatus) {
     case ConnectionStatus.CONNECTED:
-      return <CheckIcon color="green.500" {...props} />;
-    case ConnectionStatus.CONNECTING:
-      return <Spinner color="blue.500" thickness="3px" {...props} />;
+      return (
+        <span title="Player is connected.">
+          <CheckCircleIcon color="green.500" boxSize={boxSize} {...props} />
+        </span>
+      );
     case ConnectionStatus.UNRESPONSIVE:
-      return <WarningTwoIcon color="yellow.500" {...props} />;
+      return (
+        <span title="Player is unresponsive.">
+          <WarningTwoIcon color="yellow.500" boxSize={boxSize} {...props} />
+        </span>
+      );
     case ConnectionStatus.CONNECTION_LOST:
-      return <WarningTwoIcon color="crimson" {...props} />;
+      return (
+        <span title="Player has lost connection.">
+          <WarningTwoIcon color="crimson" boxSize={boxSize} {...props} />
+        </span>
+      );
     default:
       return null;
   }
