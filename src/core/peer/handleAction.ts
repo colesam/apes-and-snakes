@@ -1,4 +1,4 @@
-import { PeerAction } from "./types/PeerAction";
+import { TPeerAction } from "./types/TPeerAction";
 import { getShared, setShared } from "../store/sharedStore";
 import { setPrivate } from "../store/privateStore";
 import GeneralError from "../error/GeneralError";
@@ -16,30 +16,33 @@ export interface TActionHandlerProps {
 
 type TActionHandler = (props: TActionHandlerProps) => void;
 
-const actionHandlerMap: { [key in PeerAction]: TActionHandler } = {
-  [PeerAction.PING]: handlePing,
+const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
+  [TPeerAction.PING]: handlePing,
 
-  [PeerAction.JOIN]: handleJoin,
+  [TPeerAction.JOIN]: handleJoin,
 
-  [PeerAction.RECONNECT]: handleReconnect,
+  [TPeerAction.RECONNECT]: handleReconnect,
 
-  [PeerAction.END_GAME]: handleEndGame,
+  [TPeerAction.END_GAME]: handleEndGame,
 
-  [PeerAction.PULL_SHARED]: ({ respond }) => respond(getShared()),
+  [TPeerAction.PULL_SHARED]: ({ respond }) => respond(getShared()),
 
-  [PeerAction.PUSH_SHARED]: ({ payload, respond }) => {
+  [TPeerAction.PUSH_SHARED]: ({ payload, respond }) => {
     setShared(payload);
     respond();
   },
 
-  [PeerAction.PUSH_PRIVATE]: ({ payload, respond }) => {
+  [TPeerAction.PUSH_PRIVATE]: ({ payload, respond }) => {
     setPrivate(payload);
     respond();
   },
 };
 
 // Performs actions on the store in response to received peerActions
-const handleAction = (action: PeerAction, actionProps: TActionHandlerProps) => {
+const handleAction = (
+  action: TPeerAction,
+  actionProps: TActionHandlerProps
+) => {
   if (!actionHandlerMap.hasOwnProperty(action)) {
     console.error(`Unknown peer data action: ${action}`);
   } else {

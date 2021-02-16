@@ -4,7 +4,7 @@ import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
 import { useLocation } from "wouter";
-import storeActions from "../../core/store/storeActions";
+import { StoreAction } from "../../core/store/StoreAction";
 
 function Rehost() {
   // State
@@ -15,7 +15,7 @@ function Rehost() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
       .then(() => {
-        storeActions.hostGame(newRoomCode, false);
+        StoreAction.hostGame(newRoomCode, false);
         setLocation("/lobby");
       })
       .catch(err => console.error(err));

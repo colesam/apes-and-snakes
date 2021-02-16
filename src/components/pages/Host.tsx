@@ -5,7 +5,7 @@ import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
 import { Redirect } from "wouter";
 import { useSharedStore } from "../../core/store/sharedStore";
-import storeActions from "../../core/store/storeActions";
+import { StoreAction } from "../../core/store/StoreAction";
 
 function Host() {
   // State
@@ -16,7 +16,7 @@ function Host() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
       .then(() => {
-        storeActions.hostGame(newRoomCode);
+        StoreAction.hostGame(newRoomCode);
       })
       .catch(err => console.error(err));
   }, []);

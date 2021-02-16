@@ -5,11 +5,11 @@ import { namespace } from "../../config";
 import { useLocation } from "wouter";
 import { usePrivateStore } from "../../core/store/privateStore";
 import generateId from "../../core/generateId";
-import storeActions from "../../core/store/storeActions";
+import { StoreAction } from "../../core/store/StoreAction";
 import { NAME_TAKEN_ERROR } from "../../core/error/NameTakenError";
 import { errorLog } from "../../core/helpers";
 import shallow from "zustand/shallow";
-import peerRoutines from "../../core/peer/peerRoutines";
+import { PeerRoutine } from "../../core/peer/PeerRoutine";
 
 function Join() {
   // Hooks
@@ -37,12 +37,12 @@ function Join() {
         errorLog(e);
       }
 
-      storeActions.setHostPeerId(hostPID);
+      StoreAction.setHostPeerId(hostPID);
     }
 
     // Try to join as new player
     try {
-      await peerRoutines.join(hostPID, secretKey, name);
+      await PeerRoutine.join(hostPID, secretKey, name);
       setLocation("/lobby");
     } catch (e) {
       if (e.name === NAME_TAKEN_ERROR) {

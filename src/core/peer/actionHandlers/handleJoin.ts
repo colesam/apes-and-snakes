@@ -2,7 +2,7 @@ import { getShared } from "../../store/sharedStore";
 import NameTakenError from "../../error/NameTakenError";
 import generateId from "../../generateId";
 import { Player } from "../../store/types/Player";
-import storeActions from "../../store/storeActions";
+import { StoreAction } from "../../store/StoreAction";
 import { TActionHandlerProps } from "../handleAction";
 
 const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
@@ -18,9 +18,9 @@ const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
     name: payload.playerName,
   });
 
-  storeActions.pushPlayer(newPlayer);
-  storeActions.mapSecretKeyPlayerId(payload.secretKey, playerId);
-  storeActions.setPlayerConnection(playerId);
+  StoreAction.pushPlayer(newPlayer);
+  StoreAction.mapSecretKeyToPlayerId(payload.secretKey, playerId);
+  StoreAction.setPlayerConnection(playerId);
 
   return respond({ playerId });
 };

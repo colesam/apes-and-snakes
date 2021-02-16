@@ -1,6 +1,6 @@
 import React from "react";
-import peerActions from "../../core/peer/peerActions";
-import storeActions from "../../core/store/storeActions";
+import { PeerAction } from "../../core/peer/PeerAction";
+import { StoreAction } from "../../core/store/StoreAction";
 import {
   Alert,
   Button,
@@ -21,8 +21,8 @@ function Test() {
 
   // Handlers
   const handleEndGame = () => {
-    peerActions.endGame();
-    storeActions.resetStores();
+    PeerAction.endGame();
+    StoreAction.resetStores();
   };
 
   // Computed

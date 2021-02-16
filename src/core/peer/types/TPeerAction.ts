@@ -1,4 +1,4 @@
-export enum PeerAction {
+export enum TPeerAction {
   PING = "PING",
   JOIN = "JOIN",
   RECONNECT = "RECONNECT",

@@ -15,7 +15,7 @@ const makeGetPrivate = (opts = {}) => () => ({
   ...opts,
 });
 
-const makeStoreActions = (opts = {}) => ({
+const makeStoreAction = (opts = {}) => ({
   setPlayerConnection: jest.fn(),
   ...opts,
 });
@@ -25,10 +25,10 @@ beforeEach(() => {
   callHandleReconnect = ({
     params = makeParams(),
     getPrivate = makeGetPrivate(),
-    storeActions = makeStoreActions(),
+    StoreAction = makeStoreAction(),
   }) => {
     // noinspection JSCheckFunctionSignatures
-    const handleReconnect = makeHandleReconnect(getPrivate, storeActions);
+    const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);
     return handleReconnect(params);
   };
 });
@@ -43,11 +43,11 @@ test("responds if secret key is found", () => {
 
 test("updates player's peer id if secret key is found", () => {
   const params = makeParams();
-  const storeActions = makeStoreActions();
+  const StoreAction = makeStoreAction();
 
-  callHandleReconnect({ params, storeActions });
+  callHandleReconnect({ params, StoreAction });
 
-  const { mock } = storeActions.setPlayerConnection;
+  const { mock } = StoreAction.setPlayerConnection;
   expect(mock.calls.length).toBe(1);
 
   const [playerId, { peerId }] = mock.calls[0];

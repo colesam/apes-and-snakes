@@ -4,7 +4,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPrivate } from "./privateStore";
 import initStorage from "../localStorage";
-import peerActions from "../peer/peerActions";
+import { PeerAction } from "../peer/PeerAction";
 import { diff } from "../helpers";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
@@ -55,6 +55,6 @@ useSharedStore.subscribe((newState, oldState) => {
 useSharedStore.subscribe((newState, oldState) => {
   if (getPrivate().isHost) {
     const stateChanges = diff(newState, oldState);
-    peerActions.broadcastShared(stateChanges);
+    PeerAction.broadcastShared(stateChanges);
   }
 });

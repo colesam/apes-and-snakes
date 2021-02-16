@@ -1,4 +1,4 @@
-import storeActions from "../../store/storeActions";
+import { StoreAction } from "../../store/StoreAction";
 import { TActionHandlerProps } from "../handleAction";
 import NotAuthorizedError from "../../error/NotAuthorizedError";
 
@@ -11,11 +11,11 @@ const handlePing = ({
   console.log(`[DEBUG] Received PING from: ${peerId}`);
 
   // TODO: Turn this into a middleware
-  if (!storeActions.authPlayerAction(payload.secretKey, payload.playerId)) {
+  if (!StoreAction.authPlayerAction(payload.secretKey, payload.playerId)) {
     return error(new NotAuthorizedError(payload.playerId));
   }
 
-  storeActions.setPlayerConnection(payload.playerId, {
+  StoreAction.setPlayerConnection(payload.playerId, {
     lastPing: new Date(),
   });
 

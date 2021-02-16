@@ -1,13 +1,13 @@
-import storeActions from "../../store/storeActions";
+import { StoreAction } from "../../store/StoreAction";
 import { TActionHandlerProps } from "../handleAction";
 import { getPrivate } from "../../store/privateStore";
 import GeneralError from "../../error/GeneralError";
 
 export const makeHandleReconnect = (
-  getPrivateMock: typeof getPrivate,
-  storeActionsMock: typeof storeActions
+  _getPrivate: typeof getPrivate,
+  _StoreAction: typeof StoreAction
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
-  const { secretKeyPlayerIdMap } = getPrivateMock();
+  const { secretKeyPlayerIdMap } = _getPrivate();
 
   const playerId = secretKeyPlayerIdMap.get(payload.secretKey);
 
@@ -17,11 +17,11 @@ export const makeHandleReconnect = (
     );
   }
 
-  storeActionsMock.setPlayerConnection(playerId, { peerId });
+  _StoreAction.setPlayerConnection(playerId, { peerId });
 
   return respond();
 };
 
-const handleReconnect = makeHandleReconnect(getPrivate, storeActions);
+const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);
 
 export default handleReconnect;

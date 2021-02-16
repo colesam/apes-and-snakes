@@ -14,7 +14,7 @@ import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
 import { usePrivateStore } from "../../core/store/privateStore";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
-import peerRoutines from "../../core/peer/peerRoutines";
+import { PeerRoutine } from "../../core/peer/PeerRoutine";
 
 function Lobby() {
   // State
@@ -32,7 +32,7 @@ function Lobby() {
   // Handlers
   const handleEndGame = () => {
     if (isHost) {
-      peerRoutines.endGame();
+      PeerRoutine.Host.endGame();
     }
   };
 
