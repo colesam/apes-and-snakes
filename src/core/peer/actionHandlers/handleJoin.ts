@@ -1,8 +1,8 @@
-import { getShared } from "../../store/sharedStore";
 import NameTakenError from "../../error/NameTakenError";
 import generateId from "../../generateId";
-import { Player } from "../../store/types/Player";
 import { StoreAction } from "../../store/StoreAction";
+import { getShared } from "../../store/sharedStore";
+import { Player } from "../../store/types/Player";
 import { TActionHandlerProps } from "../handleAction";
 
 const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {

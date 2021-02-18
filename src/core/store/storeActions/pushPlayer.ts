@@ -1,5 +1,5 @@
-import { RPlayer } from "../types/Player";
 import { getShared, setShared } from "../sharedStore";
+import { RPlayer } from "../types/Player";
 
 export const pushPlayer = (player: RPlayer) => {
   const { players } = getShared();

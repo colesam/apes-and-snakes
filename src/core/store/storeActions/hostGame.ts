@@ -1,6 +1,6 @@
-import { setPrivate } from "../privateStore";
 import { Map } from "immutable";
 import { StoreAction } from "../StoreAction";
+import { setPrivate } from "../privateStore";
 
 export const hostGame = (roomCode: string, resetPlayerKeys = true) => {
   setPrivate({

@@ -1,7 +1,7 @@
-import { StoreAction } from "../../store/StoreAction";
-import { TActionHandlerProps } from "../handleAction";
-import { getPrivate } from "../../store/privateStore";
 import GeneralError from "../../error/GeneralError";
+import { StoreAction } from "../../store/StoreAction";
+import { getPrivate } from "../../store/privateStore";
+import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleReconnect = (
   _getPrivate: typeof getPrivate,

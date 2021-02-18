@@ -1,6 +1,6 @@
-import { TPeerAction } from "../types/TPeerAction";
-import PeerConnectionManager from "../PeerConnectionManager";
 import { SharedState } from "../../store/sharedStore";
+import PeerConnectionManager from "../PeerConnectionManager";
+import { TPeerAction } from "../types/TPeerAction";
 
 export const broadcastShared = (data: Partial<SharedState>) =>
   PeerConnectionManager.broadcast({

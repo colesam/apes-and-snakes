@@ -1,12 +1,9 @@
-// @ts-ignore
-import { serialize } from "json-immutable/lib/serialize";
-// @ts-ignore
-import { deserialize } from "json-immutable/lib/deserialize";
 import { Map } from "immutable";
-import Peer from "peerjs";
 import { nanoid } from "nanoid";
-import recordTypes from "../store/types/recordTypes";
+import Peer from "peerjs";
 import TimeoutError from "../error/TimeoutError";
+import { serialize, deserialize } from "../immutableJson";
+import recordTypes from "../store/types/recordTypes";
 
 export default class MessageHandler {
   constructor(public timeout: number = 10000) {}

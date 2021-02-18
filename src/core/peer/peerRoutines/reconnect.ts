@@ -1,5 +1,5 @@
-import { PeerAction } from "../PeerAction";
 import { setPrivate } from "../../store/privateStore";
+import { PeerAction } from "../PeerAction";
 import { PeerRoutine } from "../PeerRoutine";
 
 export const reconnect = async (hostPeerId: string, secretKey: string) => {

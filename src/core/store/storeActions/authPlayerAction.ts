@@ -1,4 +1,4 @@
-import { getPrivate, setPrivate } from "../privateStore";
+import { getPrivate } from "../privateStore";
 
 export const authPlayerAction = (secretKey: string, playerId: string) => {
   const { secretKeyPlayerIdMap } = getPrivate();

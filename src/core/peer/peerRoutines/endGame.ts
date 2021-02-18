@@ -1,5 +1,5 @@
-import { PeerAction } from "../PeerAction";
 import { StoreAction } from "../../store/StoreAction";
+import { PeerAction } from "../PeerAction";
 import PeerConnectionManager from "../PeerConnectionManager";
 
 // Host only

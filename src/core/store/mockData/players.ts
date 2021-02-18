@@ -1,6 +1,6 @@
 import { List } from "immutable";
-import { Player } from "../types/Player";
 import { ConnectionStatus } from "../types/ConnectionStatus";
+import { Player } from "../types/Player";
 
 export const players = List([
   Player({

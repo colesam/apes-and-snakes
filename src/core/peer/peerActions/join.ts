@@ -1,5 +1,5 @@
-import { TPeerAction } from "../types/TPeerAction";
 import PeerConnectionManager from "../PeerConnectionManager";
+import { TPeerAction } from "../types/TPeerAction";
 
 export const join = (peerId: string, secretKey: string, playerName: string) =>
   PeerConnectionManager.send(peerId, {

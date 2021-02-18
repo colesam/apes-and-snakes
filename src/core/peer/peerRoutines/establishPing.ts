@@ -1,6 +1,6 @@
-import { PeerAction } from "../PeerAction";
-import { getPrivate, setPrivate } from "../../store/privateStore";
 import { pingInterval } from "../../../config";
+import { getPrivate, setPrivate } from "../../store/privateStore";
+import { PeerAction } from "../PeerAction";
 
 export const establishPing = (hostPeerId: string) => {
   const { secretKey, playerId } = getPrivate();

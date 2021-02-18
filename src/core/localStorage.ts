@@ -1,7 +1,4 @@
-// @ts-ignore
-import { serialize } from "json-immutable/lib/serialize";
-// @ts-ignore
-import { deserialize } from "json-immutable/lib/deserialize";
+import { serialize, deserialize } from "./immutableJson";
 import recordTypes from "./store/types/recordTypes";
 
 type Get = (key: string) => any;

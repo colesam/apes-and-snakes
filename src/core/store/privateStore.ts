@@ -1,9 +1,9 @@
+import { Map } from "immutable";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import initStorage from "../localStorage";
 import generateId from "../generateId";
-import { Map } from "immutable";
 import { diff } from "../helpers";
+import initStorage from "../localStorage";
 import { RPlayerConnection } from "./types/PlayerConnection";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");

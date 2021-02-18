@@ -1,11 +1,11 @@
 import { List } from "immutable";
-import { RPlayer } from "./types/Player";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { getPrivate } from "./privateStore";
+import { diff } from "../helpers";
 import initStorage from "../localStorage";
 import { PeerAction } from "../peer/PeerAction";
-import { diff } from "../helpers";
+import { getPrivate } from "./privateStore";
+import { RPlayer } from "./types/Player";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
 

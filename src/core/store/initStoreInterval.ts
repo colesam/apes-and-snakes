@@ -1,6 +1,6 @@
 import { getPrivate } from "./privateStore";
-import { ConnectionStatus } from "./types/ConnectionStatus";
 import { getShared, setShared } from "./sharedStore";
+import { ConnectionStatus } from "./types/ConnectionStatus";
 
 const updatePlayerConnectionStatuses = () => {
   const { isHost, playerConnections } = getPrivate();

@@ -1,6 +1,6 @@
+import NotAuthorizedError from "../../error/NotAuthorizedError";
 import { StoreAction } from "../../store/StoreAction";
 import { TActionHandlerProps } from "../handleAction";
-import NotAuthorizedError from "../../error/NotAuthorizedError";
 
 const handlePing = ({
   peerId,

@@ -1,11 +1,11 @@
-import { TPeerAction } from "./types/TPeerAction";
-import { getShared, setShared } from "../store/sharedStore";
-import { setPrivate } from "../store/privateStore";
 import GeneralError from "../error/GeneralError";
+import { setPrivate } from "../store/privateStore";
+import { getShared, setShared } from "../store/sharedStore";
+import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
 import handlePing from "./actionHandlers/handlePing";
 import handleReconnect from "./actionHandlers/handleReconnect";
-import handleEndGame from "./actionHandlers/handleEndGame";
+import { TPeerAction } from "./types/TPeerAction";
 
 export interface TActionHandlerProps {
   peerId: string;
