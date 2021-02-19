@@ -1,8 +1,8 @@
 import { List, Map } from "immutable";
 import Peer, { DataConnection } from "peerjs";
+import MessageHandler from "./MessageHandler";
 import PeerError from "./error/PeerError";
 import TimeoutError, { TIMEOUT_ERROR } from "./error/TimeoutError";
-import MessageHandler from "./MessageHandler";
 import handleAction from "./handleAction";
 
 export default class PeerConnectionManager {

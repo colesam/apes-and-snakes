@@ -1,10 +1,10 @@
-import PeerError from "./error/PeerError";
 import { setPrivate } from "../store/privateStore";
 import { getShared, setShared } from "../store/sharedStore";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
 import handlePing from "./actionHandlers/handlePing";
 import handleReconnect from "./actionHandlers/handleReconnect";
+import PeerError from "./error/PeerError";
 import { TPeerAction } from "./types/TPeerAction";
 
 export interface TActionHandlerProps {

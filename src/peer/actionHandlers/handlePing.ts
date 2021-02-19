@@ -1,5 +1,5 @@
-import NotAuthorizedError from "../error/NotAuthorizedError";
 import { StoreAction } from "../../store/StoreAction";
+import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
 const handlePing = ({

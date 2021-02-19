@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Alert,
   Divider,
@@ -9,12 +8,13 @@ import {
   Button,
   Box,
 } from "@chakra-ui/react";
-import { useSharedStore } from "../../store/sharedStore";
+import React from "react";
 import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
-import { usePrivateStore } from "../../store/privateStore";
-import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
 import { PeerRoutine } from "../../peer/PeerRoutine";
+import { usePrivateStore } from "../../store/privateStore";
+import { useSharedStore } from "../../store/sharedStore";
+import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
 
 function Lobby() {
   // State

@@ -1,9 +1,9 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { ChakraProvider } from "@chakra-ui/react";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import initStoreInterval from "./store/initStoreInterval";
 
 ReactDOM.render(

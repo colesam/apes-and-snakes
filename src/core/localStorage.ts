@@ -1,5 +1,5 @@
-import { serialize, deserialize } from "./immutableJson";
 import recordTypes from "../store/types/recordTypes";
+import { serialize, deserialize } from "./immutableJson";
 
 type Get = (key: string) => any;
 type Set = <T>(key: string, value: T) => T;

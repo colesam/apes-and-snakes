@@ -1,9 +1,9 @@
 import { Map } from "immutable";
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
-import TimeoutError from "./error/TimeoutError";
 import { serialize, deserialize } from "../core/immutableJson";
 import recordTypes from "../store/types/recordTypes";
+import TimeoutError from "./error/TimeoutError";
 
 export default class MessageHandler {
   constructor(public timeout: number = 10000) {}

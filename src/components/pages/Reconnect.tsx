@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { Redirect } from "wouter";
-import { PeerAction } from "../../peer/PeerAction";
-import { setShared, useSharedStore } from "../../store/sharedStore";
-import { usePrivateStore } from "../../store/privateStore";
-import generateId from "../../core/generateId";
-import ReconnectForm from "../forms/ReconnectForm";
-import { namespace } from "../../config";
-import { StoreAction } from "../../store/StoreAction";
 import shallow from "zustand/shallow";
+import { namespace } from "../../config";
+import generateId from "../../core/generateId";
 import { errorLog } from "../../core/helpers";
+import { PeerAction } from "../../peer/PeerAction";
+import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { StoreAction } from "../../store/StoreAction";
+import { usePrivateStore } from "../../store/privateStore";
+import { setShared, useSharedStore } from "../../store/sharedStore";
+import ReconnectForm from "../forms/ReconnectForm";
 
 function Reconnect() {
   // State

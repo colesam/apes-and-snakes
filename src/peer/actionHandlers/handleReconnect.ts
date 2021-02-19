@@ -1,6 +1,6 @@
-import PeerError from "../error/PeerError";
 import { StoreAction } from "../../store/StoreAction";
 import { getPrivate } from "../../store/privateStore";
+import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleReconnect = (

@@ -1,11 +1,11 @@
+import { Alert, Spinner, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
+import { Redirect } from "wouter";
+import { namespace } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
-import { namespace } from "../../config";
-import { Alert, Spinner, Text } from "@chakra-ui/react";
-import { Redirect } from "wouter";
-import { useSharedStore } from "../../store/sharedStore";
 import { StoreAction } from "../../store/StoreAction";
+import { useSharedStore } from "../../store/sharedStore";
 
 function Host() {
   // State
