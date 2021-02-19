@@ -1,5 +1,5 @@
-import NameTakenError from "../../error/NameTakenError";
-import generateId from "../../generateId";
+import NameTakenError from "../error/NameTakenError";
+import generateId from "../../core/generateId";
 import { StoreAction } from "../../store/StoreAction";
 import { getShared } from "../../store/sharedStore";
 import { Player } from "../../store/types/Player";

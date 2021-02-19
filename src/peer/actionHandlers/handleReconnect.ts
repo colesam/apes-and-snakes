@@ -1,4 +1,4 @@
-import GeneralError from "../../error/GeneralError";
+import PeerError from "../error/PeerError";
 import { StoreAction } from "../../store/StoreAction";
 import { getPrivate } from "../../store/privateStore";
 import { TActionHandlerProps } from "../handleAction";
@@ -13,7 +13,7 @@ export const makeHandleReconnect = (
 
   if (!playerId) {
     return error(
-      new GeneralError("Could not find playerId. Failed to reconnect.")
+      new PeerError("Could not find playerId. Failed to reconnect.")
     );
   }
 

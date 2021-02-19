@@ -1,8 +1,8 @@
-import GeneralError from "./GeneralError";
+import PeerError from "./PeerError";
 
 export const NAME_TAKEN_ERROR = "NameTakenError";
 
-export default class NameTakenError extends GeneralError {
+export default class NameTakenError extends PeerError {
   public name = NAME_TAKEN_ERROR;
 
   constructor(name: string) {

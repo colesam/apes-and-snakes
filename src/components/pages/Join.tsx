@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import JoinForm from "../forms/JoinForm";
-import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
+import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { useLocation } from "wouter";
-import { usePrivateStore } from "../../core/store/privateStore";
+import { usePrivateStore } from "../../store/privateStore";
 import generateId from "../../core/generateId";
-import { StoreAction } from "../../core/store/StoreAction";
-import { NAME_TAKEN_ERROR } from "../../core/error/NameTakenError";
+import { StoreAction } from "../../store/StoreAction";
+import { NAME_TAKEN_ERROR } from "../../peer/error/NameTakenError";
 import { errorLog } from "../../core/helpers";
 import shallow from "zustand/shallow";
-import { PeerRoutine } from "../../core/peer/PeerRoutine";
+import { PeerRoutine } from "../../peer/PeerRoutine";
 
 function Join() {
   // Hooks

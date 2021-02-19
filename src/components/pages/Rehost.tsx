@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { generateRoomCode } from "../../core/generateId";
-import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
+import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
 import { useLocation } from "wouter";
-import { StoreAction } from "../../core/store/StoreAction";
+import { StoreAction } from "../../store/StoreAction";
 
 function Rehost() {
   // State

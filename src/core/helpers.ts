@@ -1,4 +1,4 @@
-import GeneralError from "./error/GeneralError";
+import PeerError from "../peer/error/PeerError";
 
 export const diff = <T>(newState: T, oldState: T): Partial<T> => {
   const stateChanges: Partial<T> = {};
@@ -14,4 +14,4 @@ export const diff = <T>(newState: T, oldState: T): Partial<T> => {
   return stateChanges;
 };
 
-export const errorLog = (e: GeneralError) => console.error(e.toString());
+export const errorLog = (e: PeerError) => console.error(e.toString());

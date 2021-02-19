@@ -1,7 +1,7 @@
 import { List, Map } from "immutable";
 import Peer, { DataConnection } from "peerjs";
-import GeneralError from "../error/GeneralError";
-import TimeoutError, { TIMEOUT_ERROR } from "../error/TimeoutError";
+import PeerError from "./error/PeerError";
+import TimeoutError, { TIMEOUT_ERROR } from "./error/TimeoutError";
 import MessageHandler from "./MessageHandler";
 import handleAction from "./handleAction";
 
@@ -83,7 +83,7 @@ export default class PeerConnectionManager {
 
     if (!res.success) {
       const { name, message } = res.error;
-      throw new GeneralError(message, name);
+      throw new PeerError(message, name);
     }
 
     return res.payload;
@@ -167,7 +167,7 @@ export default class PeerConnectionManager {
           messageId
         );
       };
-      const error = (error: GeneralError) => {
+      const error = (error: PeerError) => {
         this._messageHandler.respond(
           conn,
           {

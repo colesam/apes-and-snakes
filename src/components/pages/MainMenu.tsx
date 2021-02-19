@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Divider, Stack } from "@chakra-ui/react";
 import { Link as RouterLink } from "wouter";
-import { usePrivateStore } from "../../core/store/privateStore";
-import { useSharedStore } from "../../core/store/sharedStore";
+import { usePrivateStore } from "../../store/privateStore";
+import { useSharedStore } from "../../store/sharedStore";
 import shallow from "zustand/shallow";
 
 function MainMenu() {

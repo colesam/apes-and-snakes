@@ -1,5 +1,5 @@
 import React from "react";
-import { ConnectionStatus } from "../../core/store/types/ConnectionStatus";
+import { ConnectionStatus } from "../../store/types/ConnectionStatus";
 import { CheckCircleIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import { LayoutProps, SpaceProps } from "@chakra-ui/react";
 

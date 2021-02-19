@@ -1,4 +1,4 @@
-import { pingInterval } from "../../../config";
+import { pingInterval } from "../../config";
 import { getPrivate, setPrivate } from "../../store/privateStore";
 import { PeerAction } from "../PeerAction";
 

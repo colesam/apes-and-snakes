@@ -1,8 +1,8 @@
-import GeneralError from "./GeneralError";
+import PeerError from "./PeerError";
 
 export const TIMEOUT_ERROR = "TimeoutError";
 
-export default class TimeoutError extends GeneralError {
+export default class TimeoutError extends PeerError {
   public name = TIMEOUT_ERROR;
 
   constructor(timeout: number) {

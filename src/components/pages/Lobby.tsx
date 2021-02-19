@@ -9,12 +9,12 @@ import {
   Button,
   Box,
 } from "@chakra-ui/react";
-import { useSharedStore } from "../../core/store/sharedStore";
+import { useSharedStore } from "../../store/sharedStore";
 import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
-import { usePrivateStore } from "../../core/store/privateStore";
+import { usePrivateStore } from "../../store/privateStore";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
-import { PeerRoutine } from "../../core/peer/PeerRoutine";
+import { PeerRoutine } from "../../peer/PeerRoutine";
 
 function Lobby() {
   // State

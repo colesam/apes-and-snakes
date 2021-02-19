@@ -1,4 +1,4 @@
-import GeneralError from "../error/GeneralError";
+import PeerError from "./error/PeerError";
 import { setPrivate } from "../store/privateStore";
 import { getShared, setShared } from "../store/sharedStore";
 import handleEndGame from "./actionHandlers/handleEndGame";
@@ -11,7 +11,7 @@ export interface TActionHandlerProps {
   peerId: string;
   payload: any;
   respond: (payload?: any) => void;
-  error: (e: GeneralError) => void;
+  error: (e: PeerError) => void;
 }
 
 type TActionHandler = (props: TActionHandlerProps) => void;

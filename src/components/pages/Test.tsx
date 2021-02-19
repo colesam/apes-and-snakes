@@ -1,6 +1,6 @@
 import React from "react";
-import { PeerAction } from "../../core/peer/PeerAction";
-import { StoreAction } from "../../core/store/StoreAction";
+import { PeerAction } from "../../peer/PeerAction";
+import { StoreAction } from "../../store/StoreAction";
 import {
   Alert,
   Button,
@@ -12,7 +12,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
-import { players } from "../../core/store/mockData/players";
+import { players } from "../../store/mockData/players";
 
 function Test() {
   // Mock data

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { generateRoomCode } from "../../core/generateId";
-import PeerConnectionManager from "../../core/peer/PeerConnectionManager";
+import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { namespace } from "../../config";
 import { Alert, Spinner, Text } from "@chakra-ui/react";
 import { Redirect } from "wouter";
-import { useSharedStore } from "../../core/store/sharedStore";
-import { StoreAction } from "../../core/store/StoreAction";
+import { useSharedStore } from "../../store/sharedStore";
+import { StoreAction } from "../../store/StoreAction";
 
 function Host() {
   // State

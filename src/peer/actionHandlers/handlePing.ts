@@ -1,4 +1,4 @@
-import NotAuthorizedError from "../../error/NotAuthorizedError";
+import NotAuthorizedError from "../error/NotAuthorizedError";
 import { StoreAction } from "../../store/StoreAction";
 import { TActionHandlerProps } from "../handleAction";
 

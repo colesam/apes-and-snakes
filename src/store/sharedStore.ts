@@ -1,8 +1,8 @@
 import { List } from "immutable";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { diff } from "../helpers";
-import initStorage from "../localStorage";
+import { diff } from "../core/helpers";
+import initStorage from "../core/localStorage";
 import { PeerAction } from "../peer/PeerAction";
 import { getPrivate } from "./privateStore";
 import { RPlayer } from "./types/Player";
