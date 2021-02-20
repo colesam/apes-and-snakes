@@ -25,7 +25,7 @@ export default class MessageHandler {
   }
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
-    const message = deserialize(data, { immutableClassMap });
+    const message = deserialize(data, immutableClassMap);
 
     if (message.messageId) {
       const resolve = this._messageResolvers[message.messageId];

@@ -1,8 +1,7 @@
-import { List } from "immutable";
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 import { Player } from "../../core/player/Player";
 
-export const players = List([
+export const players = [
   new Player({
     id: "1234",
     name: "Sam Cole",
@@ -28,4 +27,4 @@ export const players = List([
     name: "Sammy Cole",
     connectionStatus: ConnectionStatus.CONNECTION_LOST,
   }),
-]);
+];

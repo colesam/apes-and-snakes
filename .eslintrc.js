@@ -6,7 +6,6 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
-    "@typescript-eslint/consistent-type-assertions": "off",
     "react-hooks/exhaustive-deps": "off",
     "unused-imports/no-unused-imports": "error",
     "import/order": [

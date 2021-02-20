@@ -18,7 +18,7 @@ export type SharedState = {
 
 const sharedState = {
   roomCode: "",
-  players: <Player[]>[],
+  players: [] as Player[],
 };
 
 export const useSharedStore = create<SharedState>(
