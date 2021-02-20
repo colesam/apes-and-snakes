@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { makeHandleReconnect } from "./handleReconnect";
+import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 
 const makeParams = (opts = {}) => ({
   peerId: "123",
@@ -16,6 +17,7 @@ const makeGetPrivate = (opts = {}) => () => ({
 
 const makeStoreAction = (opts = {}) => ({
   setPlayerConnection: jest.fn(),
+  setPlayerState: jest.fn(),
   ...opts,
 });
 
@@ -40,7 +42,7 @@ test("responds if secret key is found", () => {
   expect(params.respond.mock.calls.length).toBe(1);
 });
 
-test("updates player's peer id if secret key is found", () => {
+test("updates player's peer id", () => {
   const params = makeParams();
   const StoreAction = makeStoreAction();
 
@@ -52,6 +54,20 @@ test("updates player's peer id if secret key is found", () => {
   const [playerId, { peerId }] = mock.calls[0];
   expect(playerId).toBe("player-id");
   expect(peerId).toBe("123");
+});
+
+test("updates player's connection status to CONNECTED", () => {
+  const params = makeParams();
+  const StoreAction = makeStoreAction();
+
+  callHandleReconnect({ params, StoreAction });
+
+  const { mock } = StoreAction.setPlayerState;
+  expect(mock.calls.length).toBe(1);
+
+  const [playerId, { connectionStatus }] = mock.calls[0];
+  expect(playerId).toBe("player-id");
+  expect(connectionStatus).toBe(ConnectionStatus.CONNECTED);
 });
 
 test("errors if secret key is not found", () => {
