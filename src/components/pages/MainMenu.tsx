@@ -7,8 +7,8 @@ import { useSharedStore } from "../../store/sharedStore";
 
 function MainMenu() {
   // State
-  const [isHost, hostPeerId] = usePrivateStore(
-    s => [s.isHost, s.hostPeerId],
+  const [isHost, previousRoomCode] = usePrivateStore(
+    s => [s.isHost, s.previousRoomCode],
     shallow
   );
   const roomCode = useSharedStore(s => s.roomCode);
@@ -27,7 +27,7 @@ function MainMenu() {
       <Button colorScheme="blue" href="/join" as={RouterLink}>
         Join Game
       </Button>
-      {!isHost && hostPeerId && (
+      {!isHost && previousRoomCode && (
         <Button colorScheme="orange" href="/reconnect" as={RouterLink}>
           Reconnect to Previous Host
         </Button>

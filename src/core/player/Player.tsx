@@ -1,7 +1,7 @@
 import { Immutable } from "../Immutable";
 import { ConnectionStatus } from "./ConnectionStatus";
 
-type PlayerData = {
+export type PlayerData = {
   id: string;
   name: string;
   connectionStatus: ConnectionStatus;

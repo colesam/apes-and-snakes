@@ -70,6 +70,8 @@ export default class PeerConnectionManager {
     const peerConn = PeerConnectionManager.peers[peerId];
 
     if (!peerConn) {
+      console.log(`[DEBUG] PeerConnectionManager.peers`);
+      console.log(PeerConnectionManager.peers);
       throw new Error(
         `Cannot send message to ${peerId}, no connection exists.`
       );

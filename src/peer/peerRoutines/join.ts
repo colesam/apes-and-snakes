@@ -4,11 +4,12 @@ import { PeerRoutine } from "../PeerRoutine";
 
 export const join = async (
   hostPeerId: string,
+  roomCode: string,
   secretKey: string,
   name: string
 ) => {
   const { playerId } = await PeerAction.join(hostPeerId, secretKey, name);
-  setPrivate({ playerId });
+  setPrivate({ playerId, hostPeerId, previousRoomCode: roomCode });
 
   PeerRoutine.establishPing(hostPeerId);
   await PeerRoutine.pullShared(hostPeerId);

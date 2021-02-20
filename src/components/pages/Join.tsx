@@ -42,7 +42,7 @@ function Join() {
 
     // Try to join as new player
     try {
-      await PeerRoutine.join(hostPID, secretKey, name);
+      await PeerRoutine.join(hostPID, roomCode, secretKey, name);
       setLocation("/lobby");
     } catch (e) {
       if (e.name === NAME_TAKEN_ERROR) {

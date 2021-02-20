@@ -1,3 +1,4 @@
+import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 import { StoreAction } from "../../store/StoreAction";
 import { getPrivate } from "../../store/privateStore";
 import PeerError from "../error/PeerError";
@@ -17,9 +18,16 @@ export const makeHandleReconnect = (
     );
   }
 
-  _StoreAction.setPlayerConnection(playerId, { peerId });
+  _StoreAction.setPlayerConnection(playerId, {
+    peerId,
+    lastPing: new Date(),
+  });
 
-  return respond();
+  _StoreAction.setPlayerState(playerId, {
+    connectionStatus: ConnectionStatus.CONNECTED,
+  });
+
+  return respond({ playerId });
 };
 
 const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);

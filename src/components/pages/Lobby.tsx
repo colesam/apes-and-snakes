@@ -26,6 +26,7 @@ function Lobby() {
 
   // Redirects
   if (!roomCode) {
+    console.log(`[DEBUG] Roomcode: ${roomCode}`);
     return <Redirect to="/" />;
   }
 

@@ -4,7 +4,7 @@ import { PeerRoutine } from "../PeerRoutine";
 
 export const reconnect = async (hostPeerId: string, secretKey: string) => {
   const { playerId } = await PeerAction.reconnect(hostPeerId, secretKey);
-  setPrivate({ playerId });
+  setPrivate({ playerId, hostPeerId });
 
   PeerRoutine.establishPing(hostPeerId);
   await PeerRoutine.pullShared(hostPeerId);

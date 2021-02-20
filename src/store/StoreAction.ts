@@ -5,6 +5,7 @@ import { pushPlayer } from "./storeActions/pushPlayer";
 import { resetStores } from "./storeActions/resetStores";
 import { setHostPeerId } from "./storeActions/setHostPeerId";
 import { setPlayerConnection } from "./storeActions/setPlayerConnection";
+import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
 
 export const StoreAction = {
@@ -15,5 +16,6 @@ export const StoreAction = {
   resetStores,
   setHostPeerId,
   setPlayerConnection,
+  setPlayerState,
   setRoomCode,
 };
