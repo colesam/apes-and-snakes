@@ -12,7 +12,6 @@ import Test from "./pages/Test";
 
 const AppContainer = styled.div`
   background-color: #282c34;
-  padding-top: 50px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,7 +23,7 @@ const AppContainer = styled.div`
 function App() {
   return (
     <AppContainer>
-      <Box bg="white" color="black" p={4} mb={60} minWidth={350} boxShadow="xl">
+      <Box bg="white" color="black" p={4} minWidth={350} boxShadow="xl">
         <Route path="/host">
           <Host />
         </Route>

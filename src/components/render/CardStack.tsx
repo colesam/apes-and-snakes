@@ -1,9 +1,9 @@
-import { HStack, LayoutProps, SpaceProps } from "@chakra-ui/react";
+import { HStack, HTMLChakraProps } from "@chakra-ui/react";
 import React from "react";
 import { Card as TCard } from "../../core/card/Card";
 import Card from "./Card";
 
-interface PropTypes extends LayoutProps, SpaceProps {
+interface PropTypes extends HTMLChakraProps<"div"> {
   cards: TCard[];
   cardScale?: number;
   spacing?: number;
