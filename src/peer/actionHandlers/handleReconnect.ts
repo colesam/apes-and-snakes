@@ -9,7 +9,7 @@ export const makeHandleReconnect = (
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
   const { secretKeyPlayerIdMap } = _getPrivate();
 
-  const playerId = secretKeyPlayerIdMap.get(payload.secretKey);
+  const playerId = secretKeyPlayerIdMap[payload.secretKey];
 
   if (!playerId) {
     return error(

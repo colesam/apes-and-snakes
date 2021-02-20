@@ -1,11 +1,10 @@
-import { List } from "immutable";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { diff } from "../core/helpers";
 import initStorage from "../core/localStorage";
+import { Player } from "../core/player/Player";
 import { PeerAction } from "../peer/PeerAction";
 import { getPrivate } from "./privateStore";
-import { RPlayer } from "./types/Player";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
 
@@ -14,12 +13,12 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
  */
 export type SharedState = {
   roomCode: string;
-  players: List<RPlayer>;
+  players: Player[];
 };
 
 const sharedState = {
   roomCode: "",
-  players: List<RPlayer>(),
+  players: <Player[]>[],
 };
 
 export const useSharedStore = create<SharedState>(

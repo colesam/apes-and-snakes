@@ -1,13 +1,22 @@
+import {
+  PlayerConnection,
+  PlayerConnectionData,
+} from "../../core/player/PlayerConnection";
 import { getPrivate, setPrivate } from "../privateStore";
-import { PlayerConnection, TPlayerConnection } from "../types/PlayerConnection";
 
 export const setPlayerConnection = (
   playerId: string,
-  updates: Partial<TPlayerConnection> = { playerId }
+  updates: Partial<PlayerConnectionData> = { playerId }
 ) => {
   const { playerConnections } = getPrivate();
-  const conn = playerConnections.get(playerId) || PlayerConnection();
+
+  const conn: PlayerConnection =
+    playerConnections[playerId] || new PlayerConnection();
+
   setPrivate({
-    playerConnections: playerConnections.set(playerId, conn.merge(updates)),
+    playerConnections: {
+      ...playerConnections,
+      [playerId]: conn.set(updates),
+    },
   });
 };

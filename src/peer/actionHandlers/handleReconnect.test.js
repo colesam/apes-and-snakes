@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { makeHandleReconnect } from "./handleReconnect";
-import { Map } from "immutable";
 
 const makeParams = (opts = {}) => ({
   peerId: "123",
@@ -11,7 +10,7 @@ const makeParams = (opts = {}) => ({
 });
 
 const makeGetPrivate = (opts = {}) => () => ({
-  secretKeyPlayerIdMap: Map([["existing-secret", "player-id"]]),
+  secretKeyPlayerIdMap: { "existing-secret": "player-id" },
   ...opts,
 });
 

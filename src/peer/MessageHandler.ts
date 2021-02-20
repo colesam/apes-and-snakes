@@ -1,7 +1,6 @@
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
-import { serialize, deserialize } from "../core/serialize";
-import recordTypes from "../store/types/recordTypes";
+import { serialize, deserialize, immutableClassMap } from "../core/serialize";
 import TimeoutError from "./error/TimeoutError";
 
 export default class MessageHandler {
@@ -26,7 +25,7 @@ export default class MessageHandler {
   }
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
-    const message = deserialize(data, { recordTypes });
+    const message = deserialize(data, { immutableClassMap });
 
     if (message.messageId) {
       const resolve = this._messageResolvers[message.messageId];

@@ -1,6 +1,6 @@
+import { ConnectionStatus } from "../core/player/ConnectionStatus";
 import { getPrivate } from "./privateStore";
 import { getShared, setShared } from "./sharedStore";
-import { ConnectionStatus } from "./types/ConnectionStatus";
 
 const updatePlayerConnectionStatuses = () => {
   const { isHost, playerConnections } = getPrivate();
@@ -8,13 +8,13 @@ const updatePlayerConnectionStatuses = () => {
   if (isHost) {
     setShared({
       players: players.map(player => {
-        const conn = playerConnections.get(player.id);
+        const conn = playerConnections[player.id];
 
         if (!conn || !conn.lastPing) return player;
 
         const sinceLastPing = new Date().getTime() - conn.lastPing.getTime();
 
-        return player.merge({
+        return player.set({
           connectionStatus:
             sinceLastPing > 20_000
               ? ConnectionStatus.CONNECTION_LOST

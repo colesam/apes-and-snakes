@@ -4,6 +4,9 @@ export const mapSecretKeyToPlayerId = (key: string, playerId: string) => {
   const { secretKeyPlayerIdMap } = getPrivate();
 
   setPrivate({
-    secretKeyPlayerIdMap: secretKeyPlayerIdMap.set(key, playerId),
+    secretKeyPlayerIdMap: {
+      ...secretKeyPlayerIdMap,
+      [key]: playerId,
+    },
   });
 };

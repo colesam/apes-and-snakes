@@ -1,10 +1,9 @@
-import { Map } from "immutable";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
 import initStorage from "../core/localStorage";
-import { RPlayerConnection } from "./types/PlayerConnection";
+import { PlayerConnection } from "../core/player/PlayerConnection";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -15,8 +14,8 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 export type PrivateState = {
   // Host state
   isHost: boolean;
-  secretKeyPlayerIdMap: Map<string, string>;
-  playerConnections: Map<string, RPlayerConnection>;
+  secretKeyPlayerIdMap: { [key: string]: string };
+  playerConnections: { [key: string]: PlayerConnection };
 
   // Player state
   hostPeerId: string;
@@ -29,8 +28,8 @@ export type PrivateState = {
 const privateState = {
   // Host state
   isHost: false,
-  secretKeyPlayerIdMap: Map<string, string>(),
-  playerConnections: Map<string, RPlayerConnection>(),
+  secretKeyPlayerIdMap: {},
+  playerConnections: {},
 
   // Player state
   hostPeerId: "",

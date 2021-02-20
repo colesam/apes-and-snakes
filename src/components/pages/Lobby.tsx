@@ -59,9 +59,9 @@ function Lobby() {
         <Text>Room Code: </Text> <Text fontWeight="bold">{roomCode}</Text>
       </Alert>
 
-      {players.size && <Divider />}
+      {players.length && <Divider />}
 
-      {players.size && (
+      {players.length && (
         <Box bg="gray.100" px={4} py={2}>
           <Text fontWeight="bold" mb={4}>
             Players:

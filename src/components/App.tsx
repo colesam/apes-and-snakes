@@ -24,14 +24,7 @@ const AppContainer = styled.div`
 function App() {
   return (
     <AppContainer>
-      <Box
-        bg="white"
-        color="black"
-        p={4}
-        mb={60}
-        minWidth={1000}
-        boxShadow="xl"
-      >
+      <Box bg="white" color="black" p={4} mb={60} minWidth={350} boxShadow="xl">
         <Route path="/host">
           <Host />
         </Route>
