@@ -1,4 +1,3 @@
-import { Map } from "immutable";
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
 import { serialize, deserialize } from "../core/immutableJson";
@@ -8,7 +7,7 @@ import TimeoutError from "./error/TimeoutError";
 export default class MessageHandler {
   constructor(public timeout: number = 10000) {}
 
-  private _messageResolvers = Map<string, (data: any) => void>();
+  private _messageResolvers: { [key: string]: (data: any) => void } = {};
 
   send(conn: Peer.DataConnection, payload: any): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -16,7 +15,7 @@ export default class MessageHandler {
 
       conn.send(serialize({ messageId: messageId, ...payload }));
 
-      this._messageResolvers = this._messageResolvers.set(messageId, resolve);
+      this._messageResolvers[messageId] = resolve;
 
       setTimeout(() => reject(new TimeoutError(this.timeout)), this.timeout);
     });
@@ -30,15 +29,13 @@ export default class MessageHandler {
     const message = deserialize(data, { recordTypes });
 
     if (message.messageId) {
-      const resolve = this._messageResolvers.get(message.messageId);
+      const resolve = this._messageResolvers[message.messageId];
 
       if (resolve) {
         // Original sender of message receiving response
         resolve(message);
 
-        this._messageResolvers = this._messageResolvers.delete(
-          message.messageId
-        );
+        delete this._messageResolvers[message.messageId];
 
         return null;
       } else {

@@ -1,4 +1,3 @@
-import { List, Map } from "immutable";
 import Peer, { DataConnection } from "peerjs";
 import MessageHandler from "./MessageHandler";
 import PeerError from "./error/PeerError";
@@ -14,13 +13,13 @@ export default class PeerConnectionManager {
   /**
    * Map of peer connections. Key is peer id, connection object is value.
    */
-  static peers = Map<string, Peer.DataConnection>();
+  static peers: { [key: string]: DataConnection } = {};
 
   /**
    * List of functions that are called when new peer connection is received.
    * @private
    */
-  private static _connectionHandlers = List<(conn: DataConnection) => void>();
+  private static _connectionHandlers: ((conn: DataConnection) => void)[] = [];
 
   private static _messageHandler = new MessageHandler();
 
@@ -62,13 +61,13 @@ export default class PeerConnectionManager {
       }
     }
 
-    if (!PeerConnectionManager.peers.has(peerId)) {
+    if (!PeerConnectionManager.peers.hasOwnProperty(peerId)) {
       throw new Error(`Failed to establish connection to ${peerId}`);
     }
   }
 
   static async send(peerId: string, payload: any): Promise<any> {
-    const peerConn = PeerConnectionManager.peers.get(peerId);
+    const peerConn = PeerConnectionManager.peers[peerId];
 
     if (!peerConn) {
       throw new Error(
@@ -92,7 +91,7 @@ export default class PeerConnectionManager {
   static broadcast(payload: any): Promise<PromiseSettledResult<any>[]> {
     const res = [];
 
-    for (const peerId of PeerConnectionManager.peers.keys()) {
+    for (const peerId in PeerConnectionManager.peers) {
       res.push(PeerConnectionManager.send(peerId, payload));
     }
 
@@ -100,7 +99,7 @@ export default class PeerConnectionManager {
   }
 
   static clearConnections() {
-    PeerConnectionManager.peers = Map();
+    PeerConnectionManager.peers = {};
   }
 
   private static _establishConnection(peerId: string): Promise<void> {
@@ -118,17 +117,14 @@ export default class PeerConnectionManager {
       peerConn.on("open", () => {
         clearTimeout(timeoutId);
 
-        if (!PeerConnectionManager.peers.has(peerId)) {
+        if (!PeerConnectionManager.peers.hasOwnProperty(peerId)) {
           console.log(`[DEBUG] Peer connection opened to: ${peerId}`);
 
           peerConn.on("data", data =>
             PeerConnectionManager._handleReceiveData(peerConn, data)
           );
 
-          PeerConnectionManager.peers = PeerConnectionManager.peers.set(
-            peerId,
-            peerConn
-          );
+          PeerConnectionManager.peers[peerId] = peerConn;
 
           resolve();
         }
@@ -145,9 +141,7 @@ export default class PeerConnectionManager {
   static onReceiveConnection(
     fn: (dataConnection: Peer.DataConnection) => void
   ) {
-    PeerConnectionManager._connectionHandlers = PeerConnectionManager._connectionHandlers.push(
-      fn
-    );
+    PeerConnectionManager._connectionHandlers.push(fn);
   }
 
   private static _handleReceiveData(conn: Peer.DataConnection, data: any) {
@@ -185,10 +179,7 @@ export default class PeerConnectionManager {
   private static _handleReceiveConnection(conn: DataConnection) {
     console.log(`[DEBUG] New connection from peer ${conn.peer}`);
 
-    PeerConnectionManager.peers = PeerConnectionManager.peers.set(
-      conn.peer,
-      conn
-    );
+    PeerConnectionManager.peers[conn.peer] = conn;
 
     conn.on("data", data =>
       PeerConnectionManager._handleReceiveData(conn, data)
