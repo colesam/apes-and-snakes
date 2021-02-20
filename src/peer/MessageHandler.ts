@@ -12,7 +12,16 @@ export default class MessageHandler {
     return new Promise((resolve, reject) => {
       const messageId = nanoid();
 
-      conn.send(serialize({ messageId: messageId, ...payload }));
+      try {
+        conn.send(serialize({ messageId: messageId, ...payload }));
+      } catch (e) {
+        console.log(`[DEBUG] Message failed to send!`);
+        console.log("-- payload --");
+        console.log(payload);
+        console.log("-- conn.peer --");
+        console.log(conn.peer);
+        throw e;
+      }
 
       this._messageResolvers[messageId] = resolve;
 
