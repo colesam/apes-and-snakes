@@ -1,6 +1,7 @@
-import { List } from "immutable";
 import { shuffle } from "lodash";
 import { Card } from "./Card";
+import { Flop } from "./Flop";
+import { Pair } from "./Pair";
 import { allRanks } from "./Rank";
 import { allSuits } from "./Suit";
 
@@ -15,7 +16,7 @@ const generateDeck = () => {
 };
 
 export class Deck {
-  cards: Card[] = [];
+  public readonly cards: Card[] = [];
 
   constructor(cards?: Card[]) {
     this.cards = cards || generateDeck();
@@ -25,18 +26,30 @@ export class Deck {
     return new Deck(shuffle(this.cards));
   }
 
-  draw(numHands: number, cardsPerHand: number): [List<Card[]>, Deck] {
-    let hands = List<Card[]>();
-    let cards = [...this.cards];
+  deal(numHands: number, cardsPerHand: number): [Card[][], Deck] {
+    const hands = [];
+    const cards = [...this.cards];
+
     for (let i = 0; i < numHands; i++) {
-      hands = hands.push(cards.splice(0, cardsPerHand));
+      hands.push(cards.splice(0, cardsPerHand));
     }
+
     return [hands, new Deck(cards)];
   }
 
-  deal(numCards: number): [List<Card>, Deck] {
+  draw(numCards: number): [Card[], Deck] {
     const cards = [...this.cards];
-    return [List(cards.splice(0, numCards)), new Deck(cards)];
+    return [cards.splice(0, numCards), new Deck(cards)];
+  }
+
+  drawPair(): [Pair, Deck] {
+    const [[a, b], deck] = this.draw(2);
+    return [new Pair({ cards: [a, b] }), deck];
+  }
+
+  drawFlop(): [Flop, Deck] {
+    const [[a, b, c, d, e], deck] = this.draw(5);
+    return [new Flop({ cards: [a, b, c, d, e] }), deck];
   }
 
   get size() {

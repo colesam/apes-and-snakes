@@ -39,14 +39,14 @@ function Test() {
   const [rounds, setRounds] = useState([]);
 
   const handleDrawCards = () => {
-    let [newHands, deck] = new Deck().shuffle().draw(10, 2);
+    let [newHands, deck] = new Deck().shuffle().deal(10, 2);
     setHands(newHands.toArray());
 
     const newSolved = [];
     const newRanks = [];
     const newRounds = [];
     for (let i = 0; i < 3; i++) {
-      const [flop] = deck.shuffle().deal(5);
+      const [flop] = deck.shuffle().draw(5);
       const handies = newHands.toArray().map(([a, b]) => {
         return [a.toString(), b.toString(), ...flop.map(c => c.toString())];
       });
