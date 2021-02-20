@@ -15,8 +15,6 @@
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "framer-motion": "^3.2.2-rc.1",
-    "immutable": "^4.0.0-rc.12",
-    "json-immutable": "^0.5.0",
     "lodash": "^4.17.20",
     "nanoid": "^3.1.20",
     "peerjs": "^1.3.1",
@@ -46,8 +44,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postinstall": "patch --forward node_modules/json-immutable/lib/serialize.js < patches/serialize.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
