@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
-import { serialize, deserialize } from "../core/immutableJson";
+import { serialize, deserialize } from "../core/serialize";
 import recordTypes from "../store/types/recordTypes";
 import TimeoutError from "./error/TimeoutError";
 

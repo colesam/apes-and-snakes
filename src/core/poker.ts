@@ -2,7 +2,7 @@
 import { Hand as PokerSolver } from "pokersolver";
 import { Hand } from "./card/Hand";
 
-type SolvedHand = {
+export type SolvedHand = {
   cardPool: { value: string; suit: string }[];
   cards: { value: string; suit: string }[];
   rank: number;

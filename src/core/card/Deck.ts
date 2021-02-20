@@ -50,6 +50,19 @@ export class Deck extends Immutable<Data> {
     return [hands, new Deck({ cards })];
   }
 
+  dealPairs(numHands: Number): [Pair[], Deck] {
+    const pairs = [];
+
+    let deck: Deck = this;
+    let pair;
+    for (let i = 0; i < numHands; i++) {
+      [pair, deck] = deck.drawPair();
+      pairs.push(pair);
+    }
+
+    return [pairs, deck];
+  }
+
   draw(numCards: number): [Card[], Deck] {
     const cards = [...this.cards];
     return [cards.splice(0, numCards), new Deck({ cards })];
