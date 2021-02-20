@@ -7,6 +7,7 @@ import {
   ListItem,
   Button,
   Box,
+  HStack,
 } from "@chakra-ui/react";
 import React from "react";
 import { Redirect } from "wouter";
@@ -26,7 +27,6 @@ function Lobby() {
 
   // Redirects
   if (!roomCode) {
-    console.log(`[DEBUG] Roomcode: ${roomCode}`);
     return <Redirect to="/" />;
   }
 
@@ -72,9 +72,19 @@ function Lobby() {
       )}
 
       {isHost && (
-        <Button colorScheme="red" onClick={handleEndGame}>
-          End Game
-        </Button>
+        <HStack>
+          <Button
+            colorScheme="green"
+            w="100%"
+            onClick={handleEndGame}
+            disabled={players.length < 2}
+          >
+            Start Game
+          </Button>
+          <Button colorScheme="red" w="100%" onClick={handleEndGame}>
+            End Game
+          </Button>
+        </HStack>
       )}
     </Stack>
   );

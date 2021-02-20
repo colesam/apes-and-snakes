@@ -11,33 +11,23 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
  * Data in this store is specific/private to this user, and is not shared with
  * other peers.
  */
-export type PrivateState = {
-  // Host state
-  isHost: boolean;
-  secretKeyPlayerIdMap: { [key: string]: string };
-  playerConnections: { [key: string]: PlayerConnection };
-
-  // Player state
-  hostPeerId: string;
-  previousRoomCode: string;
-  playerId: string;
-  pingIntervalId: NodeJS.Timeout | null;
-  secretKey: string;
-};
-
 const privateState = {
   // Host state
   isHost: false,
-  secretKeyPlayerIdMap: {},
-  playerConnections: {},
+  secretKeyPlayerIdMap: {} as { [key: string]: string },
+  playerConnections: {} as { [key: string]: PlayerConnection },
 
   // Player state
   hostPeerId: "",
   previousRoomCode: "",
   playerId: "",
-  pingIntervalId: null,
-  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
+  pingIntervalId: null as NodeJS.Timeout | null,
+  secretKey:
+    storageGet("secretKey") ||
+    (storageSet("secretKey", generateId()) as string),
 };
+
+export type PrivateState = typeof privateState;
 
 export const usePrivateStore = create<PrivateState>(
   // @ts-ignore See: https://github.com/microsoft/TypeScript/issues/19360

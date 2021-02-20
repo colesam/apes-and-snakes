@@ -1,5 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
+import { GameStatus } from "../core/game/GameStatus";
 import { diff } from "../core/helpers";
 import initStorage from "../core/localStorage";
 import { Player } from "../core/player/Player";
@@ -11,15 +12,13 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "sharedStore");
 /**
  * Data in this store is shared between peers.
  */
-export type SharedState = {
-  roomCode: string;
-  players: Player[];
-};
-
 const sharedState = {
   roomCode: "",
+  gameStatus: GameStatus.LOBBY,
   players: [] as Player[],
 };
+
+export type SharedState = typeof sharedState;
 
 export const useSharedStore = create<SharedState>(
   devtools(() => sharedState, "Shared Store")
