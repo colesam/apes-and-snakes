@@ -1,5 +1,4 @@
-import recordTypes from "../store/types/recordTypes";
-import { serialize, deserialize } from "./immutableJson";
+import { serialize, deserialize, immutableClassMap } from "./serialize";
 
 type Get = (key: string) => any;
 type Set = <T>(key: string, value: T) => T;
@@ -15,9 +14,7 @@ const initStorage = (
   }
 
   const get: Get = key =>
-    deserialize(storageApi.getItem(`${namespace}_${key}`), {
-      recordTypes,
-    });
+    deserialize(storageApi.getItem(`${namespace}_${key}`), immutableClassMap);
 
   const set: Set = (key, value) => {
     storageApi.setItem(`${namespace}_${key}`, serialize(value));
