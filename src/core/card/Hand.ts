@@ -1,25 +1,16 @@
+import { DeepReadonly } from "../ImmutableRecord";
 import { CardCombination } from "./CardCombination";
 import { Flop } from "./Flop";
 import { Pair } from "./Pair";
 
-type Data = {
+type THand = {
   pair: Pair;
   flop: Flop;
 };
 
-export class Hand extends CardCombination<Data> {
-  constructor(data: Data) {
-    super(data, "Hand");
-  }
+export interface Hand extends DeepReadonly<THand> {}
 
-  get pair() {
-    return this.data.pair;
-  }
-
-  get flop() {
-    return this.data.flop;
-  }
-
+export class Hand extends CardCombination<THand> {
   get cards() {
     return [...this.pair.cards, ...this.flop.cards];
   }

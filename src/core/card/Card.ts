@@ -1,25 +1,15 @@
-import { Immutable } from "../Immutable";
+import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
 import { Rank } from "./Rank";
 import { Suit } from "./Suit";
 
-type Data = {
+type TCard = {
   rank: Rank;
   suit: Suit;
 };
 
-export class Card extends Immutable<Data> {
-  constructor(data: Data) {
-    super(data, "Card");
-  }
+export interface Card extends DeepReadonly<TCard> {}
 
-  get rank() {
-    return this.data.rank;
-  }
-
-  get suit() {
-    return this.data.suit;
-  }
-
+export class Card extends ImmutableRecord<TCard> {
   toString() {
     return this.rank + this.suit;
   }

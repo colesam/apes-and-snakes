@@ -1,6 +1,6 @@
-import { Immutable } from "../Immutable";
+import { ImmutableRecord } from "../ImmutableRecord";
 
-export type PlayerConnectionData = {
+export type TPlayerConnection = {
   playerId: string;
   peerId: string;
   lastPing: Date | null;
@@ -12,8 +12,8 @@ const defaults = {
   lastPing: null,
 };
 
-export class PlayerConnection extends Immutable<PlayerConnectionData> {
-  constructor(data?: PlayerConnectionData) {
+export class PlayerConnection extends ImmutableRecord<TPlayerConnection> {
+  constructor(data?: TPlayerConnection) {
     super({ ...defaults, ...data }, "PlayerConnection");
   }
 

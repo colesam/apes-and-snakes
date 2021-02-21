@@ -1,5 +1,5 @@
 import { shuffle } from "lodash";
-import { Immutable } from "../Immutable";
+import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
 import { Card } from "./Card";
 import { Flop } from "./Flop";
 import { Pair } from "./Pair";
@@ -16,19 +16,18 @@ const generateDeck = () => {
   return res;
 };
 
-type Data = {
+type TDeck = {
   cards: Card[];
 };
 
-export class Deck extends Immutable<Data> {
-  constructor(data?: Data) {
-    super(
-      {
-        ...data,
-        cards: data?.cards || generateDeck(),
-      },
-      "Deck"
-    );
+export interface Deck extends DeepReadonly<TDeck> {}
+
+export class Deck extends ImmutableRecord<TDeck> {
+  constructor(data?: TDeck) {
+    super({
+      ...data,
+      cards: data?.cards || generateDeck(),
+    });
   }
 
   get cards() {

@@ -1,15 +1,14 @@
+import { DeepReadonly } from "../ImmutableRecord";
 import { Card } from "./Card";
 import { CardCombination } from "./CardCombination";
 
-type Data = {
+type TFlop = {
   cards: [Card, Card, Card, Card, Card];
 };
 
-export class Flop extends CardCombination<Data> {
-  constructor(data: Data) {
-    super(data, "Flop");
-  }
+export interface Flop extends DeepReadonly<TFlop> {}
 
+export class Flop extends CardCombination<TFlop> {
   get cards() {
     return this.data.cards;
   }

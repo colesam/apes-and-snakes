@@ -1,7 +1,9 @@
-import { Immutable } from "../Immutable";
+import { ImmutableRecord } from "../ImmutableRecord";
 import { Card } from "./Card";
 
-export abstract class CardCombination<T> extends Immutable<T> {
+export abstract class CardCombination<
+  T extends object
+> extends ImmutableRecord<T> {
   abstract get cards(): Card[];
 
   get cardStrings() {

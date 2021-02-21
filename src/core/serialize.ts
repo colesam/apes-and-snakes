@@ -1,5 +1,6 @@
 import { classMap as cardClassMap } from "./card/classMap";
 import { classMap as playerClassMap } from "./player/classMap";
+import { classMap as stockClassMap } from "./stock/classMap";
 
 export const serialize = JSON.stringify;
 
@@ -22,4 +23,5 @@ export const deserialize = (str: string | null, classMap: any) => {
 export const immutableClassMap = {
   ...cardClassMap,
   ...playerClassMap,
+  ...stockClassMap,
 };

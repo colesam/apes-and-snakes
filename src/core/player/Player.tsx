@@ -1,26 +1,12 @@
-import { Immutable } from "../Immutable";
+import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
 import { ConnectionStatus } from "./ConnectionStatus";
 
-export type PlayerData = {
+export type TPlayer = {
   id: string;
   name: string;
   connectionStatus: ConnectionStatus;
 };
 
-export class Player extends Immutable<PlayerData> {
-  constructor(data: PlayerData) {
-    super(data, "Player");
-  }
+export interface Player extends DeepReadonly<TPlayer> {}
 
-  get id() {
-    return this.data.id;
-  }
-
-  get name() {
-    return this.data.name;
-  }
-
-  get connectionStatus() {
-    return this.data.connectionStatus;
-  }
-}
+export class Player extends ImmutableRecord<TPlayer> {}

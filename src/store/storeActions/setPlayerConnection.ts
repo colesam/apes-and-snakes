@@ -1,12 +1,12 @@
 import {
   PlayerConnection,
-  PlayerConnectionData,
+  TPlayerConnection,
 } from "../../core/player/PlayerConnection";
 import { getPrivate, setPrivate } from "../privateStore";
 
 export const setPlayerConnection = (
   playerId: string,
-  updates: Partial<PlayerConnectionData> = { playerId }
+  updates: Partial<TPlayerConnection> = { playerId }
 ) => {
   const { playerConnections } = getPrivate();
 
