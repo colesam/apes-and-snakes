@@ -1,7 +1,9 @@
 import { Deck } from "../../core/card/Deck";
 import { Stock } from "../../core/stock/Stock";
 
-const [pairs] = new Deck().shuffle().dealPairs(10);
+const [pairs, remainingDeck] = new Deck().shuffle().dealPairs(10);
+
+export const deck = remainingDeck;
 
 export const stocks = [
   new Stock({

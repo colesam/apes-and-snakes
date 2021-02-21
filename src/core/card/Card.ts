@@ -14,3 +14,6 @@ export class Card extends ImmutableRecord<TCard> {
     return this.rank + this.suit;
   }
 }
+
+export const cardFromString = (str: string): Card =>
+  new Card({ rank: str[0] as Rank, suit: str[1] as Suit });

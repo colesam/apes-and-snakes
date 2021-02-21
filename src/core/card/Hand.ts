@@ -12,6 +12,6 @@ export interface Hand extends DeepReadonly<THand> {}
 
 export class Hand extends CardCombination<THand> {
   get cards() {
-    return [...this.pair.cards, ...this.flop.cards];
+    return [...this.data.pair.cards, ...this.data.flop.cards];
   }
 }
