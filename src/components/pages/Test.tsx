@@ -1,11 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import {
-  buyModifier,
-  modifierTickLifetime,
-  priceTicksPerDay,
-  sellModifier,
-  tickSpeed,
+  BUY_MODIFIER_TICK_LIFETIME,
+  BUY_PRICE_MODIFIER,
+  PRICE_TICKS_PER_DAY,
+  SELL_MODIFIER_TICK_LIFETIME,
+  SELL_PRICE_MODIFIER,
+  TICK_SPEED,
 } from "../../config";
 import { Stock } from "../../core/stock/Stock";
 import { tickPrice } from "../../core/stock/tickPrice";
@@ -24,7 +25,7 @@ function Test() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (tick < priceTicksPerDay) {
+      if (tick < PRICE_TICKS_PER_DAY) {
         setTick(tick + 1);
 
         const updatedStockPriceMods = updatePriceModifierMap(
@@ -42,16 +43,16 @@ function Test() {
           })
         );
       }
-    }, tickSpeed);
+    }, TICK_SPEED);
     return () => clearInterval(id);
   });
 
-  const pushModifier = (ticker: string, modifier: number) => {
+  const pushModifier = (ticker: string, modifier: number, lifetime: number) => {
     setStockPriceMods({
       ...stockPriceMods,
       [ticker]: [
         ...stockPriceMods[ticker],
-        { modifier, expires: tick + modifierTickLifetime },
+        { modifier, expires: tick + lifetime },
       ],
     });
   };
@@ -68,8 +69,20 @@ function Test() {
             priceHistory={stock.priceHistory}
             pair={stock.pair}
             key={stock.name}
-            onBuy={() => pushModifier(stock.ticker, buyModifier)}
-            onSell={() => pushModifier(stock.ticker, sellModifier)}
+            onBuy={() =>
+              pushModifier(
+                stock.ticker,
+                BUY_PRICE_MODIFIER,
+                BUY_MODIFIER_TICK_LIFETIME
+              )
+            }
+            onSell={() =>
+              pushModifier(
+                stock.ticker,
+                SELL_PRICE_MODIFIER,
+                SELL_MODIFIER_TICK_LIFETIME
+              )
+            }
           />
         ))}
       </Flex>

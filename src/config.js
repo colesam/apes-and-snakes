@@ -1,13 +1,16 @@
-export const namespace = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
+export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
-export const pingInterval = 5000;
+export const PING_INTERVAL = 5000;
 
-export const tickSpeed = 10;
-export const priceTicksPerDay = 200;
+export const TICK_SPEED = 10;
+export const PRICE_TICKS_PER_DAY = 200;
 
-export const stockPriceFloor = 10;
+export const STOCK_PRICE_FLOOR = 10;
 
-export const generalFluctuationMax = 0.02;
-export const modifierTickLifetime = 15;
-export const buyModifier = 2;
-export const sellModifier = -2;
+export const GENERAL_FLUCTUATION_MAX = 0.02;
+export const ROUND_FLUCTUATION_MAX = 0.1;
+
+export const BUY_PRICE_MODIFIER = 2;
+export const BUY_MODIFIER_TICK_LIFETIME = 15;
+export const SELL_PRICE_MODIFIER = -2;
+export const SELL_MODIFIER_TICK_LIFETIME = 15;

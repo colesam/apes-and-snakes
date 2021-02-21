@@ -1,5 +1,5 @@
 import { random } from "lodash";
-import { generalFluctuationMax, stockPriceFloor } from "../../config";
+import { GENERAL_FLUCTUATION_MAX, STOCK_PRICE_FLOOR } from "../../config";
 import { Stock } from "./Stock";
 
 const nextPrice = (priceHistory: number[], modifiers: number[]): number => {
@@ -7,10 +7,10 @@ const nextPrice = (priceHistory: number[], modifiers: number[]): number => {
   if (modifiers.length) console.log(modifiers);
   const multipliers = [-1, 1, ...modifiers];
   const mult =
-    prevPrice > stockPriceFloor
+    prevPrice > STOCK_PRICE_FLOOR
       ? multipliers[random(multipliers.length - 1)]
       : 1;
-  const percent = random(0, generalFluctuationMax, true);
+  const percent = random(0, GENERAL_FLUCTUATION_MAX, true);
   return prevPrice + prevPrice * mult * percent;
 };
 

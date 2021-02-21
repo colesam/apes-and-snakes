@@ -1,4 +1,4 @@
-import { pingInterval } from "../../config";
+import { PING_INTERVAL } from "../../config";
 import { getPrivate, setPrivate } from "../../store/privateStore";
 import { PeerAction } from "../PeerAction";
 
@@ -8,7 +8,7 @@ export const establishPing = (hostPeerId: string) => {
   const pingIntervalId = setInterval(() => {
     console.log(`[DEBUG] Sending ping`);
     PeerAction.ping(hostPeerId, secretKey, playerId);
-  }, pingInterval);
+  }, PING_INTERVAL);
 
   setPrivate({ pingIntervalId });
 };

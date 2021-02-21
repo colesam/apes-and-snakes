@@ -1,7 +1,7 @@
 import { Alert, Spinner, Text } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLocation } from "wouter";
-import { namespace } from "../../config";
+import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
@@ -13,7 +13,7 @@ function Rehost() {
   // Side effects
   useEffect(() => {
     const newRoomCode = generateRoomCode();
-    PeerConnectionManager.register(`${namespace} ${newRoomCode}`)
+    PeerConnectionManager.register(`${NAMESPACE} ${newRoomCode}`)
       .then(() => {
         StoreAction.hostGame(newRoomCode, false);
         setLocation("/lobby");

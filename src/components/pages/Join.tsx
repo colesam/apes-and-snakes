@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "wouter";
 import shallow from "zustand/shallow";
-import { namespace } from "../../config";
+import { NAMESPACE } from "../../config";
 import generateId from "../../core/generateId";
 import { errorLog } from "../../core/helpers";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
@@ -24,7 +24,7 @@ function Join() {
   // Handlers
   const handleConnect = async (roomCode: string, name: string) => {
     setIsConnecting(true);
-    const hostPID = hostPeerId || `${namespace} ${roomCode}`;
+    const hostPID = hostPeerId || `${NAMESPACE} ${roomCode}`;
 
     // Register self
     if (!hostPeerId) {

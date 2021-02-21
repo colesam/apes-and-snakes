@@ -2,7 +2,7 @@ import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, HStack, Text } from "@chakra-ui/react";
 import { ResponsiveLineCanvas as ResponsiveLine } from "@nivo/line";
 import React from "react";
-import { priceTicksPerDay } from "../../config";
+import { PRICE_TICKS_PER_DAY } from "../../config";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
 
@@ -43,7 +43,7 @@ function Stock({
           xScale={{
             type: "linear",
             min: 1,
-            max: priceTicksPerDay,
+            max: PRICE_TICKS_PER_DAY,
           }}
           yScale={{
             type: "linear",
@@ -54,11 +54,11 @@ function Stock({
           enableGridX={true}
           enableGridY={false}
           gridXValues={[
-            0.25 * priceTicksPerDay,
-            0.5 * priceTicksPerDay,
-            0.75 * priceTicksPerDay,
+            0.25 * PRICE_TICKS_PER_DAY,
+            0.5 * PRICE_TICKS_PER_DAY,
+            0.75 * PRICE_TICKS_PER_DAY,
           ]}
-          enableArea={priceData.length === priceTicksPerDay + 1} // TODO
+          enableArea={priceData.length === PRICE_TICKS_PER_DAY + 1} // TODO
           axisLeft={null}
           axisBottom={null}
           lineWidth={2}
