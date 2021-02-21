@@ -6,10 +6,12 @@ import {
   PRICE_TICKS_PER_DAY,
   ROUND_FLUCTUATION_MAX,
   ROUND_RANK_MODIFIERS,
-  ROUND_TICK_LIFETIME,
+  ROUND_MODIFIER_TICK_LIFETIME,
   SELL_MODIFIER_TICK_LIFETIME,
   SELL_PRICE_MODIFIER,
   TICK_SPEED,
+  NUM_ROUNDS,
+  TICKS_PER_ROUND,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank, RoundRank } from "../../core/poker";
@@ -52,14 +54,13 @@ function Test() {
             {}
           );
 
-          console.log(`Round #${roundTickPoints.indexOf(tick) + 1}`);
           const [flop] = deck.shuffle().drawFlop();
           const res = mapPairsToRank(stockRanks, flop);
           const updatedStockRankMap = { ...stockRankMap };
           for (const ticker in res) {
             updatedStockRankMap[ticker].push(res[ticker]);
             updatedStockPriceMods[ticker].push({
-              expires: tick + ROUND_TICK_LIFETIME,
+              expires: tick + ROUND_MODIFIER_TICK_LIFETIME,
               modifier: {
                 multipliers: ROUND_RANK_MODIFIERS[res[ticker]],
                 volatility: ROUND_FLUCTUATION_MAX,
@@ -103,10 +104,6 @@ function Test() {
   // Render
   return (
     <Box spacing={4} p={4} w={"95vw"} minHeight={"95vh"}>
-      <Text fontSize={"lg"} mb={8}>
-        Time Per Turn:{" "}
-        {(((TICK_SPEED / 1000) * PRICE_TICKS_PER_DAY) / 60).toFixed(2)}
-      </Text>
       <Flex justify={"space-between"} flexWrap={"wrap"}>
         {stocks.map(stock => (
           <StockRender
@@ -134,6 +131,10 @@ function Test() {
           />
         ))}
       </Flex>
+      <Text fontSize={"lg"} mb={8}>
+        Time Per Turn:{" "}
+        {(((TICK_SPEED / 1000) * PRICE_TICKS_PER_DAY) / 60).toFixed(2)}
+      </Text>
     </Box>
   );
 }
@@ -164,6 +165,9 @@ const updatePriceModifierMap = (
   }, {});
 };
 
-const roundTickPoints = [0.25, 0.5, 0.75].map(n => n * PRICE_TICKS_PER_DAY);
+const roundTickPoints = [...Array(NUM_ROUNDS)].map((_, i) =>
+  Math.ceil((i + 1) * TICKS_PER_ROUND - ROUND_MODIFIER_TICK_LIFETIME)
+);
+console.log(roundTickPoints);
 
 export default Test;
