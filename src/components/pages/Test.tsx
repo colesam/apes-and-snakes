@@ -1,9 +1,10 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
+import { range } from "lodash";
 import React, { useEffect, useState } from "react";
 import {
   BUY_MODIFIER_TICK_LIFETIME,
   BUY_PRICE_MODIFIER,
-  PRICE_TICKS_PER_DAY,
+  TICKS_PER_GRAPH,
   ROUND_FLUCTUATION_MAX,
   ROUND_RANK_MODIFIERS,
   ROUND_MODIFIER_TICK_LIFETIME,
@@ -11,7 +12,8 @@ import {
   SELL_PRICE_MODIFIER,
   TICK_SPEED,
   NUM_ROUNDS,
-  TICKS_PER_ROUND,
+  TICKS_PER_WEEK,
+  SIM_ROUNDS,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank, RoundRank } from "../../core/poker";
@@ -19,87 +21,71 @@ import { Stock } from "../../core/stock/Stock";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { stocks as stockData, deck } from "../../store/mockData/stocks";
 import StockRender from "../render/Stock";
+import { useMergeState } from "../useMergeState";
+
+type StockState = {
+  stocks: Stock[];
+  priceMods: PriceModifierMap;
+  ranks: RoundRankMap;
+};
 
 function Test() {
   const [tick, setTick] = useState(0);
-  const [stocks, setStocks] = useState<Stock[]>(stockData);
-  const [stockPriceMods, setStockPriceMods] = useState<PriceModifierMap>(
-    stockData.reduce<PriceModifierMap>((acc, { ticker }) => {
+  const [stockState, setStockState] = useMergeState<StockState>({
+    stocks: stockData,
+    priceMods: stockData.reduce<PriceModifierMap>((acc, { ticker }) => {
       acc[ticker] = [];
       return acc;
-    }, {})
-  );
-  const [stockRankMap, setStockRankMap] = useState<RoundRankMap>(
-    stockData.reduce<RoundRankMap>((acc, { ticker }) => {
+    }, {}),
+    ranks: stockData.reduce<RoundRankMap>((acc, { ticker }) => {
       acc[ticker] = [];
       return acc;
-    }, {})
-  );
+    }, {}),
+  });
+
+  useEffect(() => {
+    // Simulate one day
+    if (SIM_ROUNDS) {
+      range(0, SIM_ROUNDS * TICKS_PER_WEEK).forEach(tick => {
+        setStockState((s: StockState) =>
+          handleTick(tick, s.stocks, s.priceMods, s.ranks)
+        );
+        setTick(SIM_ROUNDS * TICKS_PER_WEEK + 1);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (tick < PRICE_TICKS_PER_DAY) {
-        const updatedStockPriceMods = updatePriceModifierMap(
-          stockPriceMods,
-          tick
+      if (tick > TICKS_PER_WEEK && tick < TICKS_PER_GRAPH) {
+        setStockState((s: StockState) =>
+          handleTick(tick, s.stocks, s.priceMods, s.ranks)
         );
-
-        if (roundTickPoints.includes(tick)) {
-          // Rank stocks
-          const stockRanks = stocks.reduce<{ [key: string]: Pair }>(
-            (acc, stock) => {
-              acc[stock.ticker] = stock.pair;
-              return acc;
-            },
-            {}
-          );
-
-          const [flop] = deck.shuffle().drawFlop();
-          const res = mapPairsToRank(stockRanks, flop);
-          const updatedStockRankMap = { ...stockRankMap };
-          for (const ticker in res) {
-            updatedStockRankMap[ticker].push(res[ticker]);
-            updatedStockPriceMods[ticker].push({
-              expires: tick + ROUND_MODIFIER_TICK_LIFETIME,
-              modifier: {
-                multipliers: ROUND_RANK_MODIFIERS[res[ticker]],
-                volatility: ROUND_FLUCTUATION_MAX,
-              },
-            });
-          }
-          setStockRankMap(updatedStockRankMap);
-        }
-
-        setStockPriceMods(updatedStockPriceMods);
-
-        setStocks(
-          stocks.map(stock => {
-            return tickPrice(
-              stock,
-              updatedStockPriceMods[stock.ticker].map(m => m.modifier)
-            );
-          })
-        );
-
-        setTick(tick + 1);
+        setTick(tick => tick + 1);
       }
     }, TICK_SPEED);
     return () => clearInterval(id);
-  });
+  }, [tick]);
 
   const pushModifier = (
     ticker: string,
     modifier: Modifier,
     lifetime: number
   ) => {
-    setStockPriceMods({
-      ...stockPriceMods,
-      [ticker]: [
-        ...stockPriceMods[ticker],
-        { modifier, expires: tick + lifetime },
-      ],
-    });
+    setStockState(s => ({
+      ...s,
+      priceMods: {
+        ...s.priceMods,
+        [ticker]: [
+          ...s.priceMods[ticker],
+          { modifier, expires: tick + lifetime },
+        ],
+      },
+    }));
   };
+
+  // Computed
+  const { stocks, ranks } = stockState;
 
   // Render
   return (
@@ -113,7 +99,7 @@ function Test() {
             priceHistory={stock.priceHistory}
             pair={stock.pair}
             key={stock.name}
-            rankHistory={stockRankMap[stock.ticker]}
+            rankHistory={ranks[stock.ticker]}
             onBuy={() =>
               pushModifier(
                 stock.ticker,
@@ -133,11 +119,62 @@ function Test() {
       </Flex>
       <Text fontSize={"lg"} mb={8}>
         Time Per Turn:{" "}
-        {(((TICK_SPEED / 1000) * PRICE_TICKS_PER_DAY) / 60).toFixed(2)}
+        {(((TICK_SPEED / 1000) * TICKS_PER_GRAPH) / 60).toFixed(2)}
       </Text>
     </Box>
   );
 }
+
+const handleTick = (
+  tick: number,
+  stocks: Stock[],
+  stockPriceMods: PriceModifierMap,
+  stockRankMap: RoundRankMap
+): StockState => {
+  const updatedStockRankMap = { ...stockRankMap };
+  const updatedStockPriceMods = updatePriceModifierMap(stockPriceMods, tick);
+
+  if (roundTickPoints.includes(tick)) {
+    console.log(`Round: ${tick}`);
+    // Rank stocks
+    const stockRanks = stocks.reduce<{ [key: string]: Pair }>((acc, stock) => {
+      acc[stock.ticker] = stock.pair;
+      return acc;
+    }, {});
+
+    const [flop] = deck.shuffle().drawFlop();
+    const res = mapPairsToRank(stockRanks, flop);
+    for (const ticker in res) {
+      updatedStockRankMap[ticker] = [
+        ...updatedStockRankMap[ticker],
+        res[ticker],
+      ];
+      updatedStockPriceMods[ticker] = [
+        ...updatedStockPriceMods[ticker],
+        {
+          expires: tick + ROUND_MODIFIER_TICK_LIFETIME,
+          modifier: {
+            multipliers: ROUND_RANK_MODIFIERS[res[ticker]],
+            volatility: ROUND_FLUCTUATION_MAX,
+          },
+        },
+      ];
+    }
+  }
+
+  const updatedStocks = stocks.map(stock => {
+    return tickPrice(
+      stock,
+      updatedStockPriceMods[stock.ticker].map(m => m.modifier)
+    );
+  });
+
+  return {
+    stocks: updatedStocks,
+    priceMods: updatedStockPriceMods,
+    ranks: updatedStockRankMap,
+  };
+};
 
 export type Modifier = { multipliers?: number[]; volatility?: number };
 
@@ -165,8 +202,8 @@ const updatePriceModifierMap = (
   }, {});
 };
 
-const roundTickPoints = [...Array(NUM_ROUNDS)].map((_, i) =>
-  Math.ceil((i + 1) * TICKS_PER_ROUND - ROUND_MODIFIER_TICK_LIFETIME)
+const roundTickPoints = range(0, NUM_ROUNDS).map((_, i) =>
+  Math.ceil((i + 1) * TICKS_PER_WEEK - ROUND_MODIFIER_TICK_LIFETIME)
 );
 console.log(roundTickPoints);
 

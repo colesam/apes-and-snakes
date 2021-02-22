@@ -5,7 +5,7 @@ import React from "react";
 import styled from "styled-components";
 import {
   NUM_ROUNDS,
-  PRICE_TICKS_PER_DAY,
+  TICKS_PER_GRAPH,
   ROUND_MODIFIER_TICK_LIFETIME,
   ROUND_RANK_MODIFIERS,
 } from "../../config";
@@ -98,7 +98,7 @@ function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
           xScale={{
             type: "linear",
             min: 1,
-            max: PRICE_TICKS_PER_DAY,
+            max: TICKS_PER_GRAPH,
           }}
           yScale={{
             type: "linear",

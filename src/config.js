@@ -13,7 +13,7 @@ export const SELL_PRICE_MODIFIER = -2.5;
 export const SELL_MODIFIER_TICK_LIFETIME = 15;
 
 export const NUM_ROUNDS = 2; // temporary
-export const TICKS_PER_ROUND = 100;
+export const TICKS_PER_WEEK = 100;
 export const ROUND_FLUCTUATION_MAX = GENERAL_FLUCTUATION_MAX * 2;
 export const ROUND_RANK_MODIFIERS = {
   1: [3, 2, 2],
@@ -27,6 +27,8 @@ export const ROUND_RANK_MODIFIERS = {
   9: [-3, -2],
   10: [-3, -2, -2],
 };
-export const ROUND_MODIFIER_TICK_LIFETIME = TICKS_PER_ROUND * (2 / 7); // weekend
+export const ROUND_MODIFIER_TICK_LIFETIME = TICKS_PER_WEEK * (2 / 7); // weekend
 
-export const PRICE_TICKS_PER_DAY = NUM_ROUNDS * TICKS_PER_ROUND;
+export const TICKS_PER_GRAPH = NUM_ROUNDS * TICKS_PER_WEEK;
+
+export const SIM_ROUNDS = 2;

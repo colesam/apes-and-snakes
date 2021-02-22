@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { PRICE_TICKS_PER_DAY } from "../../config";
+import { TICKS_PER_GRAPH } from "../../config";
 import { RoundRank } from "../../core/poker";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
@@ -30,7 +30,7 @@ function Stock({
   onBuy,
   onSell,
 }: PropTypes) {
-  let marketClose = priceHistory.length === PRICE_TICKS_PER_DAY + 1;
+  let marketClose = priceHistory.length > TICKS_PER_GRAPH;
   const startPrice = priceHistory[0] || 0;
   const endPrice = priceHistory[priceHistory.length - 1];
   const change = (endPrice - startPrice) / startPrice;
