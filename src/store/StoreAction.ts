@@ -1,3 +1,4 @@
+import { applyFlop } from "./storeActions/applyFlop";
 import { authPlayerAction } from "./storeActions/authPlayerAction";
 import { hostGame } from "./storeActions/hostGame";
 import { mapSecretKeyToPlayerId } from "./storeActions/mapSecretKeyToPlayerId";
@@ -7,8 +8,10 @@ import { setHostPeerId } from "./storeActions/setHostPeerId";
 import { setPlayerConnection } from "./storeActions/setPlayerConnection";
 import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
+import { tickStockPrices } from "./storeActions/tickStockPrices";
 
 export const StoreAction = {
+  applyFlop,
   authPlayerAction,
   hostGame,
   mapSecretKeyToPlayerId,
@@ -18,4 +21,5 @@ export const StoreAction = {
   setPlayerConnection,
   setPlayerState,
   setRoomCode,
+  tickStockPrices,
 };

@@ -66,8 +66,11 @@ function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
             color = mod > 0 ? "green" : "red";
           }
           return (
-            <Flex justify={"center"} width={`${100 / NUM_ROUNDS}%`} key={i}>
+            <Flex justify={"flex-end"} width={`${100 / NUM_ROUNDS}%`} key={i}>
               <Text
+                position={"relative"}
+                right={`${ROUND_MODIFIER_TICK_LIFETIME}%`}
+                transform={`translateX(50%)`}
                 color={`${color}.600`}
                 bg={`${color}.100`}
                 borderWidth={1}

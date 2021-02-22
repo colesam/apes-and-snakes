@@ -1,11 +1,12 @@
 import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
 import { Pair } from "../card/Pair";
+import { RoundRank } from "../poker";
 
 export type TStock = {
   name: string;
   ticker: string;
-  change: number;
   priceHistory: number[];
+  rankHistory: RoundRank[];
   pair: Pair;
 };
 

@@ -1,9 +1,8 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
 import initStorage from "../core/localStorage";
-import { PlayerConnection } from "../core/player/PlayerConnection";
+import { privateState } from "./privateState";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -11,21 +10,6 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
  * Data in this store is specific/private to this user, and is not shared with
  * other peers.
  */
-const privateState = {
-  // Host state
-  isHost: false,
-  secretKeyPlayerIdMap: {} as { [key: string]: string },
-  playerConnections: {} as { [key: string]: PlayerConnection },
-
-  // Player state
-  hostPeerId: "",
-  previousRoomCode: "",
-  playerId: "",
-  pingIntervalId: null as NodeJS.Timeout | null,
-  secretKey:
-    storageGet("secretKey") ||
-    (storageSet("secretKey", generateId()) as string),
-};
 
 export type PrivateState = typeof privateState;
 
@@ -50,7 +34,13 @@ for (const key in privateState) {
 setPrivate(initialStorageState);
 
 // Set up local storage persistance
-const exclude = ["pingIntervalId", "hostPeerId", "playerConnections"];
+const exclude = [
+  "pingIntervalId",
+  "hostPeerId",
+  "playerConnections",
+  "stockRollModifierMap",
+  "stockVolatilityModifierMap",
+];
 usePrivateStore.subscribe((newState, oldState) => {
   const stateChanges = diff(newState, oldState);
   for (const [key, value] of Object.entries(stateChanges)) {

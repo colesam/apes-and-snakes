@@ -10,13 +10,11 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { TICKS_PER_GRAPH } from "../../config";
-import { RoundRank } from "../../core/poker";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
-  rankHistory: (RoundRank | null)[];
   onBuy?: () => void;
   onSell?: () => void;
 }
