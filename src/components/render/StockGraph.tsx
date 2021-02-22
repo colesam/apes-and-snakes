@@ -6,7 +6,7 @@ import styled from "styled-components";
 import {
   NUM_ROUNDS,
   TICKS_PER_GRAPH,
-  ROUND_MODIFIER_TICK_LIFETIME,
+  TICKS_PER_WEEKEND,
   ROUND_RANK_MODIFIERS,
 } from "../../config";
 import { RoundRank } from "../../core/poker";
@@ -51,7 +51,7 @@ const rounds = () => {
 function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
   const priceData = priceHistory.map((price, i) => ({ x: i + 1, y: price }));
   const paddedRankHistory = rounds().map((_, i) => rankHistory[i] || null);
-  const modifierPeriodWidth = ROUND_MODIFIER_TICK_LIFETIME;
+  const modifierPeriodWidth = TICKS_PER_WEEKEND;
 
   const min = Math.min(...priceHistory);
   const max = Math.max(...priceHistory);
@@ -69,7 +69,7 @@ function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
             <Flex justify={"flex-end"} width={`${100 / NUM_ROUNDS}%`} key={i}>
               <Text
                 position={"relative"}
-                right={`${ROUND_MODIFIER_TICK_LIFETIME}%`}
+                right={`${TICKS_PER_WEEKEND}%`}
                 transform={`translateX(50%)`}
                 color={`${color}.600`}
                 bg={`${color}.100`}

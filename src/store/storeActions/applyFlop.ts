@@ -1,6 +1,6 @@
 import {
   ROUND_FLUCTUATION_MAX,
-  ROUND_MODIFIER_TICK_LIFETIME,
+  TICKS_PER_WEEKEND,
   ROUND_RANK_MODIFIERS,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
@@ -33,7 +33,7 @@ export const makeApplyFlop = (
     stockVolatilityModifierMap[stockTicker] = [
       ...(stockVolatilityModifierMap[stockTicker] || []),
       {
-        expirationTick: tick + ROUND_MODIFIER_TICK_LIFETIME,
+        expirationTick: tick + TICKS_PER_WEEKEND,
         value: ROUND_FLUCTUATION_MAX,
       },
     ];
@@ -41,7 +41,7 @@ export const makeApplyFlop = (
     stockRollModifierMap[stockTicker] = [
       ...(stockRollModifierMap[stockTicker] || []),
       ...ROUND_RANK_MODIFIERS[stockRankMap[stockTicker]].map(value => ({
-        expirationTick: tick + ROUND_MODIFIER_TICK_LIFETIME,
+        expirationTick: tick + TICKS_PER_WEEKEND,
         value,
       })),
     ];

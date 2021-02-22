@@ -27,7 +27,8 @@ export const ROUND_RANK_MODIFIERS = {
   9: [-3, -2],
   10: [-3, -2, -2],
 };
-export const ROUND_MODIFIER_TICK_LIFETIME = TICKS_PER_WEEK * (2 / 7); // weekend
+export const TICKS_PER_WEEKEND = TICKS_PER_WEEK * (2 / 7);
+export const TICKS_PER_MARKET_OPEN = TICKS_PER_WEEK * (2 / 7);
 
 export const TICKS_PER_GRAPH = NUM_ROUNDS * TICKS_PER_WEEK;
 

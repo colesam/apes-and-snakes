@@ -3,7 +3,7 @@ import { range } from "lodash";
 import React, { useEffect, useState } from "react";
 import {
   TICKS_PER_GRAPH,
-  ROUND_MODIFIER_TICK_LIFETIME,
+  TICKS_PER_WEEKEND,
   TICK_SPEED,
   TICKS_PER_WEEK,
   SIM_ROUNDS,
@@ -15,10 +15,7 @@ import StockRender from "../render/Stock";
 function isWeekend(tick: number) {
   const currentWeek = Math.floor(tick / TICKS_PER_WEEK) + 1;
 
-  return (
-    tick ===
-    Math.ceil(currentWeek * TICKS_PER_WEEK - ROUND_MODIFIER_TICK_LIFETIME)
-  );
+  return tick === Math.ceil(currentWeek * TICKS_PER_WEEK - TICKS_PER_WEEKEND);
 }
 
 function Test() {
