@@ -1,7 +1,7 @@
 import {
-  ROUND_FLUCTUATION_MAX,
+  WEEKEND_FLUCTUATION_MAX,
   TICKS_PER_WEEKEND,
-  ROUND_RANK_MODIFIERS,
+  RANK_MODIFIERS,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank } from "../../core/poker";
@@ -34,13 +34,13 @@ export const makeApplyFlop = (
       ...(stockVolatilityModifierMap[stockTicker] || []),
       {
         expirationTick: tick + TICKS_PER_WEEKEND,
-        value: ROUND_FLUCTUATION_MAX,
+        value: WEEKEND_FLUCTUATION_MAX,
       },
     ];
     // @ts-ignore
     stockRollModifierMap[stockTicker] = [
       ...(stockRollModifierMap[stockTicker] || []),
-      ...ROUND_RANK_MODIFIERS[stockRankMap[stockTicker]].map(value => ({
+      ...RANK_MODIFIERS[stockRankMap[stockTicker]].map(value => ({
         expirationTick: tick + TICKS_PER_WEEKEND,
         value,
       })),

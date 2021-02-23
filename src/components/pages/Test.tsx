@@ -6,7 +6,7 @@ import {
   TICKS_PER_WEEKEND,
   TICK_SPEED,
   TICKS_PER_WEEK,
-  SIM_ROUNDS,
+  SIM_WEEKS,
 } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { useSharedStore } from "../../store/sharedStore";
@@ -15,7 +15,7 @@ import StockRender from "../render/Stock";
 function isWeekend(tick: number) {
   const currentWeek = Math.floor(tick / TICKS_PER_WEEK) + 1;
 
-  return tick === Math.ceil(currentWeek * TICKS_PER_WEEK - TICKS_PER_WEEKEND);
+  return tick === Math.floor(currentWeek * TICKS_PER_WEEK - TICKS_PER_WEEKEND);
 }
 
 function Test() {
@@ -24,19 +24,19 @@ function Test() {
 
   useEffect(() => {
     // Simulate one day
-    if (SIM_ROUNDS) {
-      range(0, SIM_ROUNDS * TICKS_PER_WEEK).forEach(tick => {
+    if (SIM_WEEKS) {
+      range(0, SIM_WEEKS * TICKS_PER_WEEK).forEach(tick => {
         StoreAction.tickStockPrices(tick);
         if (isWeekend(tick)) StoreAction.applyFlop(tick);
       });
-      setTick(SIM_ROUNDS * TICKS_PER_WEEK + 1);
+      setTick(SIM_WEEKS * TICKS_PER_WEEK + 1);
     }
   }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
       if (
-        (!SIM_ROUNDS || tick > SIM_ROUNDS * TICKS_PER_WEEK) &&
+        (!SIM_WEEKS || tick > SIM_WEEKS * TICKS_PER_WEEK) &&
         tick < TICKS_PER_GRAPH
       ) {
         StoreAction.tickStockPrices(tick);
