@@ -18,6 +18,7 @@ const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
     id: playerId,
     name: payload.playerName,
     connectionStatus: ConnectionStatus.CONNECTED,
+    positions: [],
   });
 
   StoreAction.pushPlayer(newPlayer);

@@ -56,7 +56,9 @@ export const rankHands = (hands: SolvedHand[]): [SolvedHand, number][] => {
   });
 };
 
-export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+// export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const mapPairsToRank = (
   pairMap: {

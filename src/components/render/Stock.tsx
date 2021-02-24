@@ -1,4 +1,3 @@
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -12,11 +11,13 @@ import React from "react";
 import { TICKS_PER_GRAPH } from "../../config";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
+import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
-  onBuy?: () => void;
-  onSell?: () => void;
+  stockQtys?: number[]; // temp
+  onBuy?: (n: number, s: number) => void;
+  onSell?: (n: number) => void;
 }
 
 function Stock({
@@ -25,13 +26,28 @@ function Stock({
   priceHistory,
   rankHistory,
   pair,
+  stockQtys,
   onBuy,
-  onSell,
 }: PropTypes) {
-  let marketClose = priceHistory.length > TICKS_PER_GRAPH;
+  let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const startPrice = priceHistory[0] || 0;
   const endPrice = priceHistory[priceHistory.length - 1];
-  const change = (endPrice - startPrice) / startPrice;
+
+  let buyBtns;
+  if (stockQtys) {
+    buyBtns = stockQtys.map(qty => (
+      <Button
+        size={"xs"}
+        colorScheme={"green"}
+        w={"100%"}
+        onClick={() => onBuy && onBuy(qty * 1000, endPrice)}
+        key={`buy_${qty}`}
+      >
+        Buy {qty}K
+      </Button>
+    ));
+  }
+
   return (
     <VStack
       borderWidth={1}
@@ -52,14 +68,7 @@ function Stock({
         <CardStack cards={pair.cards} transform={"translateY(-50%)"} />
       </Flex>
       <Flex justify={"space-between"}>
-        <Flex
-          align={"center"}
-          color={change < 0 ? "red.500" : "green.500"}
-          mr={8}
-        >
-          {(change * 100).toFixed(1)}%
-          {change < 0 ? <TriangleDownIcon ml={2} /> : <TriangleUpIcon ml={2} />}
-        </Flex>
+        <PercentChange start={startPrice} end={endPrice} />
         <Text>{"$" + startPrice.toFixed(2)}</Text>
         <Text fontWeight={"bold"} as={"kbd"}>
           {"=>"}
@@ -73,14 +82,7 @@ function Stock({
         marketClose={marketClose}
       />
       <Divider />
-      <HStack mt={4}>
-        <Button colorScheme={"green"} w={"100%"} onClick={onBuy}>
-          Buy
-        </Button>
-        <Button colorScheme={"blue"} w={"100%"} onClick={onSell}>
-          Sell
-        </Button>
-      </HStack>
+      <HStack w={"100%"}>{buyBtns}</HStack>
     </VStack>
   );
 }
