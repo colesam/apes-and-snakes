@@ -8,8 +8,13 @@ import {
   TICKS_PER_WEEK,
   WEEKEND_START,
 } from "../../config";
-import { StoreAction } from "../../store/StoreAction";
+import { RollModifier } from "../../core/stock/RollModifier";
+import { Stock } from "../../core/stock/Stock";
+import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
+import { getPrivate, setPrivate } from "../../store/privateStore";
 import { getShared, setShared, useSharedStore } from "../../store/sharedStore";
+import { pureApplyFlop } from "../../store/storeActions/applyFlop";
+import { pureTickStockPrices } from "../../store/storeActions/tickStockPrices";
 import StockRender from "../render/Stock";
 
 function isWeekend(tick: number) {
@@ -17,9 +22,29 @@ function isWeekend(tick: number) {
   return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK);
 }
 
-function runTick(tick: number) {
-  StoreAction.tickStockPrices(tick);
-  if (isWeekend(tick)) StoreAction.applyFlop(tick);
+function runTick(
+  tick: number,
+  stocks: Stock[],
+  stockVolatilityModifierMap: { [key: string]: VolatilityModifier[] },
+  stockRollModifierMap: { [key: string]: RollModifier[] }
+) {
+  let updates = pureTickStockPrices(
+    tick,
+    stocks,
+    stockVolatilityModifierMap,
+    stockRollModifierMap
+  );
+
+  if (isWeekend(tick)) {
+    updates = pureApplyFlop(
+      tick,
+      updates.stocks,
+      updates.stockVolatilityModifierMap,
+      updates.stockRollModifierMap
+    );
+  }
+
+  return updates;
 }
 
 function Spectate() {
@@ -40,24 +65,55 @@ function Spectate() {
     // TODO: move
     // Simulate one day
     if (SIM_WEEKS) {
+      const { stocks } = getShared();
+      const { stockVolatilityModifierMap, stockRollModifierMap } = getPrivate();
+      let updates = {
+        stocks,
+        stockVolatilityModifierMap,
+        stockRollModifierMap,
+      };
+
       range(0, SIM_WEEKS * TICKS_PER_WEEK).forEach(tick => {
-        runTick(tick);
+        updates = runTick(
+          tick,
+          updates.stocks,
+          updates.stockVolatilityModifierMap,
+          updates.stockRollModifierMap
+        );
       });
-      setShared(s => ({ tick: SIM_WEEKS * TICKS_PER_WEEK + 1 }));
+
+      setShared(s => ({
+        tick: SIM_WEEKS * TICKS_PER_WEEK + 1,
+        stocks: updates.stocks,
+      }));
+      setPrivate({
+        stockVolatilityModifierMap: updates.stockVolatilityModifierMap,
+        stockRollModifierMap: updates.stockRollModifierMap,
+      });
     }
   }, []);
 
   useEffect(() => {
     // TODO: move
     const id = setInterval(() => {
-      const { tick } = getShared();
+      const { tick, stocks } = getShared();
+      const { stockVolatilityModifierMap, stockRollModifierMap } = getPrivate();
       if (
         (!SIM_WEEKS || tick > SIM_WEEKS * TICKS_PER_WEEK) &&
         tick < TICKS_PER_GRAPH
       ) {
-        runTick(tick);
+        const updates = runTick(
+          tick,
+          stocks,
+          stockVolatilityModifierMap,
+          stockRollModifierMap
+        );
+        setShared({ tick: tick + 1, stocks: updates.stocks });
+        setPrivate({
+          stockVolatilityModifierMap: updates.stockVolatilityModifierMap,
+          stockRollModifierMap: updates.stockRollModifierMap,
+        });
       }
-      StoreAction.incrementTick();
     }, TICK_SPEED);
     return () => clearInterval(id);
   }, []);
