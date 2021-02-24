@@ -7,21 +7,13 @@ export const TICK_SPEED = 500; // 1500
 export const STOCK_PRICE_FLOOR = 10;
 
 export const GENERAL_FLUCTUATION_MAX = 0.1 / 100;
-<<<<<<< Updated upstream
-export const BUY_PRICE_MODIFIER = 5;
-export const BUY_MODIFIER_TICK_LIFETIME = 10;
-export const SELL_PRICE_MODIFIER = -1 * BUY_PRICE_MODIFIER;
-=======
 export const BUY_ROLL_MODIFIER = 2;
-export const BUY_MODIFIER_TICK_LIFETIME = 10;
 export const SELL_ROLL_MODIFIER = -1 * BUY_ROLL_MODIFIER;
->>>>>>> Stashed changes
+export const BUY_MODIFIER_TICK_LIFETIME = 10;
 export const SELL_MODIFIER_TICK_LIFETIME = BUY_MODIFIER_TICK_LIFETIME;
 
 export const WEEKS_PER_GRAPH = 2;
 
-<<<<<<< Updated upstream
-=======
 // export const RANK_MODIFIERS = {
 //   1: [3, 2, 2],
 //   2: [3, 2],
@@ -35,7 +27,6 @@ export const WEEKS_PER_GRAPH = 2;
 //   10: [-3, -2, -2],
 // };
 
->>>>>>> Stashed changes
 export const RANK_MODIFIERS = {
   1: [3, 2, 2],
   2: [3, 2],
@@ -55,12 +46,7 @@ export const FLOP_PREVIEW_POINT = 2.5 / 7;
 export const WEEKEND_START = 5 / 7;
 
 export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
-<<<<<<< Updated upstream
-
-export const SIM_WEEKS = 2;
-=======
 
 export const SIM_WEEKS = 1;
 
 export const NUM_STOCKS = 6;
->>>>>>> Stashed changes

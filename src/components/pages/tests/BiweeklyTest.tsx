@@ -9,13 +9,8 @@ import {
   FLOP_PREVIEW_POINT,
   WEEKEND_START,
   BUY_MODIFIER_TICK_LIFETIME,
-<<<<<<< Updated upstream
-  BUY_PRICE_MODIFIER,
-  SELL_PRICE_MODIFIER,
-=======
   BUY_ROLL_MODIFIER,
   SELL_ROLL_MODIFIER,
->>>>>>> Stashed changes
 } from "../../../config";
 import { RollModifier } from "../../../core/stock/RollModifier";
 import { StoreAction } from "../../../store/StoreAction";
@@ -41,11 +36,7 @@ function runTick(tick: number) {
     // Simulate effect buys and sells have on price
     getShared().stocks.forEach(stock => {
       const value =
-<<<<<<< Updated upstream
-        Math.random() < 0.5 ? BUY_PRICE_MODIFIER : SELL_PRICE_MODIFIER;
-=======
         Math.random() < 0.5 ? BUY_ROLL_MODIFIER : SELL_ROLL_MODIFIER;
->>>>>>> Stashed changes
       for (let i = 0; i < SIM_TRANSACTIONS; i++) {
         StoreAction.pushRollModifiers(stock.ticker, [
           new RollModifier({

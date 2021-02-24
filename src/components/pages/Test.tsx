@@ -18,20 +18,7 @@ import {
   TICK_SPEED,
   TICKS_PER_WEEK,
   SIM_WEEKS,
-<<<<<<< Updated upstream
   FLOP_PREVIEW_POINT,
-  WEEKEND_START,
-  BUY_MODIFIER_TICK_LIFETIME,
-  BUY_PRICE_MODIFIER,
-  SELL_PRICE_MODIFIER,
-} from "../../config";
-import { RollModifier } from "../../core/stock/RollModifier";
-import { StoreAction } from "../../store/StoreAction";
-import { getShared, useSharedStore } from "../../store/sharedStore";
-import StockRender from "../render/Stock";
-
-const SIM_TRANSACTIONS = 1;
-=======
   WEEKEND_START,
   BUY_MODIFIER_TICK_LIFETIME,
   BUY_ROLL_MODIFIER,
@@ -45,14 +32,12 @@ import PercentChange from "../render/PercentChange";
 import StockRender from "../render/Stock";
 
 const stockQtys = [1, 2, 10];
->>>>>>> Stashed changes
 
 function isWeekend(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
   return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK);
 }
 
-<<<<<<< Updated upstream
 function isFlopPreview(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
   return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
@@ -60,26 +45,6 @@ function isFlopPreview(tick: number) {
 
 function runTick(tick: number) {
   StoreAction.tickStockPrices(tick);
-  if (isFlopPreview(tick)) {
-    console.log(`[DEBUG] Pushing mod`);
-    // Simulate effect buys and sells have on price
-    getShared().stocks.forEach(stock => {
-      const value =
-        Math.random() < 0.5 ? BUY_PRICE_MODIFIER : SELL_PRICE_MODIFIER;
-      for (let i = 0; i < SIM_TRANSACTIONS; i++) {
-        StoreAction.pushRollModifiers(stock.ticker, [
-          new RollModifier({
-            expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
-            value,
-          }),
-        ]);
-      }
-    });
-  }
-=======
-function runTick(tick: number) {
-  StoreAction.tickStockPrices(tick);
->>>>>>> Stashed changes
   if (isWeekend(tick)) StoreAction.applyFlop(tick);
 }
 
@@ -220,8 +185,12 @@ function Test() {
   );
 }
 
+function withCommas(x: number) {
+  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 function formatCurrency(x: number) {
-  return "$" + x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return "$" + withCommas(x);
 }
 
 export default Test;
