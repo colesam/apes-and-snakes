@@ -9,6 +9,9 @@ type TPair = {
 export interface Pair extends DeepReadonly<TPair> {}
 
 export class Pair extends CardCombination<TPair> {
+  constructor(data?: Partial<TPair>) {
+    super({ cards: [new Card(), new Card()] }, data);
+  }
   get cards() {
     return this.data.cards;
   }

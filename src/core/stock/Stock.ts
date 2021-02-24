@@ -12,4 +12,17 @@ export type TStock = {
 
 export interface Stock extends DeepReadonly<TStock> {}
 
-export class Stock extends ImmutableRecord<TStock> {}
+export class Stock extends ImmutableRecord<TStock> {
+  constructor(data?: Partial<TStock>) {
+    super(
+      {
+        name: "",
+        ticker: "",
+        priceHistory: [],
+        rankHistory: [],
+        pair: new Pair(),
+      },
+      data
+    );
+  }
+}

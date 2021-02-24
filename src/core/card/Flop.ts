@@ -9,6 +9,15 @@ type TFlop = {
 export interface Flop extends DeepReadonly<TFlop> {}
 
 export class Flop extends CardCombination<TFlop> {
+  constructor(data?: Partial<TFlop>) {
+    super(
+      {
+        cards: [new Card(), new Card(), new Card(), new Card(), new Card()],
+      },
+      data
+    );
+  }
+
   get cards() {
     return this.data.cards;
   }

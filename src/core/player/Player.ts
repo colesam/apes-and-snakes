@@ -1,4 +1,5 @@
 import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import generateId from "../generateId";
 import { Position } from "../stock/Position";
 import { ConnectionStatus } from "./ConnectionStatus";
 
@@ -11,4 +12,16 @@ export type TPlayer = {
 
 export interface Player extends DeepReadonly<TPlayer> {}
 
-export class Player extends ImmutableRecord<TPlayer> {}
+export class Player extends ImmutableRecord<TPlayer> {
+  constructor(data?: Partial<TPlayer>) {
+    super(
+      {
+        id: generateId(),
+        name: "",
+        connectionStatus: ConnectionStatus.CONNECTED,
+        positions: [],
+      },
+      data
+    );
+  }
+}

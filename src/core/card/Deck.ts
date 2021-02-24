@@ -23,11 +23,13 @@ type TDeck = {
 export interface Deck extends DeepReadonly<TDeck> {}
 
 export class Deck extends ImmutableRecord<TDeck> {
-  constructor(data?: TDeck) {
-    super({
-      ...data,
-      cards: data?.cards || generateDeck(),
-    });
+  constructor(data?: Partial<TDeck>) {
+    super(
+      {
+        cards: generateDeck(),
+      },
+      data
+    );
   }
 
   get cards() {

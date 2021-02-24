@@ -2,15 +2,20 @@ export type DeepReadonly<T> = {
   readonly [K in keyof T]: T[K];
 };
 
-export class ImmutableRecord<T extends object> {
+export abstract class ImmutableRecord<T extends object> {
+  protected readonly defaults: T;
+  protected readonly data: T;
   protected readonly __class: string;
 
-  constructor(protected readonly data: T, __class?: string) {
+  constructor(defaults: T, initialData?: Partial<T>, __class?: string) {
     if (!__class) {
       this.__class = this.constructor.name;
     } else {
       this.__class = __class;
     }
+
+    this.defaults = defaults;
+    this.data = { ...this.defaults, ...(initialData || {}) };
 
     return new Proxy(this, {
       get(target, name) {

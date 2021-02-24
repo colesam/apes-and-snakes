@@ -1,9 +1,12 @@
 import { setPrivate } from "../store/privateStore";
 import { getShared, setShared } from "../store/sharedStore";
+import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
+import handleOpenPosition from "./actionHandlers/handleOpenPosition";
 import handlePing from "./actionHandlers/handlePing";
 import handleReconnect from "./actionHandlers/handleReconnect";
+import handleStartGame from "./actionHandlers/handleStartGame";
 import PeerError from "./error/PeerError";
 import { TPeerAction } from "./types/TPeerAction";
 
@@ -23,7 +26,13 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
 
   [TPeerAction.RECONNECT]: handleReconnect,
 
+  [TPeerAction.START_GAME]: handleStartGame,
+
   [TPeerAction.END_GAME]: handleEndGame,
+
+  [TPeerAction.OPEN_POSITION]: handleOpenPosition,
+
+  [TPeerAction.CLOSE_POSITION]: handleClosePosition,
 
   [TPeerAction.PULL_SHARED]: ({ respond }) => respond(getShared()),
 

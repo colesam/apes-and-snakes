@@ -125,7 +125,6 @@ function Test() {
               priceHistory={stock.priceHistory}
               rankHistory={stock.rankHistory}
               pair={stock.pair}
-              stockQtys={stockQtys}
               onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
               key={stock.name}
             />

@@ -50,3 +50,5 @@ export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 export const SIM_WEEKS = 1;
 
 export const NUM_STOCKS = 6;
+
+export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];

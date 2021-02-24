@@ -6,8 +6,10 @@ import Host from "./pages/Host";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
 import MainMenu from "./pages/MainMenu";
+import Play from "./pages/Play";
 import Reconnect from "./pages/Reconnect";
 import Rehost from "./pages/Rehost";
+import Spectate from "./pages/Spectate";
 import Test from "./pages/Test";
 
 const AppContainer = styled.div`
@@ -42,6 +44,14 @@ function App() {
 
         <Route path="/lobby">
           <Lobby />
+        </Route>
+
+        <Route path="/play">
+          <Play />
+        </Route>
+
+        <Route path="/spectate">
+          <Spectate />
         </Route>
 
         <Route path="/test">

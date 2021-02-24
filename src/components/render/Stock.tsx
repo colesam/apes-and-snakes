@@ -15,7 +15,7 @@ import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
-  stockQtys?: number[]; // temp
+  purchaseQuantities?: number[]; // temp
   onBuy?: (n: number, s: number) => void;
   onSell?: (n: number) => void;
 }
@@ -26,7 +26,7 @@ function Stock({
   priceHistory,
   rankHistory,
   pair,
-  stockQtys,
+  purchaseQuantities,
   onBuy,
 }: PropTypes) {
   let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
@@ -34,16 +34,16 @@ function Stock({
   const endPrice = priceHistory[priceHistory.length - 1];
 
   let buyBtns;
-  if (stockQtys) {
-    buyBtns = stockQtys.map(qty => (
+  if (purchaseQuantities) {
+    buyBtns = purchaseQuantities.map(qty => (
       <Button
         size={"xs"}
         colorScheme={"green"}
         w={"100%"}
-        onClick={() => onBuy && onBuy(qty * 1000, endPrice)}
+        onClick={() => onBuy && onBuy(qty, endPrice)}
         key={`buy_${qty}`}
       >
-        Buy {qty}K
+        Buy {qty / 1000}K
       </Button>
     ));
   }
@@ -81,8 +81,12 @@ function Stock({
         rankHistory={rankHistory}
         marketClose={marketClose}
       />
-      <Divider />
-      <HStack w={"100%"}>{buyBtns}</HStack>
+      {buyBtns && (
+        <>
+          <Divider />
+          <HStack w={"100%"}>{buyBtns}</HStack>
+        </>
+      )}
     </VStack>
   );
 }

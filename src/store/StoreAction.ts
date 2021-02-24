@@ -1,6 +1,7 @@
 import { applyFlop } from "./storeActions/applyFlop";
 import { authPlayerAction } from "./storeActions/authPlayerAction";
 import { hostGame } from "./storeActions/hostGame";
+import { incrementTick } from "./storeActions/incrementTick";
 import { mapSecretKeyToPlayerId } from "./storeActions/mapSecretKeyToPlayerId";
 import { pushPlayer } from "./storeActions/pushPlayer";
 import { pushRollModifiers } from "./storeActions/pushRollModifiers";
@@ -16,6 +17,7 @@ export const StoreAction = {
   applyFlop,
   authPlayerAction,
   hostGame,
+  incrementTick,
   mapSecretKeyToPlayerId,
   pushPlayer,
   pushRollModifiers,
