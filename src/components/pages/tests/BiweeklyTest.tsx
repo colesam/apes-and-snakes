@@ -11,11 +11,11 @@ import {
   BUY_MODIFIER_TICK_LIFETIME,
   BUY_PRICE_MODIFIER,
   SELL_PRICE_MODIFIER,
-} from "../../config";
-import { RollModifier } from "../../core/stock/RollModifier";
-import { StoreAction } from "../../store/StoreAction";
-import { getShared, useSharedStore } from "../../store/sharedStore";
-import StockRender from "../render/Stock";
+} from "../../../config";
+import { RollModifier } from "../../../core/stock/RollModifier";
+import { StoreAction } from "../../../store/StoreAction";
+import { getShared, useSharedStore } from "../../../store/sharedStore";
+import StockRender from "../../render/Stock";
 
 const SIM_TRANSACTIONS = 1;
 
@@ -50,7 +50,7 @@ function runTick(tick: number) {
   if (isWeekend(tick)) StoreAction.applyFlop(tick);
 }
 
-function Test() {
+function BiweeklyTest() {
   const [tick, setTick] = useState(0);
   const stocks = useSharedStore(s => s.stocks);
 
@@ -101,4 +101,4 @@ function Test() {
   );
 }
 
-export default Test;
+export default BiweeklyTest;

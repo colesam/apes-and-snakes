@@ -7,10 +7,10 @@ export const TICK_SPEED = 15; // 1500
 export const STOCK_PRICE_FLOOR = 10;
 
 export const GENERAL_FLUCTUATION_MAX = 0.1 / 100;
-export const BUY_PRICE_MODIFIER = 2.5;
-export const BUY_MODIFIER_TICK_LIFETIME = 15;
-export const SELL_PRICE_MODIFIER = -2.5;
-export const SELL_MODIFIER_TICK_LIFETIME = 15;
+export const BUY_PRICE_MODIFIER = 5;
+export const BUY_MODIFIER_TICK_LIFETIME = 10;
+export const SELL_PRICE_MODIFIER = -1 * BUY_PRICE_MODIFIER;
+export const SELL_MODIFIER_TICK_LIFETIME = BUY_MODIFIER_TICK_LIFETIME;
 
 export const WEEKS_PER_GRAPH = 2;
 

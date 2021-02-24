@@ -2,7 +2,7 @@ import generateId from "../core/generateId";
 import initStorage from "../core/localStorage";
 import { PlayerConnection } from "../core/player/PlayerConnection";
 import { RollModifier } from "../core/stock/RollModifier";
-import { VolitilityModifier } from "../core/stock/VolitilityModifier";
+import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
@@ -12,7 +12,7 @@ export const privateState = {
   secretKeyPlayerIdMap: {} as { [key: string]: string },
   playerConnections: {} as { [key: string]: PlayerConnection },
   stockRollModifierMap: {} as { [key: string]: RollModifier[] },
-  stockVolatilityModifierMap: {} as { [key: string]: VolitilityModifier[] },
+  stockVolatilityModifierMap: {} as { [key: string]: VolatilityModifier[] },
 
   // Player state
   hostPeerId: "",

@@ -2,7 +2,7 @@ import { random, last } from "lodash";
 import { GENERAL_FLUCTUATION_MAX, STOCK_PRICE_FLOOR } from "../../config";
 import { RollModifier } from "./RollModifier";
 import { Stock } from "./Stock";
-import { VolitilityModifier } from "./VolitilityModifier";
+import { VolatilityModifier } from "./VolatilityModifier";
 
 function roll(rolls: number[]) {
   return rolls[random(rolls.length - 1)];
@@ -10,7 +10,7 @@ function roll(rolls: number[]) {
 
 const nextPrice = (
   priceHistory: number[],
-  volMods: VolitilityModifier[],
+  volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): number => {
   const volatility = Math.max(
@@ -30,7 +30,7 @@ const nextPrice = (
 
 export const tickPrice = (
   stock: Stock,
-  volMods: VolitilityModifier[],
+  volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): Stock => {
   return stock.set({
