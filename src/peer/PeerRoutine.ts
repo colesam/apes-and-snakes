@@ -4,6 +4,7 @@ import { establishPing } from "./peerRoutines/establishPing";
 import { join } from "./peerRoutines/join";
 import { pullShared } from "./peerRoutines/pullShared";
 import { reconnect } from "./peerRoutines/reconnect";
+import { startGame } from "./peerRoutines/startGame";
 
 export const PeerRoutine = {
   clearPing,
@@ -14,6 +15,7 @@ export const PeerRoutine = {
 
   // Host only routines
   Host: {
+    startGame,
     endGame,
   },
 };

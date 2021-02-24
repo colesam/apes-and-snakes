@@ -43,10 +43,7 @@ function isFlopPreview(tick: number) {
   return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
 }
 
-function runTick(tick: number) {
-  StoreAction.tickStockPrices(tick);
-  if (isWeekend(tick)) StoreAction.applyFlop(tick);
-}
+function runTick(tick: number) {}
 
 function Test() {
   const [player, setPlayer] = useState(players[0]);

@@ -1,18 +1,21 @@
+import { Deck } from "../core/card/Deck";
 import generateId from "../core/generateId";
 import initStorage from "../core/localStorage";
 import { PlayerConnection } from "../core/player/PlayerConnection";
 import { RollModifier } from "../core/stock/RollModifier";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
+import { TMap } from "./types/TMap";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "privateStore");
 
 export const privateState = {
   // Host state
   isHost: false,
-  secretKeyPlayerIdMap: {} as { [key: string]: string },
-  playerConnections: {} as { [key: string]: PlayerConnection },
-  stockRollModifierMap: {} as { [key: string]: RollModifier[] },
-  stockVolatilityModifierMap: {} as { [key: string]: VolatilityModifier[] },
+  secretKeyPlayerIdMap: {} as TMap<string>,
+  playerConnections: {} as TMap<PlayerConnection>,
+  deck: new Deck().shuffle(),
+  stockRollModifierMap: {} as TMap<RollModifier[]>,
+  stockVolatilityModifierMap: {} as TMap<VolatilityModifier[]>,
 
   // Player state
   hostPeerId: "",

@@ -10,8 +10,8 @@ interface PropTypes extends HTMLChakraProps<"div"> {
 }
 
 function CardStack({ cards, cardScale, spacing = 4, ...props }: PropTypes) {
-  const cardElems = cards.map(card => (
-    <Card card={card} scale={cardScale} key={card.toString()} />
+  const cardElems = cards.map((card, i) => (
+    <Card card={card} scale={cardScale} key={i} />
   ));
 
   return (

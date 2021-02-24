@@ -13,7 +13,6 @@ import React from "react";
 import { Redirect, useLocation } from "wouter";
 import shallow from "zustand/shallow";
 import { GameStatus } from "../../core/game/GameStatus";
-import { PeerAction } from "../../peer/PeerAction";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { usePrivateStore } from "../../store/privateStore";
 import { useSharedStore } from "../../store/sharedStore";
@@ -33,16 +32,14 @@ function Lobby() {
     return <Redirect to={"/"} />;
   }
 
-  // TODO: improve
-  if (!isHost && gameStatus === GameStatus.IN_GAME) {
-    return <Redirect to={"/play"} />;
+  if (gameStatus === GameStatus.IN_GAME) {
+    return <Redirect to={isHost ? "/spectate" : "/play"} />;
   }
 
   // Handlers
   const handleStartGame = () => {
     if (isHost) {
-      PeerAction.startGame();
-      setLocation("/spectate");
+      PeerRoutine.Host.startGame();
     }
   };
 
@@ -88,12 +85,7 @@ function Lobby() {
 
       {isHost && (
         <HStack>
-          <Button
-            colorScheme="green"
-            w="100%"
-            onClick={handleStartGame}
-            disabled={players.length < 1}
-          >
+          <Button colorScheme="green" w="100%" onClick={handleStartGame}>
             Start Game
           </Button>
           <Button colorScheme="red" w="100%" onClick={handleEndGame}>
