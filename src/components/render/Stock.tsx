@@ -8,7 +8,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { TICKS_PER_GRAPH } from "../../config";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
 import PercentChange from "./PercentChange";
@@ -29,7 +28,8 @@ function Stock({
   purchaseQuantities,
   onBuy,
 }: PropTypes) {
-  let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
+  // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
+  const marketClose = true; // TODO
   const startPrice = priceHistory[0] || 0;
   const endPrice = priceHistory[priceHistory.length - 1];
 

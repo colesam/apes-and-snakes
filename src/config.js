@@ -2,7 +2,7 @@ export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 500; // 1500
+export const TICK_SPEED = 1000; // 1500
 
 export const STOCK_PRICE_FLOOR = 10;
 
@@ -46,6 +46,8 @@ export const FLOP_PREVIEW_POINT = 2.5 / 7;
 export const WEEKEND_START = 5 / 7;
 
 export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
+
+export const NUM_WEEKS = 4;
 
 export const SIM_WEEKS = 1;
 

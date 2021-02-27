@@ -1,12 +1,7 @@
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { last } from "lodash";
 import React, { useEffect } from "react";
-import {
-  TICKS_PER_GRAPH,
-  TICK_SPEED,
-  SIM_WEEKS,
-  TICKS_PER_WEEK,
-} from "../../config";
+import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getShared, useSharedStore } from "../../store/sharedStore";
 import StockRender from "../render/Stock";
@@ -31,7 +26,7 @@ function Spectate() {
       const { tick } = getShared();
       if (
         (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
-        tick < TICKS_PER_GRAPH
+        tick < NUM_WEEKS * TICKS_PER_WEEK
       ) {
         StoreAction.runTicks(1);
       }
