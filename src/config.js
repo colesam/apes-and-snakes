@@ -2,7 +2,7 @@ export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 1000; // 1500
+export const TICK_SPEED = 100; // 1500
 
 export const STOCK_PRICE_FLOOR = 10;
 

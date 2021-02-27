@@ -55,6 +55,7 @@ function Spectate() {
               priceHistory={stock.priceHistory}
               rankHistory={stock.rankHistory}
               pair={stock.pair}
+              pairIsNew={stock.pairIsNew}
               key={stock.name}
             />
           ))}

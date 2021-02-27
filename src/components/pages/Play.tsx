@@ -57,6 +57,7 @@ function Play() {
               priceHistory={stock.priceHistory}
               rankHistory={stock.rankHistory}
               pair={stock.pair}
+              pairIsNew={stock.pairIsNew}
               purchaseQuantities={PURCHASE_QUANTITIES}
               onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
               key={stock.name}

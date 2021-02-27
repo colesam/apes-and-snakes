@@ -110,8 +110,30 @@ export const runTicks = (numTicks: number) => {
       );
       setShared({ flopDisplay: flop });
     } else if (isEndOfWeek(tick)) {
+      // Each card has 10% chance of getting new cards
+      let { deck } = getPrivate();
+
+      stocks = stocks.map(stock => {
+        if (Math.random() < 0.1) {
+          const [newPair, newDeck] = deck
+            .insert(stock.pair.cards)
+            .shuffle()
+            .drawPair();
+          deck = newDeck;
+          return stock.set({
+            pair: newPair,
+            pairIsNew: true,
+          });
+        } else {
+          return stock.set({ pairIsNew: false });
+        }
+      });
+
       setShared({ flopDisplay: null });
-      setPrivate({ flop: null });
+      setPrivate(s => ({
+        flop: null,
+        deck: deck.insert(s.flop ? s.flop.cards : []).shuffle(),
+      }));
     }
   }
 

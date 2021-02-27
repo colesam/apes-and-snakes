@@ -25,6 +25,7 @@ function Stock({
   priceHistory,
   rankHistory,
   pair,
+  pairIsNew,
   purchaseQuantities,
   onBuy,
 }: PropTypes) {
@@ -65,7 +66,11 @@ function Stock({
           </Text>
           <Text color={"gray.500"}>${ticker}</Text>
         </Box>
-        <CardStack cards={pair.cards} transform={"translateY(-50%)"} />
+        <CardStack
+          cards={pair.cards}
+          highlightColor={pairIsNew ? "red.500" : undefined}
+          transform={"translateY(-50%)"}
+        />
       </Flex>
       <Flex justify={"space-between"}>
         <PercentChange start={startPrice} end={endPrice} />

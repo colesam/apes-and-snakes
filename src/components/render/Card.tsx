@@ -8,7 +8,7 @@ import { Card as TCard } from "../../core/card/Card";
 const StyledImg = styled.img`
   width: 64px;
   max-width: 64px;
-  transform: translateX(-11px);
+  transform: translate(-11px, -2px);
 `;
 
 interface PropTypes extends LayoutProps, SpaceProps {
@@ -20,7 +20,7 @@ function Card({ card, scale, ...props }: PropTypes) {
   return (
     <Box
       width="42px"
-      height="62px"
+      height="60px"
       overflow="hidden"
       transform={scale ? `scale(${scale})` : undefined}
       boxShadow="md"

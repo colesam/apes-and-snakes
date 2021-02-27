@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Deck } from "../../core/card/Deck";
-import { Flop } from "../../core/card/Flop";
-import { FlopPreview } from "../../core/card/FlopPreview";
-import FlopDisplay from "../render/FlopDisplay";
+import React from "react";
+import { cardFromString } from "../../core/card/Card";
+import CardStack from "../render/CardStack";
 
 function Test() {
-  const [deck, setDeck] = useState(new Deck());
-  const [flop, setFlop] = useState<null | Flop | FlopPreview>(null);
-
-  useEffect(() => {
-    const [flop, newDeck] = deck.shuffle().drawFlop();
-    setDeck(newDeck);
-    setFlop(flop.preview);
-  }, []);
-
-  // Render
-  return <FlopDisplay cards={flop ? flop.cards : []} />;
+  return (
+    <CardStack
+      cards={[cardFromString("As"), cardFromString("Ad")]}
+      highlightColor={"red.500"}
+    />
+  );
 }
 
 export default Test;

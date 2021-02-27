@@ -40,6 +40,11 @@ export class Deck extends ImmutableRecord<TDeck> {
     return new Deck({ cards: shuffle(this.cards) });
   }
 
+  // TODO: prevent duplicate cards
+  insert(cards: Card[]) {
+    return this.set({ cards: [...this.cards, ...cards] });
+  }
+
   deal(numHands: number, cardsPerHand: number): [Card[][], Deck] {
     const hands = [];
     const cards = [...this.cards];

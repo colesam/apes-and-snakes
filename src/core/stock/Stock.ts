@@ -8,6 +8,7 @@ export type TStock = {
   priceHistory: number[];
   rankHistory: RoundRank[];
   pair: Pair;
+  pairIsNew: boolean;
 };
 
 export interface Stock extends DeepReadonly<TStock> {}
@@ -21,6 +22,7 @@ export class Stock extends ImmutableRecord<TStock> {
         priceHistory: [],
         rankHistory: [],
         pair: new Pair(),
+        pairIsNew: false,
       },
       data
     );
