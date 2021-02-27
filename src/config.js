@@ -55,4 +55,4 @@ export const NUM_STOCKS = 6;
 
 export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];
 
-export const DRAW_PAIR_CHANCE = 0.1;
+export const DRAW_PAIR_CHANCE = 0.05;

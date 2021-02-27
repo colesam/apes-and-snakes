@@ -24,7 +24,7 @@ export const solve = (hands: Hand[]): SolvedHand[] => {
     if (uniq(hand.cards).length < hand.cards.length) {
       console.log(`[DEBUG] Duplicate cards!`);
       console.log("-- hand.cards --");
-      console.log(hand.cards);
+      console.log(hand.cards.map(c => c.toString()));
       throw new Error("Duplicate cards detected!");
     }
     return PokerSolver.solve(hand.cardStrings);
