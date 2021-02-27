@@ -99,29 +99,42 @@ function Play() {
               </Tr>
             </Thead>
             <Tbody>
-              {player.positions.map(pos => (
-                <Tr key={pos.stockTicker + pos.purchasePrice}>
-                  <Td fontWeight={"bold"}>${pos.stockTicker}</Td>
-                  <Td>{pos.quantity / 1000}K</Td>
-                  <Td>{formatCurrency(pos.quantity * pos.purchasePrice)}</Td>
-                  <Td>
-                    {formatCurrency(
-                      pos.quantity * stockPriceMap[pos.stockTicker]
-                    )}
-                  </Td>
-                  <Td>
-                    <PercentChange
-                      start={pos.purchasePrice}
-                      end={stockPriceMap[pos.stockTicker]}
-                    />
-                  </Td>
-                  <Td>
-                    <Button size={"xs"} colorScheme={"red"} w={"100%"}>
-                      SELL
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
+              {player.positions
+                .filter(pos => !pos.isClosed)
+                .map(pos => (
+                  <Tr key={pos.id} data-position-id={pos.id}>
+                    <Td fontWeight={"bold"}>${pos.stockTicker}</Td>
+                    <Td>{pos.quantity / 1000}K</Td>
+                    <Td>{formatCurrency(pos.quantity * pos.purchasePrice)}</Td>
+                    <Td>
+                      {formatCurrency(
+                        pos.quantity * stockPriceMap[pos.stockTicker]
+                      )}
+                    </Td>
+                    <Td>
+                      <PercentChange
+                        start={pos.purchasePrice}
+                        end={stockPriceMap[pos.stockTicker]}
+                      />
+                    </Td>
+                    <Td>
+                      <Button
+                        size={"xs"}
+                        colorScheme={"red"}
+                        w={"100%"}
+                        onClick={() =>
+                          PeerAction.closePosition(
+                            hostPeerId,
+                            secretKey,
+                            pos.id
+                          )
+                        }
+                      >
+                        SELL
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
             </Tbody>
           </Table>
         </VStack>

@@ -7,7 +7,7 @@ interface PropTypes extends CardStackPropTypes {
   cards: Card[];
 }
 
-function FlopDisplay({ cards, ...props }: PropTypes) {
+function FlopDisplay({ cards = [], ...props }: PropTypes) {
   const a = cards[0] || new Card();
   const b = cards[1] || new Card();
   const c = cards[2] || new Card();

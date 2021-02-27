@@ -1,3 +1,4 @@
+import { last } from "lodash";
 import { SELL_MODIFIER_TICK_LIFETIME, SELL_ROLL_MODIFIER } from "../../config";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { StoreAction } from "../../store/StoreAction";
@@ -13,6 +14,7 @@ export const makeHandleClosePosition = (
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
   // Auth
+  const { stocks } = _getShared();
   const { secretKeyPlayerIdMap } = _getPrivate();
   const playerId = secretKeyPlayerIdMap[payload.secretKey];
   if (!playerId) {
@@ -25,11 +27,20 @@ export const makeHandleClosePosition = (
   const position = _getShared()
     .players.find(player => player.id === playerId)
     ?.positions.find(pos => pos.id === payload.positionId);
-  if (!position) {
+  if (!position || position.isClosed) {
     return error(
       new PeerError("Could not find positionId. Failed to close position.")
     );
   }
+
+  // TODO make into some kind of getter
+  const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
+    (acc, stock) => {
+      acc[stock.ticker] = last(stock.priceHistory) || 0;
+      return acc;
+    },
+    {}
+  );
 
   // Push modifiers
   const { tick } = _getShared();
@@ -46,17 +57,23 @@ export const makeHandleClosePosition = (
   );
 
   // Mark position closed
+  const positionValue = position.quantity * stockPriceMap[position.stockTicker];
+
   _setShared(s => ({
     players: s.players.map(player =>
       player.id === playerId
         ? player.set({
             positions: player.positions.map(pos =>
-              pos.id === position.id ? position.close() : position
+              pos.id === position.id ? pos.close() : pos
             ),
+            cash: player.cash + positionValue,
           })
         : player
     ),
   }));
+
+  console.log("-- _getShared().players.find(player.id === playerId) --");
+  console.log(_getShared().players.find(player => player.id === playerId));
 
   respond();
 };

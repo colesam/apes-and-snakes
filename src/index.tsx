@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import initStoreInterval from "./store/initStoreInterval";
 
 ReactDOM.render(
   <ChakraProvider>
@@ -15,7 +14,7 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-initStoreInterval(200);
+// initStoreInterval(2000);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -6,7 +6,7 @@ export type TPosition = {
   stockTicker: string;
   quantity: number;
   purchasePrice: number;
-  closed: boolean;
+  isClosed: boolean;
 };
 
 export interface Position extends DeepReadonly<TPosition> {}
@@ -19,13 +19,13 @@ export class Position extends ImmutableRecord<TPosition> {
         stockTicker: "",
         quantity: 0,
         purchasePrice: 0,
-        closed: false,
+        isClosed: false,
       },
       data
     );
   }
 
   close() {
-    return this.set({ closed: true });
+    return this.set({ isClosed: true });
   }
 }
