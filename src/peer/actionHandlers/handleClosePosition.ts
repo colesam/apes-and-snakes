@@ -63,7 +63,7 @@ export const makeHandleClosePosition = (
   _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
     new VolatilityModifier({
       value: SELL_VOLATILITY_MODIFIER * payload.quantity,
-      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
+      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME * 2,
     }),
   ]);
 
