@@ -14,16 +14,24 @@ export const makeHandleOpenPosition = (
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
   // Auth
+  const { tick, players } = _getShared();
   const { secretKeyPlayerIdMap } = _getPrivate();
   const playerId = secretKeyPlayerIdMap[payload.secretKey];
-  if (!playerId) {
+  const player = players.find(p => p.id === playerId);
+
+  if (!playerId || !player) {
     return error(
       new PeerError("Could not find playerId. Failed to reconnect.")
     );
   }
 
-  // Push modifiers
-  const { tick } = _getShared();
+  // Validate price
+  const transactionPrice = payload.price * payload.quantity;
+  if (player.cash < transactionPrice) {
+    return error(new PeerError("Cannot purchase. Not enough cash."));
+  }
+
+  // Apply mods
   const numMods = Math.floor(payload.quantity / 1000);
   _StoreAction.pushRollModifiers(
     payload.stockTicker,
@@ -42,10 +50,14 @@ export const makeHandleOpenPosition = (
     quantity: payload.quantity,
     purchasePrice: payload.price,
   });
+
   _setShared(s => ({
     players: s.players.map(player =>
       player.id === playerId
-        ? player.set({ positions: [...player.positions, position] })
+        ? player.set({
+            positions: [...player.positions, position],
+            cash: player.cash - transactionPrice,
+          })
         : player
     ),
   }));

@@ -1,4 +1,5 @@
 import {
+  Text,
   Box,
   Button,
   Flex,
@@ -16,6 +17,7 @@ import { PURCHASE_QUANTITIES } from "../../config";
 import { PeerAction } from "../../peer/PeerAction";
 import { usePrivateStore } from "../../store/privateStore";
 import { useSharedStore } from "../../store/sharedStore";
+import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockRender from "../render/Stock";
 
@@ -23,6 +25,7 @@ function Play() {
   // Shared store
   const players = useSharedStore(s => s.players);
   const stocks = useSharedStore(s => s.stocks);
+  const flopDisplay = useSharedStore(s => s.flopDisplay);
 
   // Private store
   const hostPeerId = usePrivateStore(s => s.hostPeerId);
@@ -49,6 +52,13 @@ function Play() {
   return (
     <Flex justify={"space-between"} w={"95vw"}>
       <Box p={4} w={"60%"} minHeight={"95vh"}>
+        <Flex justify={"center"} mb={10}>
+          <FlopDisplay
+            cards={flopDisplay ? flopDisplay.cards : []}
+            spacing={8}
+            cardScale={1.4}
+          />
+        </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
             <StockRender
@@ -74,6 +84,9 @@ function Play() {
           w={"40%"}
           minHeight={"95vh"}
         >
+          <Text fontSize={"xl"}>
+            <strong>Player Cash:</strong> {formatCurrency(player.cash)}
+          </Text>
           <Table variant="simple" size={"sm"} bg={"white"}>
             <Thead>
               <Tr>

@@ -8,6 +8,7 @@ export type TPlayer = {
   name: string;
   connectionStatus: ConnectionStatus;
   positions: Position[];
+  cash: number;
 };
 
 export interface Player extends DeepReadonly<TPlayer> {}
@@ -20,6 +21,7 @@ export class Player extends ImmutableRecord<TPlayer> {
         name: "",
         connectionStatus: ConnectionStatus.CONNECTED,
         positions: [],
+        cash: 1_000_000,
       },
       data
     );
