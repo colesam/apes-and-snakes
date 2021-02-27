@@ -59,7 +59,7 @@ function Stock({
       spacing={4}
       align={"stretch"}
     >
-      <Flex justify={"space-between"}>
+      <Flex justify={"space-between"} position={"relative"}>
         <Box>
           <Text fontWeight={"semibold"} fontSize={"xl"}>
             {name}
@@ -70,6 +70,8 @@ function Stock({
           cards={pair.cards}
           highlightColor={pairIsNew ? "red.500" : undefined}
           transform={"translateY(-50%)"}
+          position={"absolute"}
+          right={"0"}
         />
       </Flex>
       <Flex justify={"space-between"}>

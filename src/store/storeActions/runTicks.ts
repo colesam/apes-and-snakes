@@ -1,4 +1,5 @@
 import {
+  DRAW_PAIR_CHANCE,
   FLOP_PREVIEW_POINT,
   RANK_MODIFIERS,
   TICKS_PER_WEEK,
@@ -42,8 +43,13 @@ const expireModifiers = <T extends Modifier>(
   }, {});
 
 export const runTicks = (numTicks: number) => {
-  let { tick: initialTick, stocks } = getShared();
-  let { deck, stockVolatilityModifierMap, stockRollModifierMap } = getPrivate();
+  let { tick: initialTick, stocks, flopDisplay } = getShared();
+  let {
+    deck,
+    stockVolatilityModifierMap,
+    stockRollModifierMap,
+    flop,
+  } = getPrivate();
 
   for (let tick = initialTick; tick < initialTick + numTicks; tick++) {
     // Expire modifiers
@@ -63,13 +69,12 @@ export const runTicks = (numTicks: number) => {
     );
 
     if (isFlopPreview(tick)) {
-      const [flop, newDeck] = deck.drawFlop();
-
-      setShared({ flopDisplay: flop.preview });
-      setPrivate({ flop, deck: newDeck });
+      const [newFlop, newDeck] = deck.drawFlop();
+      // State updates
+      flop = newFlop;
+      flopDisplay = flop.preview;
+      deck = newDeck;
     } else if (isWeekend(tick)) {
-      const { flop } = getPrivate();
-
       if (!flop) {
         throw Error("Flop is missing!");
       }
@@ -108,13 +113,15 @@ export const runTicks = (numTicks: number) => {
           rankHistory: [...stock.rankHistory, stockRankMap[stock.ticker]],
         })
       );
-      setShared({ flopDisplay: flop });
+
+      // State updates
+      flopDisplay = flop;
     } else if (isEndOfWeek(tick)) {
       // Each card has 10% chance of getting new cards
-      let { deck } = getPrivate();
 
+      // State updates
       stocks = stocks.map(stock => {
-        if (Math.random() < 0.1) {
+        if (Math.random() < DRAW_PAIR_CHANCE) {
           const [newPair, newDeck] = deck
             .insert(stock.pair.cards)
             .shuffle()
@@ -128,15 +135,12 @@ export const runTicks = (numTicks: number) => {
           return stock.set({ pairIsNew: false });
         }
       });
-
-      setShared({ flopDisplay: null });
-      setPrivate(s => ({
-        flop: null,
-        deck: deck.insert(s.flop ? s.flop.cards : []).shuffle(),
-      }));
+      flopDisplay = null;
+      deck = deck.insert(flop ? flop.cards : []).shuffle();
+      flop = null;
     }
   }
 
-  setShared({ tick: initialTick + numTicks, stocks });
-  setPrivate({ stockVolatilityModifierMap, stockRollModifierMap });
+  setShared({ tick: initialTick + numTicks, stocks, flopDisplay });
+  setPrivate({ deck, stockVolatilityModifierMap, stockRollModifierMap, flop });
 };
