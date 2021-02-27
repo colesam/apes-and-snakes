@@ -13,10 +13,13 @@ const nextPrice = (
   volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): number => {
-  const volatility = Math.max(
-    ...volMods.map(m => m.value),
-    GENERAL_FLUCTUATION_MAX
-  );
+  const avgVolMod =
+    volMods.map(m => m.value).reduce((a, b) => a + b, 0) /
+    (volMods.length || 1);
+  const volatility = Math.max(avgVolMod, GENERAL_FLUCTUATION_MAX);
+
+  console.log("-- volatility --");
+  console.log(volatility);
 
   const rollPool = [-1, 1, ...rollMods.map(m => m.value)];
 
