@@ -9,9 +9,10 @@ import {
 } from "@chakra-ui/react";
 import { last } from "lodash";
 import React from "react";
+import { DEBUG, GENERAL_FLUCTUATION_MAX } from "../../config";
 import { TStock } from "../../core/stock/Stock";
+import { usePrivateStore } from "../../store/privateStore";
 import CardStack from "./CardStack";
-import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
@@ -30,6 +31,19 @@ function Stock({
   purchaseQuantities,
   onBuy,
 }: PropTypes) {
+  // TODO
+  const volModMap = usePrivateStore(s => s.stockVolatilityModifierMap);
+  const rollModMap = usePrivateStore(s => s.stockRollModifierMap);
+
+  const volatility =
+    volModMap[ticker]?.map(m => m.value).reduce((a, b) => a + b, 0) +
+    GENERAL_FLUCTUATION_MAX;
+
+  if (volModMap[ticker]) {
+    console.log("-- volModMap[ticker] --");
+    console.log(volModMap[ticker]);
+  }
+
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
   const startPrice = priceHistory[0] || 0;
@@ -62,10 +76,15 @@ function Stock({
     >
       <Flex justify={"space-between"} position={"relative"}>
         <Box>
-          <Text fontWeight={"semibold"} fontSize={"xl"}>
-            {name}
-          </Text>
-          <Text color={"gray.500"}>${ticker}</Text>
+          <Box fontWeight={"semibold"} fontSize={"xl"}>
+            <Text display={"inline-block"} mr={4}>
+              {name}
+            </Text>
+            <Text display={"inline-block"} color={"gray.500"} fontSize={"sm"}>
+              ${ticker}
+            </Text>
+          </Box>
+          <Text fontSize={"lg"}>{formatCurrency(endPrice)}</Text>
         </Box>
         <CardStack
           cards={pair.cards}
@@ -75,14 +94,23 @@ function Stock({
           right={"0"}
         />
       </Flex>
-      <Flex justify={"space-between"}>
-        <PercentChange start={startPrice} end={endPrice} />
-        <Text>{"$" + startPrice.toFixed(2)}</Text>
-        <Text fontWeight={"bold"} as={"kbd"}>
-          {"=>"}
-        </Text>
-        <Text>{"$" + endPrice.toFixed(2)}</Text>
-      </Flex>
+      {DEBUG && (
+        <>
+          <Divider />
+          {volModMap[ticker] && (
+            <div>
+              <strong>Volatility:</strong>
+              {(volatility * 100).toFixed(2)}%
+            </div>
+          )}
+          {rollModMap[ticker] && (
+            <div style={{ maxWidth: "300px" }}>
+              <strong>Roll Mods:</strong>
+              {JSON.stringify(rollModMap[ticker].map(m => m.value))}
+            </div>
+          )}
+        </>
+      )}
       <Divider />
       <StockGraph
         priceHistory={priceHistory}
@@ -97,6 +125,14 @@ function Stock({
       )}
     </VStack>
   );
+}
+
+function withCommas(x: number) {
+  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function formatCurrency(x: number) {
+  return "$" + withCommas(x);
 }
 
 export default Stock;

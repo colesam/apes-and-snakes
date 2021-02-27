@@ -37,21 +37,16 @@ export const makeHandleOpenPosition = (
   }
 
   // Apply mods
-  const numMods = Math.floor(payload.quantity / 1000);
-  _StoreAction.pushRollModifiers(
-    payload.stockTicker,
-    [...Array(numMods)].map(
-      _ =>
-        new RollModifier({
-          value: BUY_ROLL_MODIFIER,
-          expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
-        })
-    )
-  );
+  _StoreAction.pushRollModifiers(payload.stockTicker, [
+    new RollModifier({
+      value: BUY_ROLL_MODIFIER,
+      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
+    }),
+  ]);
   _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
     new VolatilityModifier({
       value: BUY_VOLATILITY_MODIFIER * payload.quantity,
-      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME * 2,
+      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME + 10,
     }),
   ]);
 

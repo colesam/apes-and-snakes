@@ -49,21 +49,16 @@ export const makeHandleClosePosition = (
 
   // Push modifiers
   const { tick } = _getShared();
-  const numMods = Math.floor(position.quantity / 1000);
-  _StoreAction.pushRollModifiers(
-    position.stockTicker,
-    [...Array(numMods)].map(
-      _ =>
-        new RollModifier({
-          value: SELL_ROLL_MODIFIER,
-          expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
-        })
-    )
-  );
-  _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
+  _StoreAction.pushRollModifiers(position.stockTicker, [
+    new RollModifier({
+      value: SELL_ROLL_MODIFIER,
+      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
+    }),
+  ]);
+  _StoreAction.pushVolatilityModifiers(position.stockTicker, [
     new VolatilityModifier({
-      value: SELL_VOLATILITY_MODIFIER * payload.quantity,
-      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME * 2,
+      value: SELL_VOLATILITY_MODIFIER * position.quantity,
+      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME + 10,
     }),
   ]);
 

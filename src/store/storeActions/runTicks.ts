@@ -4,7 +4,7 @@ import {
   RANK_MODIFIERS,
   TICKS_PER_WEEK,
   TICKS_PER_WEEKEND,
-  WEEKEND_FLUCTUATION_MAX,
+  WEEKEND_VOLATILITY_MOD,
   WEEKEND_START,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
@@ -95,7 +95,7 @@ export const runTicks = (numTicks: number) => {
           ...(stockVolatilityModifierMap[stockTicker] || []),
           {
             expirationTick: tick + TICKS_PER_WEEKEND,
-            value: WEEKEND_FLUCTUATION_MAX,
+            value: WEEKEND_VOLATILITY_MOD,
           },
         ];
         // @ts-ignore

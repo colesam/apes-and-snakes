@@ -1,19 +1,21 @@
 export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
+export const DEBUG = true;
 
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 1000;
+export const TICK_SPEED = 800;
 
 export const STOCK_PRICE_FLOOR = 10;
 
-export const GENERAL_FLUCTUATION_MAX = 0.1 / 100;
+export const GENERAL_FLUCTUATION_MAX = 0.001;
 export const BUY_ROLL_MODIFIER = 2;
 export const SELL_ROLL_MODIFIER = -1 * BUY_ROLL_MODIFIER;
-export const BUY_MODIFIER_TICK_LIFETIME = 10;
+export const BUY_MODIFIER_TICK_LIFETIME = 20;
 export const SELL_MODIFIER_TICK_LIFETIME = BUY_MODIFIER_TICK_LIFETIME;
 
-export const BUY_VOLATILITY_MODIFIER = (GENERAL_FLUCTUATION_MAX * 2) / 5000;
+export const BUY_VOLATILITY_MODIFIER = 0.002 / 10_000;
 export const SELL_VOLATILITY_MODIFIER = BUY_VOLATILITY_MODIFIER;
+export const WEEKEND_VOLATILITY_MOD = GENERAL_FLUCTUATION_MAX;
 
 export const WEEKS_PER_GRAPH = 2;
 
@@ -39,7 +41,6 @@ export const RANK_MODIFIERS = {
   6: [-3, -2, -2],
 };
 
-export const WEEKEND_FLUCTUATION_MAX = GENERAL_FLUCTUATION_MAX * 2;
 export const TICKS_PER_WEEK = 100;
 export const TICKS_PER_MARKET_OPEN = TICKS_PER_WEEK * (5 / 7);
 export const TICKS_PER_WEEKEND = TICKS_PER_WEEK * (2 / 7);
