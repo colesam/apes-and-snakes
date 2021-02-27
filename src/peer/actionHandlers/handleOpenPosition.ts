@@ -1,6 +1,11 @@
-import { BUY_MODIFIER_TICK_LIFETIME, BUY_ROLL_MODIFIER } from "../../config";
+import {
+  BUY_MODIFIER_TICK_LIFETIME,
+  BUY_ROLL_MODIFIER,
+  BUY_VOLATILITY_MODIFIER,
+} from "../../config";
 import { Position } from "../../core/stock/Position";
 import { RollModifier } from "../../core/stock/RollModifier";
+import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
 import { getPrivate } from "../../store/privateStore";
 import { getShared, setShared } from "../../store/sharedStore";
@@ -43,6 +48,12 @@ export const makeHandleOpenPosition = (
         })
     )
   );
+  _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
+    new VolatilityModifier({
+      value: BUY_VOLATILITY_MODIFIER * payload.quantity,
+      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
+    }),
+  ]);
 
   // Save position in storage
   const position = new Position({

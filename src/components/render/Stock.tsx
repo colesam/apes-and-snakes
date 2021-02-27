@@ -7,6 +7,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { last } from "lodash";
 import React from "react";
 import { TStock } from "../../core/stock/Stock";
 import CardStack from "./CardStack";
@@ -32,7 +33,7 @@ function Stock({
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
   const startPrice = priceHistory[0] || 0;
-  const endPrice = priceHistory[priceHistory.length - 1];
+  const endPrice = last(priceHistory) || 0;
 
   let buyBtns;
   if (purchaseQuantities) {

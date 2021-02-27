@@ -1,6 +1,11 @@
 import { last } from "lodash";
-import { SELL_MODIFIER_TICK_LIFETIME, SELL_ROLL_MODIFIER } from "../../config";
+import {
+  SELL_MODIFIER_TICK_LIFETIME,
+  SELL_ROLL_MODIFIER,
+  SELL_VOLATILITY_MODIFIER,
+} from "../../config";
 import { RollModifier } from "../../core/stock/RollModifier";
+import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
 import { getPrivate } from "../../store/privateStore";
 import { getShared, setShared } from "../../store/sharedStore";
@@ -55,6 +60,12 @@ export const makeHandleClosePosition = (
         })
     )
   );
+  _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
+    new VolatilityModifier({
+      value: SELL_VOLATILITY_MODIFIER * payload.quantity,
+      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
+    }),
+  ]);
 
   // Mark position closed
   const positionValue = position.quantity * stockPriceMap[position.stockTicker];
