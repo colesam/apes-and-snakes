@@ -4,12 +4,14 @@ import React, { useEffect } from "react";
 import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getShared, useSharedStore } from "../../store/sharedStore";
+import FlopDisplay from "../render/FlopDisplay";
 import StockRender from "../render/Stock";
 
 function Spectate() {
   // Shared store
   const players = useSharedStore(s => s.players);
   const stocks = useSharedStore(s => s.stocks);
+  const flopDisplay = useSharedStore(s => s.flopDisplay);
 
   const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
     (acc, stock) => {
@@ -38,6 +40,13 @@ function Spectate() {
   return (
     <Flex justify={"space-between"} w={"95vw"}>
       <Box p={4} w={"60%"} minHeight={"95vh"}>
+        <Flex justify={"center"} mb={10}>
+          <FlopDisplay
+            cards={flopDisplay ? flopDisplay.cards : []}
+            spacing={8}
+            cardScale={1.4}
+          />
+        </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
             <StockRender

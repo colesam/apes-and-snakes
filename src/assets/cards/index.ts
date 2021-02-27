@@ -50,8 +50,10 @@ import Tc from "./Tc.png";
 import Td from "./Td.png";
 import Th from "./Th.png";
 import Ts from "./Ts.png";
+import back from "./back.png";
 
 const cardAssets: any = {
+  Xx: back,
   Tc: Tc,
   Td: Td,
   Th: Th,

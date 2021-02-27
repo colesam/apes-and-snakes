@@ -1,4 +1,5 @@
 import {
+  FLOP_PREVIEW_POINT,
   RANK_MODIFIERS,
   TICKS_PER_WEEK,
   TICKS_PER_WEEKEND,
@@ -17,9 +18,18 @@ import { TMap } from "../types/TMap";
 type Modifier = { expirationTick: number };
 type ModifierMap<T extends Modifier> = TMap<T[]>;
 
+function isFlopPreview(tick: number) {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
+}
+
 function isWeekend(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
   return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK);
+}
+
+function isEndOfWeek(tick: number) {
+  return tick % TICKS_PER_WEEK === 0;
 }
 
 const expireModifiers = <T extends Modifier>(
@@ -52,8 +62,18 @@ export const runTicks = (numTicks: number) => {
       )
     );
 
-    if (isWeekend(tick)) {
-      // Flop
+    if (isFlopPreview(tick)) {
+      const [flop, newDeck] = deck.drawFlop();
+
+      setShared({ flopDisplay: flop.preview });
+      setPrivate({ flop, deck: newDeck });
+    } else if (isWeekend(tick)) {
+      const { flop } = getPrivate();
+
+      if (!flop) {
+        throw Error("Flop is missing!");
+      }
+
       const stockPairMap = stocks.reduce<{ [key: string]: Pair }>(
         (acc, stock) => {
           acc[stock.ticker] = stock.pair;
@@ -61,7 +81,7 @@ export const runTicks = (numTicks: number) => {
         },
         {}
       );
-      const [flop] = deck.shuffle().drawFlop();
+
       const stockRankMap = mapPairsToRank(stockPairMap, flop);
 
       for (const stockTicker in stockRankMap) {
@@ -88,6 +108,10 @@ export const runTicks = (numTicks: number) => {
           rankHistory: [...stock.rankHistory, stockRankMap[stock.ticker]],
         })
       );
+      setShared({ flopDisplay: flop });
+    } else if (isEndOfWeek(tick)) {
+      setShared({ flopDisplay: null });
+      setPrivate({ flop: null });
     }
   }
 

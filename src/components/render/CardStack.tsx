@@ -3,7 +3,7 @@ import React from "react";
 import { Card as TCard } from "../../core/card/Card";
 import Card from "./Card";
 
-interface PropTypes extends HTMLChakraProps<"div"> {
+export interface PropTypes extends HTMLChakraProps<"div"> {
   cards: TCard[];
   cardScale?: number;
   spacing?: number;

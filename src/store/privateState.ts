@@ -1,4 +1,5 @@
 import { Deck } from "../core/card/Deck";
+import { Flop } from "../core/card/Flop";
 import generateId from "../core/generateId";
 import initStorage from "../core/localStorage";
 import { PlayerConnection } from "../core/player/PlayerConnection";
@@ -14,6 +15,7 @@ export const privateState = {
   secretKeyPlayerIdMap: {} as TMap<string>,
   playerConnections: {} as TMap<PlayerConnection>,
   deck: new Deck().shuffle(),
+  flop: null as Flop | null,
   stockRollModifierMap: {} as TMap<RollModifier[]>,
   stockVolatilityModifierMap: {} as TMap<VolatilityModifier[]>,
 

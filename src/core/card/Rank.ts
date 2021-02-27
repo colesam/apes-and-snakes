@@ -12,6 +12,7 @@ export enum Rank {
   QUEEN = "Q",
   KING = "K",
   ACE = "A",
+  X = "X",
 }
 
 export const allRanks = [

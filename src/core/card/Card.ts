@@ -13,8 +13,8 @@ export class Card extends ImmutableRecord<TCard> {
   constructor(data?: Partial<TCard>) {
     super(
       {
-        rank: Rank.ACE,
-        suit: Suit.SPADES,
+        rank: Rank.X,
+        suit: Suit.X,
       },
       data
     );

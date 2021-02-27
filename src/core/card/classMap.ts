@@ -1,6 +1,7 @@
 import { Card } from "./Card";
 import { Deck } from "./Deck";
 import { Flop } from "./Flop";
+import { FlopPreview } from "./FlopPreview";
 import { Hand } from "./Hand";
 import { Pair } from "./Pair";
 
@@ -11,4 +12,5 @@ export const classMap = {
   Flop,
   Hand,
   Pair,
+  FlopPreview,
 };

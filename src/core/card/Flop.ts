@@ -1,6 +1,7 @@
 import { DeepReadonly } from "../ImmutableRecord";
 import { Card } from "./Card";
 import { CardCombination } from "./CardCombination";
+import { FlopPreview } from "./FlopPreview";
 
 type TFlop = {
   cards: [Card, Card, Card, Card, Card];
@@ -20,5 +21,10 @@ export class Flop extends CardCombination<TFlop> {
 
   get cards() {
     return this.data.cards;
+  }
+
+  get preview() {
+    const [a, b, c] = this.cards;
+    return new FlopPreview({ cards: [a, b, c] });
   }
 }
