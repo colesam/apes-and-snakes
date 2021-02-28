@@ -101,7 +101,7 @@ function Play() {
               pairIsNew={stock.pairIsNew}
               playerCash={player.cash}
               purchaseQuantities={PURCHASE_QUANTITIES}
-              disableTransactions={isWeekend(tick)}
+              disableTransactions={isWeekend(tick) || viewPlayerId !== playerId}
               onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
               key={stock.name}
             />
@@ -110,9 +110,6 @@ function Play() {
       </Box>
 
       <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
-        <Text fontSize={"xl"}>
-          <strong>Player Cash:</strong> {formatCurrency(player.cash)}
-        </Text>
         <Box>
           <Text fontWeight={"bold"}>View Player:</Text>
           <RadioGroup
@@ -130,6 +127,11 @@ function Play() {
             </HStack>
           </RadioGroup>
         </Box>
+
+        <Text>
+          <strong>Player Cash:</strong> {formatCurrency(player.cash)}
+        </Text>
+
         <Table variant="simple" size={"sm"} bg={"white"}>
           <Thead>
             <Tr>
@@ -166,6 +168,7 @@ function Play() {
                         size={"xs"}
                         colorScheme={"red"}
                         w={"100%"}
+                        disabled={isWeekend(tick)}
                         onClick={() =>
                           PeerAction.closePosition(
                             hostPeerId,
