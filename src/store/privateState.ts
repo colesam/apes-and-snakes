@@ -20,6 +20,7 @@ export const privateState = {
   stockVolatilityModifierMap: {} as TMap<VolatilityModifier[]>,
 
   // Player state
+  ping: null as number | null,
   hostPeerId: "",
   previousRoomCode: "",
   playerId: "",

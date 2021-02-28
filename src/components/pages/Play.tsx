@@ -28,6 +28,7 @@ function Play() {
   const flopDisplay = useSharedStore(s => s.flopDisplay);
 
   // Private store
+  const ping = usePrivateStore(s => s.ping);
   const hostPeerId = usePrivateStore(s => s.hostPeerId);
   const playerId = usePrivateStore(s => s.playerId);
   const secretKey = usePrivateStore(s => s.secretKey);
@@ -54,8 +55,8 @@ function Play() {
 
   // Render
   return (
-    <Flex justify={"space-between"} w={"95vw"}>
-      <Box p={4} w={"60%"} minHeight={"95vh"}>
+    <Flex justify={"space-between"} w={"100vw"} minHeight={"100vh"}>
+      <Box p={4} w={"60%"}>
         <Flex justify={"center"} mb={10}>
           <FlopDisplay
             cards={flopDisplay ? flopDisplay.cards : []}
@@ -82,13 +83,7 @@ function Play() {
       </Box>
 
       {player && (
-        <VStack
-          spacing={8}
-          align={"flex-start"}
-          p={4}
-          w={"40%"}
-          minHeight={"95vh"}
-        >
+        <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
           <Text fontSize={"xl"}>
             <strong>Player Cash:</strong> {formatCurrency(player.cash)}
           </Text>
@@ -144,6 +139,17 @@ function Play() {
           </Table>
         </VStack>
       )}
+      <Box
+        position={"absolute"}
+        right={"20px"}
+        bottom={"20px"}
+        bg={"white"}
+        border={"1px"}
+        p={1}
+      >
+        <strong style={{ marginRight: "5px" }}>Ping:</strong>
+        <span>{ping ? `${ping}ms` : "none"}</span>
+      </Box>
     </Flex>
   );
 }
