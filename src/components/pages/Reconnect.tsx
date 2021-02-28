@@ -9,6 +9,7 @@ import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreAction } from "../../store/StoreAction";
 import { usePrivateStore } from "../../store/privateStore";
 import ReconnectForm from "../forms/ReconnectForm";
+import FloatingContainer from "../render/FloatingContainer";
 
 function Reconnect() {
   // Hooks
@@ -49,11 +50,13 @@ function Reconnect() {
 
   // Render
   return (
-    <ReconnectForm
-      initialRoomCode={previousRoomCode}
-      isSubmitting={isConnecting}
-      onSubmit={handleConnect}
-    />
+    <FloatingContainer>
+      <ReconnectForm
+        initialRoomCode={previousRoomCode}
+        isSubmitting={isConnecting}
+        onSubmit={handleConnect}
+      />
+    </FloatingContainer>
   );
 }
 

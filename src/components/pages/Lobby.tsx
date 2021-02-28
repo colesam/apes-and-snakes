@@ -16,6 +16,7 @@ import { GameStatus } from "../../core/game/GameStatus";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { usePrivateStore } from "../../store/privateStore";
 import { useSharedStore } from "../../store/sharedStore";
+import FloatingContainer from "../render/FloatingContainer";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
 
 function Lobby() {
@@ -66,33 +67,35 @@ function Lobby() {
 
   // Render
   return (
-    <Stack spacing={4}>
-      <Alert status="success" justifyContent="space-between" fontSize="xl">
-        <Text>Room Code: </Text> <Text fontWeight="bold">{roomCode}</Text>
-      </Alert>
+    <FloatingContainer>
+      <Stack spacing={4}>
+        <Alert status="success" justifyContent="space-between" fontSize="xl">
+          <Text>Room Code: </Text> <Text fontWeight="bold">{roomCode}</Text>
+        </Alert>
 
-      {players.length && <Divider />}
+        {players.length && <Divider />}
 
-      {players.length && (
-        <Box bg="gray.100" px={4} py={2}>
-          <Text fontWeight="bold" mb={4}>
-            Players:
-          </Text>
-          <List spacing={4}>{playerElems}</List>
-        </Box>
-      )}
+        {players.length && (
+          <Box bg="gray.100" px={4} py={2}>
+            <Text fontWeight="bold" mb={4}>
+              Players:
+            </Text>
+            <List spacing={4}>{playerElems}</List>
+          </Box>
+        )}
 
-      {isHost && (
-        <HStack>
-          <Button colorScheme="green" w="100%" onClick={handleStartGame}>
-            Start Game
-          </Button>
-          <Button colorScheme="red" w="100%" onClick={handleEndGame}>
-            End Game
-          </Button>
-        </HStack>
-      )}
-    </Stack>
+        {isHost && (
+          <HStack>
+            <Button colorScheme="green" w="100%" onClick={handleStartGame}>
+              Start Game
+            </Button>
+            <Button colorScheme="red" w="100%" onClick={handleEndGame}>
+              End Game
+            </Button>
+          </HStack>
+        )}
+      </Stack>
+    </FloatingContainer>
   );
 }
 

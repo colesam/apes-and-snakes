@@ -4,6 +4,7 @@ import { Link as RouterLink } from "wouter";
 import shallow from "zustand/shallow";
 import { usePrivateStore } from "../../store/privateStore";
 import { useSharedStore } from "../../store/sharedStore";
+import FloatingContainer from "../render/FloatingContainer";
 
 function MainMenu() {
   // State
@@ -14,25 +15,27 @@ function MainMenu() {
   const roomCode = useSharedStore(s => s.roomCode);
 
   return (
-    <Stack spacing={4}>
-      <Button colorScheme="green" href="/host" as={RouterLink}>
-        Host Game
-      </Button>
-      {isHost && roomCode && (
-        <Button colorScheme="orange" href="/rehost" as={RouterLink}>
-          Rehost
+    <FloatingContainer>
+      <Stack spacing={4}>
+        <Button colorScheme="green" href="/host" as={RouterLink}>
+          Host Game
         </Button>
-      )}
-      <Divider />
-      <Button colorScheme="blue" href="/join" as={RouterLink}>
-        Join Game
-      </Button>
-      {!isHost && previousRoomCode && (
-        <Button colorScheme="orange" href="/reconnect" as={RouterLink}>
-          Reconnect to Previous Host
+        {isHost && roomCode && (
+          <Button colorScheme="orange" href="/rehost" as={RouterLink}>
+            Rehost
+          </Button>
+        )}
+        <Divider />
+        <Button colorScheme="blue" href="/join" as={RouterLink}>
+          Join Game
         </Button>
-      )}
-    </Stack>
+        {!isHost && previousRoomCode && (
+          <Button colorScheme="orange" href="/reconnect" as={RouterLink}>
+            Reconnect to Previous Host
+          </Button>
+        )}
+      </Stack>
+    </FloatingContainer>
   );
 }
 

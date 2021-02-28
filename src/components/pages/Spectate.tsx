@@ -40,8 +40,14 @@ function Spectate() {
 
   // Render
   return (
-    <Flex justify={"space-between"} w={"95vw"}>
-      <Box p={4} w={"60%"} minHeight={"95vh"}>
+    <Flex
+      justify={"space-between"}
+      w={"100vw"}
+      h={"100vh"}
+      bg={"white"}
+      color={"black"}
+    >
+      <Box p={4} w={"60%"}>
         <Flex justify={"center"} mb={10}>
           <FlopDisplay
             cards={flopDisplay ? flopDisplay.cards : []}
@@ -71,13 +77,7 @@ function Spectate() {
           Reset
         </Button>
       </Box>
-      <VStack
-        spacing={8}
-        align={"flex-start"}
-        p={4}
-        w={"40%"}
-        minHeight={"95vh"}
-      >
+      <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
         TODO
       </VStack>
     </Flex>

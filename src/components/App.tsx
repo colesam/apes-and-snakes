@@ -1,4 +1,3 @@
-import { Box } from "@chakra-ui/react";
 import React from "react";
 import styled from "styled-components";
 import { Route } from "wouter";
@@ -25,43 +24,41 @@ const AppContainer = styled.div`
 function App() {
   return (
     <AppContainer>
-      <Box bg="white" color="black" p={4} minWidth={350} boxShadow="xl">
-        <Route path="/host">
-          <Host />
-        </Route>
+      <Route path="/host">
+        <Host />
+      </Route>
 
-        <Route path="/rehost">
-          <Rehost />
-        </Route>
+      <Route path="/rehost">
+        <Rehost />
+      </Route>
 
-        <Route path="/join">
-          <Join />
-        </Route>
+      <Route path="/join">
+        <Join />
+      </Route>
 
-        <Route path="/reconnect">
-          <Reconnect />
-        </Route>
+      <Route path="/reconnect">
+        <Reconnect />
+      </Route>
 
-        <Route path="/lobby">
-          <Lobby />
-        </Route>
+      <Route path="/lobby">
+        <Lobby />
+      </Route>
 
-        <Route path="/play">
-          <Play />
-        </Route>
+      <Route path="/play">
+        <Play />
+      </Route>
 
-        <Route path="/spectate">
-          <Spectate />
-        </Route>
+      <Route path="/spectate">
+        <Spectate />
+      </Route>
 
-        <Route path="/test">
-          <Test />
-        </Route>
+      <Route path="/test">
+        <Test />
+      </Route>
 
-        <Route path="/">
-          <MainMenu />
-        </Route>
-      </Box>
+      <Route path="/">
+        <MainMenu />
+      </Route>
     </AppContainer>
   );
 }

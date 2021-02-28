@@ -10,6 +10,7 @@ import { NAME_TAKEN_ERROR } from "../../peer/error/NameTakenError";
 import { StoreAction } from "../../store/StoreAction";
 import { usePrivateStore } from "../../store/privateStore";
 import JoinForm from "../forms/JoinForm";
+import FloatingContainer from "../render/FloatingContainer";
 
 function Join() {
   // Hooks
@@ -56,11 +57,13 @@ function Join() {
 
   // Render
   return (
-    <JoinForm
-      isSubmitting={isConnecting}
-      nameTakenError={nameTakenError}
-      onSubmit={handleConnect}
-    />
+    <FloatingContainer>
+      <JoinForm
+        isSubmitting={isConnecting}
+        nameTakenError={nameTakenError}
+        onSubmit={handleConnect}
+      />
+    </FloatingContainer>
   );
 }
 

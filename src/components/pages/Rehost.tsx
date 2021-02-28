@@ -5,6 +5,7 @@ import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
+import FloatingContainer from "../render/FloatingContainer";
 
 function Rehost() {
   // State
@@ -23,10 +24,12 @@ function Rehost() {
 
   // Render
   return (
-    <Alert status="info" fontSize="xl">
-      <Spinner color="blue.500" thickness="3px" mr={7} />{" "}
-      <Text>Rehosting...</Text>
-    </Alert>
+    <FloatingContainer>
+      <Alert status="info" fontSize="xl">
+        <Spinner color="blue.500" thickness="3px" mr={7} />{" "}
+        <Text>Rehosting...</Text>
+      </Alert>
+    </FloatingContainer>
   );
 }
 

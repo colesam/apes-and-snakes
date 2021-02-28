@@ -55,7 +55,13 @@ function Play() {
 
   // Render
   return (
-    <Flex justify={"space-between"} w={"100vw"} minHeight={"100vh"}>
+    <Flex
+      justify={"space-between"}
+      w={"100vw"}
+      h={"100vh"}
+      bg={"white"}
+      color={"black"}
+    >
       <Box p={4} w={"60%"}>
         <Flex justify={"center"} mb={10}>
           <FlopDisplay
