@@ -3,7 +3,7 @@ export const DEBUG = true;
 
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 800;
+export const TICK_SPEED = 1000;
 
 export const STOCK_PRICE_FLOOR = 10;
 
@@ -48,6 +48,7 @@ export const TICKS_PER_WEEKEND = TICKS_PER_WEEK * (2 / 7);
 // Percent positions throughout the week
 export const FLOP_PREVIEW_POINT = 2.5 / 7;
 export const WEEKEND_START = 5 / 7;
+export const WEEKEND_END = 7 / 7;
 
 export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 

@@ -13,7 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { last } from "lodash";
 import React from "react";
-import { PURCHASE_QUANTITIES } from "../../config";
+import {
+  PURCHASE_QUANTITIES,
+  TICKS_PER_WEEK,
+  WEEKEND_END,
+  WEEKEND_START,
+} from "../../config";
 import { PeerAction } from "../../peer/PeerAction";
 import { usePrivateStore } from "../../store/privateStore";
 import { useSharedStore } from "../../store/sharedStore";
@@ -21,8 +26,17 @@ import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockRender from "../render/Stock";
 
+function isWeekend(tick: number) {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return (
+    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
+    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
+  );
+}
+
 function Play() {
   // Shared store
+  const tick = useSharedStore(s => s.tick);
   const players = useSharedStore(s => s.players);
   const stocks = useSharedStore(s => s.stocks);
   const flopDisplay = useSharedStore(s => s.flopDisplay);
@@ -57,7 +71,7 @@ function Play() {
   return (
     <Flex
       justify={"space-between"}
-      w={"100vw"}
+      maxWidth={"100vw"}
       h={"100vh"}
       bg={"white"}
       color={"black"}
@@ -81,6 +95,7 @@ function Play() {
               pairIsNew={stock.pairIsNew}
               playerCash={player.cash}
               purchaseQuantities={PURCHASE_QUANTITIES}
+              disableTransactions={isWeekend(tick)}
               onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
               key={stock.name}
             />

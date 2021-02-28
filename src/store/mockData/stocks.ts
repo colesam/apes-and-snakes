@@ -5,7 +5,7 @@ export const stocks = [
   new Stock({
     name: "GameStop",
     ticker: "GME",
-    priceHistory: [150],
+    priceHistory: [20],
     rankHistory: [],
     pair: new Pair(),
   }),
@@ -19,7 +19,7 @@ export const stocks = [
   new Stock({
     name: "Intel",
     ticker: "INTC",
-    priceHistory: [55],
+    priceHistory: [65],
     rankHistory: [],
     pair: new Pair(),
   }),
@@ -40,7 +40,7 @@ export const stocks = [
   new Stock({
     name: "Amazon",
     ticker: "AMZN",
-    priceHistory: [200],
+    priceHistory: [150],
     rankHistory: [],
     pair: new Pair(),
   }),

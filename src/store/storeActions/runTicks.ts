@@ -26,11 +26,11 @@ function isFlopPreview(tick: number) {
 
 function isWeekend(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
-  return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK);
+  return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK) - 1;
 }
 
 function isEndOfWeek(tick: number) {
-  return tick % TICKS_PER_WEEK === 0;
+  return tick % TICKS_PER_WEEK === TICKS_PER_WEEK - 1;
 }
 
 const expireModifiers = <T extends Modifier>(

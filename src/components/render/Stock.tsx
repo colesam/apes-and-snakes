@@ -9,16 +9,19 @@ import {
 } from "@chakra-ui/react";
 import { last, isNumber } from "lodash";
 import React from "react";
-import { DEBUG, GENERAL_FLUCTUATION_MAX } from "../../config";
+import { DEBUG, GENERAL_FLUCTUATION_MAX, TICKS_PER_WEEK } from "../../config";
 import { stackRollMods } from "../../core/helpers";
 import { TStock } from "../../core/stock/Stock";
 import { usePrivateStore } from "../../store/privateStore";
+import { useSharedStore } from "../../store/sharedStore";
 import CardStack from "./CardStack";
+import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
   playerCash?: number;
   purchaseQuantities?: number[]; // temp
+  disableTransactions?: boolean;
   onBuy?: (n: number, s: number) => void;
   onSell?: (n: number) => void;
 }
@@ -32,9 +35,12 @@ function Stock({
   pairIsNew,
   playerCash,
   purchaseQuantities,
+  disableTransactions = true,
   onBuy,
 }: PropTypes) {
   // TODO
+  const tick = useSharedStore(s => s.tick);
+  const isHost = usePrivateStore(s => s.isHost);
   const volModMap = usePrivateStore(s => s.stockVolatilityModifierMap);
   const rollModMap = usePrivateStore(s => s.stockRollModifierMap);
 
@@ -42,13 +48,12 @@ function Stock({
     volModMap[ticker]?.map(m => m.value).reduce((a, b) => a + b, 0) +
     GENERAL_FLUCTUATION_MAX;
 
-  if (volModMap[ticker]) {
-  }
-
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const startPrice = priceHistory[0] || 0;
+  const weekStartTick =
+    (Math.floor(tick / TICKS_PER_WEEK) - 1) * TICKS_PER_WEEK;
+  const startPrice = priceHistory[Math.max(weekStartTick, 0)] || 0;
   const currentPrice = last(priceHistory) || 0;
 
   let buyBtns;
@@ -59,7 +64,7 @@ function Stock({
           size={"xs"}
           colorScheme={"green"}
           w={"100%"}
-          disabled={currentPrice * qty > playerCash}
+          disabled={disableTransactions || currentPrice * qty > playerCash}
           onClick={() => onBuy && onBuy(qty, currentPrice)}
           key={`buy_${qty}`}
         >
@@ -92,7 +97,15 @@ function Stock({
               ${ticker}
             </Text>
           </Box>
-          <Text fontSize={"lg"}>{formatCurrency(currentPrice)}</Text>
+          <Flex
+            fontSize={"md"}
+            justify={"space-between"}
+            align={"center"}
+            width={"140px"}
+          >
+            <Text fontSize={"xl"}>{formatCurrency(currentPrice)}</Text>
+            <PercentChange start={startPrice} end={currentPrice} />
+          </Flex>
         </Box>
         <CardStack
           cards={pair.cards}
@@ -102,7 +115,7 @@ function Stock({
           right={"0"}
         />
       </Flex>
-      {DEBUG && (
+      {DEBUG && isHost && (
         <>
           <Divider />
           {volModMap[ticker] && (
