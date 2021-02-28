@@ -51,8 +51,9 @@ export const makeHandleClosePosition = (
   const { tick } = _getShared();
   _StoreAction.pushRollModifiers(position.stockTicker, [
     new RollModifier({
-      value: SELL_ROLL_MODIFIER,
+      value: SELL_ROLL_MODIFIER * position.quantity,
       expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
+      stackKey: "CLOSE",
     }),
   ]);
   _StoreAction.pushVolatilityModifiers(position.stockTicker, [

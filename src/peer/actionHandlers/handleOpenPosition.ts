@@ -39,8 +39,9 @@ export const makeHandleOpenPosition = (
   // Apply mods
   _StoreAction.pushRollModifiers(payload.stockTicker, [
     new RollModifier({
-      value: BUY_ROLL_MODIFIER,
+      value: BUY_ROLL_MODIFIER * payload.quantity,
       expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
+      stackKey: "BUY",
     }),
   ]);
   _StoreAction.pushVolatilityModifiers(payload.stockTicker, [

@@ -1,5 +1,6 @@
 import { random, last } from "lodash";
 import { GENERAL_FLUCTUATION_MAX, STOCK_PRICE_FLOOR } from "../../config";
+import { stackRollMods } from "../helpers";
 import { RollModifier } from "./RollModifier";
 import { Stock } from "./Stock";
 import { VolatilityModifier } from "./VolatilityModifier";
@@ -21,7 +22,7 @@ const nextPrice = (
   //   GENERAL_FLUCTUATION_MAX
   // );
 
-  const rollPool = [-1, 1, ...rollMods.map(m => m.value)];
+  const rollPool = [-1, 1, ...stackRollMods(rollMods)];
 
   const prevPrice = last(priceHistory) || 0;
   const mult = prevPrice > STOCK_PRICE_FLOOR ? roll(rollPool) : 1;

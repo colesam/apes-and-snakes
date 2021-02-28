@@ -10,6 +10,7 @@ import {
 import { last } from "lodash";
 import React from "react";
 import { DEBUG, GENERAL_FLUCTUATION_MAX } from "../../config";
+import { stackRollMods } from "../../core/helpers";
 import { TStock } from "../../core/stock/Stock";
 import { usePrivateStore } from "../../store/privateStore";
 import CardStack from "./CardStack";
@@ -106,7 +107,7 @@ function Stock({
           {rollModMap[ticker] && (
             <div style={{ maxWidth: "300px" }}>
               <strong>Roll Mods:</strong>
-              {JSON.stringify(rollModMap[ticker].map(m => m.value))}
+              {JSON.stringify(stackRollMods(rollModMap[ticker]))}
             </div>
           )}
         </>
