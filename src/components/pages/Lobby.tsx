@@ -10,7 +10,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import React from "react";
-import { Redirect, useLocation } from "wouter";
+import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
 import { GameStatus } from "../../core/game/GameStatus";
 import { PeerRoutine } from "../../peer/PeerRoutine";
@@ -25,7 +25,6 @@ function Lobby() {
     s => [s.gameStatus, s.roomCode, s.players],
     shallow
   );
-  const [, setLocation] = useLocation();
 
   // Redirects
   if (!roomCode) {

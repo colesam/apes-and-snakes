@@ -60,6 +60,7 @@ export const runTicks = (numTicks: number) => {
     stockRollModifierMap = expireModifiers(tick, stockRollModifierMap);
 
     // Tick prices
+    // eslint-disable-next-line no-loop-func
     stocks = stocks.map(stock =>
       tickPrice(
         stock,
@@ -120,6 +121,7 @@ export const runTicks = (numTicks: number) => {
       // Each card has 10% chance of getting new cards
 
       // State updates
+      // eslint-disable-next-line no-loop-func
       stocks = stocks.map(stock => {
         if (Math.random() < DRAW_PAIR_CHANCE) {
           const [newPair, newDeck] = deck

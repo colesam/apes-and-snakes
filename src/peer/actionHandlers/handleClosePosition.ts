@@ -79,9 +79,6 @@ export const makeHandleClosePosition = (
     ),
   }));
 
-  console.log("-- _getShared().players.find(player.id === playerId) --");
-  console.log(_getShared().players.find(player => player.id === playerId));
-
   respond();
 };
 

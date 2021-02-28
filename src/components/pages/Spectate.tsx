@@ -9,10 +9,12 @@ import StockRender from "../render/Stock";
 
 function Spectate() {
   // Shared store
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const players = useSharedStore(s => s.players);
   const stocks = useSharedStore(s => s.stocks);
   const flopDisplay = useSharedStore(s => s.flopDisplay);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
     (acc, stock) => {
       acc[stock.ticker] = last(stock.priceHistory) || 0;
@@ -86,6 +88,7 @@ function withCommas(x: number) {
   return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function formatCurrency(x: number) {
   return "$" + withCommas(x);
 }

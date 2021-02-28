@@ -43,12 +43,11 @@ function Stock({
     GENERAL_FLUCTUATION_MAX;
 
   if (volModMap[ticker]) {
-    console.log("-- volModMap[ticker] --");
-    console.log(volModMap[ticker]);
   }
 
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startPrice = priceHistory[0] || 0;
   const currentPrice = last(priceHistory) || 0;
 

@@ -6,6 +6,7 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "react/jsx-pascal-case": "off",
     "react-hooks/exhaustive-deps": "off",
     "unused-imports/no-unused-imports": "error",
     "import/order": [

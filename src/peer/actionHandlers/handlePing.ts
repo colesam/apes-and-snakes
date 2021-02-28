@@ -8,8 +8,6 @@ const handlePing = ({
   respond,
   error,
 }: TActionHandlerProps) => {
-  console.log(`[DEBUG] Received PING from: ${peerId}`);
-
   // TODO: Turn this into a middleware
   if (!StoreAction.authPlayerAction(payload.secretKey, payload.playerId)) {
     return error(new NotAuthorizedError(payload.playerId));

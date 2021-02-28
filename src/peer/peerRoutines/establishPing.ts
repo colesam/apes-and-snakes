@@ -6,7 +6,6 @@ export const establishPing = (hostPeerId: string) => {
   const { secretKey, playerId } = getPrivate();
 
   const pingIntervalId = setInterval(() => {
-    console.log(`[DEBUG] Sending ping`);
     PeerAction.ping(hostPeerId, secretKey, playerId);
   }, PING_INTERVAL);
 
