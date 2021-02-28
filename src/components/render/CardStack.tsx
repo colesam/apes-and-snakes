@@ -3,19 +3,33 @@ import React from "react";
 import { Card as TCard } from "../../core/card/Card";
 import Card from "./Card";
 
-interface PropTypes extends HTMLChakraProps<"div"> {
+export interface PropTypes extends HTMLChakraProps<"div"> {
   cards: TCard[];
   cardScale?: number;
   spacing?: number;
+  highlightColor?: string;
 }
 
-function CardStack({ cards, cardScale, spacing = 4, ...props }: PropTypes) {
-  const cardElems = cards.map(card => (
-    <Card card={card} scale={cardScale} key={card.toString()} />
+function CardStack({
+  cards,
+  cardScale,
+  highlightColor,
+  spacing = 4,
+  ...props
+}: PropTypes) {
+  const cardElems = cards.map((card, i) => (
+    <Card card={card} scale={cardScale} key={i} />
   ));
 
   return (
-    <HStack spacing={spacing} {...props}>
+    <HStack
+      display={"inline-flex"}
+      p={2}
+      spacing={spacing}
+      border={highlightColor && "2px"}
+      borderColor={highlightColor}
+      {...props}
+    >
       {cardElems}
     </HStack>
   );

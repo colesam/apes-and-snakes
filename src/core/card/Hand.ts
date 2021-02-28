@@ -11,6 +11,16 @@ type THand = {
 export interface Hand extends DeepReadonly<THand> {}
 
 export class Hand extends CardCombination<THand> {
+  constructor(data?: Partial<THand>) {
+    super(
+      {
+        pair: new Pair(),
+        flop: new Flop(),
+      },
+      data,
+      "Hand"
+    );
+  }
   get cards() {
     return [...this.data.pair.cards, ...this.data.flop.cards];
   }

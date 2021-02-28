@@ -1,3 +1,4 @@
+import { uniq } from "lodash";
 // @ts-ignore
 import { Hand as PokerSolver } from "pokersolver";
 import { Flop } from "./card/Flop";
@@ -19,7 +20,15 @@ const getKey = (hand: SolvedHand) => {
 };
 
 export const solve = (hands: Hand[]): SolvedHand[] => {
-  return hands.map(hand => PokerSolver.solve(hand.cardStrings));
+  return hands.map(hand => {
+    if (uniq(hand.cards).length < hand.cards.length) {
+      console.log(`[DEBUG] Duplicate cards!`);
+      console.log("-- hand.cards --");
+      console.log(hand.cards.map(c => c.toString()));
+      throw new Error("Duplicate cards detected!");
+    }
+    return PokerSolver.solve(hand.cardStrings);
+  });
 };
 
 export const getWinners = (hands: SolvedHand[]) => {

@@ -10,6 +10,17 @@ type TCard = {
 export interface Card extends DeepReadonly<TCard> {}
 
 export class Card extends ImmutableRecord<TCard> {
+  constructor(data?: Partial<TCard>) {
+    super(
+      {
+        rank: Rank.X,
+        suit: Suit.X,
+      },
+      data,
+      "Card"
+    );
+  }
+
   toString() {
     return this.rank + this.suit;
   }

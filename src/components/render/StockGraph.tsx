@@ -10,8 +10,10 @@ import {
   RANK_MODIFIERS,
   WEEKEND_START,
   FLOP_PREVIEW_POINT,
+  TICKS_PER_WEEK,
 } from "../../config";
 import { RoundRank } from "../../core/poker";
+import { useSharedStore } from "../../store/sharedStore";
 
 interface PropTypes {
   priceHistory: number[];
@@ -24,9 +26,14 @@ const rounds = () => {
 };
 
 function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
-  const priceData = priceHistory.map((price, i) => ({ x: i + 1, y: price }));
-  const paddedRankHistory = rounds().map((_, i) => rankHistory[i] || null);
-  const modifierPeriodWidth = TICKS_PER_WEEKEND;
+  const tick = useSharedStore(s => s.tick); // TODO
+  const lastWeek = Math.floor(tick / TICKS_PER_WEEK) - 1; // TODO
+  const priceData = priceHistory
+    .slice(lastWeek * TICKS_PER_WEEK)
+    .map((price, i) => ({ x: i + 1, y: price }));
+  const paddedRankHistory = rounds().map(
+    (_, i) => rankHistory[lastWeek + i] || null
+  );
 
   const min = Math.min(...priceHistory);
   const max = Math.max(...priceHistory);

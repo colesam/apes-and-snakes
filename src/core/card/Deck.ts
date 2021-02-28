@@ -23,11 +23,14 @@ type TDeck = {
 export interface Deck extends DeepReadonly<TDeck> {}
 
 export class Deck extends ImmutableRecord<TDeck> {
-  constructor(data?: TDeck) {
-    super({
-      ...data,
-      cards: data?.cards || generateDeck(),
-    });
+  constructor(data?: Partial<TDeck>) {
+    super(
+      {
+        cards: generateDeck(),
+      },
+      data,
+      "Deck"
+    );
   }
 
   get cards() {
@@ -36,6 +39,11 @@ export class Deck extends ImmutableRecord<TDeck> {
 
   shuffle() {
     return new Deck({ cards: shuffle(this.cards) });
+  }
+
+  // TODO: prevent duplicate cards
+  insert(cards: Card[]) {
+    return this.set({ cards: [...this.cards, ...cards] });
   }
 
   deal(numHands: number, cardsPerHand: number): [Card[][], Deck] {

@@ -1,3 +1,4 @@
+import { isFunction } from "lodash";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { diff } from "../core/helpers";
@@ -19,7 +20,15 @@ export const usePrivateStore = create<PrivateState>(
 );
 
 export const getPrivate = usePrivateStore.getState;
-export const setPrivate = usePrivateStore.setState;
+export const setPrivate = (
+  update: Partial<PrivateState> | ((s: PrivateState) => Partial<PrivateState>)
+) => {
+  if (isFunction(update)) {
+    usePrivateStore.setState(update(getPrivate()));
+  } else {
+    usePrivateStore.setState(update);
+  }
+};
 export const resetPrivateStore = () => setPrivate(privateState);
 
 // TODO: Refactor below into some sort of middleware
@@ -40,6 +49,7 @@ const exclude = [
   "playerConnections",
   "stockRollModifierMap",
   "stockVolatilityModifierMap",
+  "location",
 ];
 usePrivateStore.subscribe((newState, oldState) => {
   const stateChanges = diff(newState, oldState);

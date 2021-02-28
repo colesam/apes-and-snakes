@@ -7,4 +7,8 @@ export type TVolatilityModifier = {
 
 export interface VolatilityModifier extends DeepReadonly<TVolatilityModifier> {}
 
-export class VolatilityModifier extends ImmutableRecord<TVolatilityModifier> {}
+export class VolatilityModifier extends ImmutableRecord<TVolatilityModifier> {
+  constructor(data?: Partial<TVolatilityModifier>) {
+    super({ value: 0, expirationTick: 0 }, data, "VolatilityModifier");
+  }
+}

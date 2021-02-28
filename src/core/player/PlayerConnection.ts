@@ -6,15 +6,17 @@ export type TPlayerConnection = {
   lastPing: Date | null;
 };
 
-const defaults = {
-  playerId: "",
-  peerId: "",
-  lastPing: null,
-};
-
 export class PlayerConnection extends ImmutableRecord<TPlayerConnection> {
-  constructor(data?: TPlayerConnection) {
-    super({ ...defaults, ...data }, "PlayerConnection");
+  constructor(data?: Partial<TPlayerConnection>) {
+    super(
+      {
+        playerId: "",
+        peerId: "",
+        lastPing: null,
+      },
+      data,
+      "PlayerConnection"
+    );
   }
 
   get playerId() {

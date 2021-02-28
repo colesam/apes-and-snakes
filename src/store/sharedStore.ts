@@ -1,3 +1,4 @@
+import { isFunction } from "lodash";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { diff } from "../core/helpers";
@@ -19,7 +20,15 @@ export const useSharedStore = create<SharedState>(
 );
 
 export const getShared = useSharedStore.getState;
-export const setShared = useSharedStore.setState;
+export const setShared = (
+  update: Partial<SharedState> | ((s: SharedState) => Partial<SharedState>)
+) => {
+  if (isFunction(update)) {
+    useSharedStore.setState(update(getShared()));
+  } else {
+    useSharedStore.setState(update);
+  }
+};
 export const resetSharedStore = () => setShared(sharedState);
 
 // TODO: Refactor below into some sort of middleware

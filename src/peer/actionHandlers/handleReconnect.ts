@@ -9,7 +9,6 @@ export const makeHandleReconnect = (
   _StoreAction: typeof StoreAction
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
   const { secretKeyPlayerIdMap } = _getPrivate();
-
   const playerId = secretKeyPlayerIdMap[payload.secretKey];
 
   if (!playerId) {
