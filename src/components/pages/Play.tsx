@@ -10,9 +10,12 @@ import {
   Tbody,
   Td,
   Th,
+  RadioGroup,
+  Radio,
+  HStack,
 } from "@chakra-ui/react";
 import { last } from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import {
   PURCHASE_QUANTITIES,
   TICKS_PER_WEEK,
@@ -47,8 +50,11 @@ function Play() {
   const playerId = usePrivateStore(s => s.playerId);
   const secretKey = usePrivateStore(s => s.secretKey);
 
+  // State
+  const [viewPlayerId, setViewPlayerId] = useState(playerId);
+
   // Computed
-  const player = players.find(player => player.id === playerId);
+  const player = players.find(player => player.id === viewPlayerId);
 
   if (!player) {
     throw new Error("No player found!");
@@ -103,41 +109,58 @@ function Play() {
         </Flex>
       </Box>
 
-      {player && (
-        <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
-          <Text fontSize={"xl"}>
-            <strong>Player Cash:</strong> {formatCurrency(player.cash)}
-          </Text>
-          <Table variant="simple" size={"sm"} bg={"white"}>
-            <Thead>
-              <Tr>
-                <Th w={100}>Stock</Th>
-                <Th w={100}>Qty</Th>
-                <Th w={"20%"}>Orig Value</Th>
-                <Th w={"20%"}>Curr Value</Th>
-                <Th>% Change</Th>
-                <Th w={100}></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {player.positions
-                .filter(pos => !pos.isClosed)
-                .map(pos => (
-                  <Tr key={pos.id} data-position-id={pos.id}>
-                    <Td fontWeight={"bold"}>${pos.stockTicker}</Td>
-                    <Td>{pos.quantity / 1000}K</Td>
-                    <Td>{formatCurrency(pos.quantity * pos.purchasePrice)}</Td>
-                    <Td>
-                      {formatCurrency(
-                        pos.quantity * stockPriceMap[pos.stockTicker]
-                      )}
-                    </Td>
-                    <Td>
-                      <PercentChange
-                        start={pos.purchasePrice}
-                        end={stockPriceMap[pos.stockTicker]}
-                      />
-                    </Td>
+      <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
+        <Text fontSize={"xl"}>
+          <strong>Player Cash:</strong> {formatCurrency(player.cash)}
+        </Text>
+        <Box>
+          <Text fontWeight={"bold"}>View Player:</Text>
+          <RadioGroup
+            value={viewPlayerId}
+            onChange={val => setViewPlayerId(val.toString())}
+          >
+            <HStack spacing={8}>
+              {[...players]
+                .sort(({ id }) => (id === playerId ? -1 : 1))
+                .map(p => (
+                  <Radio value={p.id} key={p.id}>
+                    {p.name}
+                  </Radio>
+                ))}
+            </HStack>
+          </RadioGroup>
+        </Box>
+        <Table variant="simple" size={"sm"} bg={"white"}>
+          <Thead>
+            <Tr>
+              <Th w={100}>Stock</Th>
+              <Th w={100}>Qty</Th>
+              <Th w={"20%"}>Orig Value</Th>
+              <Th w={"20%"}>Curr Value</Th>
+              <Th>% Change</Th>
+              {viewPlayerId === playerId && <Th w={100}></Th>}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {player.positions
+              .filter(pos => !pos.isClosed)
+              .map(pos => (
+                <Tr key={pos.id} data-position-id={pos.id}>
+                  <Td fontWeight={"bold"}>${pos.stockTicker}</Td>
+                  <Td>{pos.quantity / 1000}K</Td>
+                  <Td>{formatCurrency(pos.quantity * pos.purchasePrice)}</Td>
+                  <Td>
+                    {formatCurrency(
+                      pos.quantity * stockPriceMap[pos.stockTicker]
+                    )}
+                  </Td>
+                  <Td>
+                    <PercentChange
+                      start={pos.purchasePrice}
+                      end={stockPriceMap[pos.stockTicker]}
+                    />
+                  </Td>
+                  {viewPlayerId === playerId && (
                     <Td>
                       <Button
                         size={"xs"}
@@ -154,12 +177,12 @@ function Play() {
                         SELL
                       </Button>
                     </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-        </VStack>
-      )}
+                  )}
+                </Tr>
+              ))}
+          </Tbody>
+        </Table>
+      </VStack>
       <Box
         position={"absolute"}
         right={"20px"}
