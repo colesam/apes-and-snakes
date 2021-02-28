@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { last } from "lodash";
+import { last, isNumber } from "lodash";
 import React from "react";
 import { DEBUG, GENERAL_FLUCTUATION_MAX } from "../../config";
 import { stackRollMods } from "../../core/helpers";
@@ -17,6 +17,7 @@ import CardStack from "./CardStack";
 import StockGraph from "./StockGraph";
 
 interface PropTypes extends TStock {
+  playerCash?: number;
   purchaseQuantities?: number[]; // temp
   onBuy?: (n: number, s: number) => void;
   onSell?: (n: number) => void;
@@ -29,6 +30,7 @@ function Stock({
   rankHistory,
   pair,
   pairIsNew,
+  playerCash,
   purchaseQuantities,
   onBuy,
 }: PropTypes) {
@@ -48,20 +50,26 @@ function Stock({
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
   const startPrice = priceHistory[0] || 0;
-  const endPrice = last(priceHistory) || 0;
+  const currentPrice = last(priceHistory) || 0;
 
   let buyBtns;
-  if (purchaseQuantities) {
+  if (purchaseQuantities && isNumber(playerCash)) {
     buyBtns = purchaseQuantities.map(qty => (
-      <Button
-        size={"xs"}
-        colorScheme={"green"}
-        w={"100%"}
-        onClick={() => onBuy && onBuy(qty, endPrice)}
-        key={`buy_${qty}`}
-      >
-        Buy {qty / 1000}K
-      </Button>
+      <VStack w={"100%"}>
+        <Button
+          size={"xs"}
+          colorScheme={"green"}
+          w={"100%"}
+          disabled={currentPrice * qty > playerCash}
+          onClick={() => onBuy && onBuy(qty, currentPrice)}
+          key={`buy_${qty}`}
+        >
+          Buy {qty / 1000}K
+        </Button>
+        <Text fontSize={"sm"} color={"gray.500"}>
+          {formatPriceEst(currentPrice * qty)}
+        </Text>
+      </VStack>
     ));
   }
 
@@ -85,7 +93,7 @@ function Stock({
               ${ticker}
             </Text>
           </Box>
-          <Text fontSize={"lg"}>{formatCurrency(endPrice)}</Text>
+          <Text fontSize={"lg"}>{formatCurrency(currentPrice)}</Text>
         </Box>
         <CardStack
           cards={pair.cards}
@@ -134,6 +142,14 @@ function withCommas(x: number) {
 
 function formatCurrency(x: number) {
   return "$" + withCommas(x);
+}
+
+function formatPriceEst(price: number) {
+  if (price > 1_000_000) {
+    return `~${(price / 1_000_000).toFixed(1)}M`;
+  } else {
+    return `~${Math.ceil(price / 1_000)}K`;
+  }
 }
 
 export default Stock;

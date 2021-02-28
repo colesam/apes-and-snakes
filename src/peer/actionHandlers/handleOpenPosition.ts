@@ -47,7 +47,7 @@ export const makeHandleOpenPosition = (
   _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
     new VolatilityModifier({
       value: BUY_VOLATILITY_MODIFIER * payload.quantity,
-      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME + 10,
+      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME + 20,
     }),
   ]);
 

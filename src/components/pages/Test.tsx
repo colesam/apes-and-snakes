@@ -1,12 +1,19 @@
 import React from "react";
-import { cardFromString } from "../../core/card/Card";
-import CardStack from "../render/CardStack";
+import { stocks } from "../../store/mockData/stocks";
+import Stock from "../render/Stock";
 
 function Test() {
+  const stock = stocks[0];
   return (
-    <CardStack
-      cards={[cardFromString("As"), cardFromString("Ad")]}
-      highlightColor={"red.500"}
+    <Stock
+      name={stock.name}
+      ticker={stock.ticker}
+      priceHistory={stock.priceHistory}
+      rankHistory={stock.rankHistory}
+      pair={stock.pair}
+      pairIsNew={false}
+      playerCash={1_000_000}
+      purchaseQuantities={[1000, 5000, 10000]}
     />
   );
 }

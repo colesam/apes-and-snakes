@@ -35,6 +35,10 @@ function Play() {
   // Computed
   const player = players.find(player => player.id === playerId);
 
+  if (!player) {
+    throw new Error("No player found!");
+  }
+
   const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
     (acc, stock) => {
       acc[stock.ticker] = last(stock.priceHistory) || 0;
@@ -68,6 +72,7 @@ function Play() {
               rankHistory={stock.rankHistory}
               pair={stock.pair}
               pairIsNew={stock.pairIsNew}
+              playerCash={player.cash}
               purchaseQuantities={PURCHASE_QUANTITIES}
               onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
               key={stock.name}
