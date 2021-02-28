@@ -14,7 +14,8 @@ export class FlopPreview extends CardCombination<TFlopPreview> {
       {
         cards: [new Card(), new Card(), new Card()],
       },
-      data
+      data,
+      "FlopPreview"
     );
   }
 

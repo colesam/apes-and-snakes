@@ -10,7 +10,7 @@ export interface Pair extends DeepReadonly<TPair> {}
 
 export class Pair extends CardCombination<TPair> {
   constructor(data?: Partial<TPair>) {
-    super({ cards: [new Card(), new Card()] }, data);
+    super({ cards: [new Card(), new Card()] }, data, "Pair");
   }
   get cards() {
     return this.data.cards;

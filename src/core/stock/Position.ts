@@ -21,7 +21,8 @@ export class Position extends ImmutableRecord<TPosition> {
         purchasePrice: 0,
         isClosed: false,
       },
-      data
+      data,
+      "Position"
     );
   }
 

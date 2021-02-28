@@ -15,7 +15,8 @@ export class Flop extends CardCombination<TFlop> {
       {
         cards: [new Card(), new Card(), new Card(), new Card(), new Card()],
       },
-      data
+      data,
+      "Flop"
     );
   }
 

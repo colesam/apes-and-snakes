@@ -28,7 +28,8 @@ export class Deck extends ImmutableRecord<TDeck> {
       {
         cards: generateDeck(),
       },
-      data
+      data,
+      "Deck"
     );
   }
 

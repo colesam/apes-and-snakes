@@ -24,7 +24,8 @@ export class Stock extends ImmutableRecord<TStock> {
         pair: new Pair(),
         pairIsNew: false,
       },
-      data
+      data,
+      "Stock"
     );
   }
 }

@@ -16,7 +16,8 @@ export class Card extends ImmutableRecord<TCard> {
         rank: Rank.X,
         suit: Suit.X,
       },
-      data
+      data,
+      "Card"
     );
   }
 

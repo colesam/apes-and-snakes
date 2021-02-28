@@ -23,7 +23,8 @@ export class Player extends ImmutableRecord<TPlayer> {
         positions: [],
         cash: 1_000_000,
       },
-      data
+      data,
+      "Player"
     );
   }
 }

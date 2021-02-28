@@ -14,7 +14,8 @@ export class PlayerConnection extends ImmutableRecord<TPlayerConnection> {
         peerId: "",
         lastPing: null,
       },
-      data
+      data,
+      "PlayerConnection"
     );
   }
 

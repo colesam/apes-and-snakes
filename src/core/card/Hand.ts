@@ -17,7 +17,8 @@ export class Hand extends CardCombination<THand> {
         pair: new Pair(),
         flop: new Flop(),
       },
-      data
+      data,
+      "Hand"
     );
   }
   get cards() {
