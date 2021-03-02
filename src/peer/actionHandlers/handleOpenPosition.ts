@@ -7,32 +7,27 @@ import { Position } from "../../core/stock/Position";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
-import { getPrivate } from "../../store/privateStore";
-import { getShared, setShared } from "../../store/sharedStore";
+import { getStore, Selector, setStore } from "../../store/store";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleOpenPosition = (
-  _getShared: typeof getShared,
-  _setShared: typeof setShared,
-  _getPrivate: typeof getPrivate,
+  _getStore: typeof getStore,
+  _setStore: typeof setStore,
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
-  // Auth
-  const { tick, players } = _getShared();
-  const { secretKeyPlayerIdMap } = _getPrivate();
-  const playerId = secretKeyPlayerIdMap[payload.secretKey];
-  const player = players.find(p => p.id === playerId);
+  const { tick } = _getStore();
+  const authorizedPlayer = Selector.getAuthorizedPlayer(_getStore())(
+    payload.secretKey
+  );
 
-  if (!playerId || !player) {
-    return error(
-      new PeerError("Could not find playerId. Failed to reconnect.")
-    );
+  if (!authorizedPlayer) {
+    return error(new PeerError("Could not find player. Failed to reconnect."));
   }
 
   // Validate price
   const transactionPrice = payload.price * payload.quantity;
-  if (player.cash < transactionPrice) {
+  if (authorizedPlayer.cash < transactionPrice) {
     return error(new PeerError("Cannot purchase. Not enough cash."));
   }
 
@@ -58,9 +53,9 @@ export const makeHandleOpenPosition = (
     purchasePrice: payload.price,
   });
 
-  _setShared(s => ({
+  _setStore(s => ({
     players: s.players.map(player =>
-      player.id === playerId
+      player.id === authorizedPlayer.id
         ? player.set({
             positions: [...player.positions, position],
             cash: player.cash - transactionPrice,
@@ -73,9 +68,8 @@ export const makeHandleOpenPosition = (
 };
 
 const handleOpenPosition = makeHandleOpenPosition(
-  getShared,
-  setShared,
-  getPrivate,
+  getStore,
+  setStore,
   StoreAction
 );
 

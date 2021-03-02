@@ -10,7 +10,7 @@ const makeParams = (opts = {}) => ({
   ...opts,
 });
 
-const makeGetPrivate = (opts = {}) => () => ({
+const makeGetStore = (opts = {}) => () => ({
   secretKeyPlayerIdMap: { "existing-secret": "player-id" },
   ...opts,
 });
@@ -25,7 +25,7 @@ let callHandleReconnect;
 beforeEach(() => {
   callHandleReconnect = ({
     params = makeParams(),
-    getPrivate = makeGetPrivate(),
+    getPrivate = makeGetStore(),
     StoreAction = makeStoreAction(),
   }) => {
     // noinspection JSCheckFunctionSignatures

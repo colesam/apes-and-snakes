@@ -7,7 +7,7 @@ export default class NotAuthorizedError extends PeerError {
 
   constructor(playerId: string) {
     super(
-      `Could not authorize request for player ${playerId} using secretKey.`
+      `Could not authorize request for any active player using your secretKey.`
     );
   }
 }

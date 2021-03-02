@@ -1,34 +1,33 @@
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 import { StoreAction } from "../../store/StoreAction";
-import { getPrivate } from "../../store/privateStore";
-import PeerError from "../error/PeerError";
+import { getStore, Selector } from "../../store/store";
+import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleReconnect = (
-  _getPrivate: typeof getPrivate,
+  _getStore: typeof getStore,
   _StoreAction: typeof StoreAction
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
-  const { secretKeyPlayerIdMap } = _getPrivate();
-  const playerId = secretKeyPlayerIdMap[payload.secretKey];
+  const authorizedPlayer = Selector.getAuthorizedPlayer(_getStore())(
+    payload.secretKey
+  );
 
-  if (!playerId) {
-    return error(
-      new PeerError("Could not find playerId. Failed to reconnect.")
-    );
+  if (!authorizedPlayer) {
+    return error(new NotAuthorizedError());
   }
 
-  _StoreAction.setPlayerConnection(playerId, {
+  _StoreAction.setPlayerConnection(authorizedPlayer.id, {
     peerId,
     lastPing: new Date(),
   });
 
-  _StoreAction.setPlayerState(playerId, {
+  _StoreAction.setPlayerState(authorizedPlayer.id, {
     connectionStatus: ConnectionStatus.CONNECTED,
   });
 
-  return respond({ playerId });
+  return respond({ playerId: authorizedPlayer.id });
 };
 
-const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);
+const handleReconnect = makeHandleReconnect(getStore, StoreAction);
 
 export default handleReconnect;
