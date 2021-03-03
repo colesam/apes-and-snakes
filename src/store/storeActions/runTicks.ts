@@ -10,8 +10,7 @@ import {
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank } from "../../core/poker";
 import { tickPrice } from "../../core/stock/tickPrice";
-import { getPrivate, setPrivate } from "../privateStore";
-import { getShared, setShared } from "../sharedStore";
+import { getStore, setStore } from "../store";
 import { TMap } from "../types/TMap";
 
 // TODO: break up this file
@@ -43,13 +42,15 @@ const expireModifiers = <T extends Modifier>(
   }, {});
 
 export const runTicks = (numTicks: number) => {
-  let { tick: initialTick, stocks, flopDisplay } = getShared();
   let {
+    tick: initialTick,
+    stocks,
+    flopDisplay,
     deck,
     stockVolatilityModifierMap,
     stockRollModifierMap,
     flop,
-  } = getPrivate();
+  } = getStore();
 
   for (let tick = initialTick; tick < initialTick + numTicks; tick++) {
     // Expire modifiers
@@ -143,6 +144,13 @@ export const runTicks = (numTicks: number) => {
     }
   }
 
-  setShared({ tick: initialTick + numTicks, stocks, flopDisplay });
-  setPrivate({ deck, stockVolatilityModifierMap, stockRollModifierMap, flop });
+  setStore({
+    tick: initialTick + numTicks,
+    stocks,
+    flopDisplay,
+    deck,
+    stockVolatilityModifierMap,
+    stockRollModifierMap,
+    flop,
+  });
 };

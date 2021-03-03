@@ -1,4 +1,4 @@
-import { setPrivate } from "../../store/privateStore";
+import { setStore } from "../../store/store";
 import { PeerAction } from "../PeerAction";
 import { PeerRoutine } from "../PeerRoutine";
 
@@ -9,7 +9,7 @@ export const join = async (
   name: string
 ) => {
   const { playerId } = await PeerAction.join(hostPeerId, secretKey, name);
-  setPrivate({ playerId, hostPeerId, previousRoomCode: roomCode });
+  setStore({ playerId, hostPeerId, previousRoomCode: roomCode });
 
   PeerRoutine.establishPing(hostPeerId);
   await PeerRoutine.pullShared(hostPeerId);

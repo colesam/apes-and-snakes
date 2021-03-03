@@ -2,18 +2,18 @@ import {
   PlayerConnection,
   TPlayerConnection,
 } from "../../core/player/PlayerConnection";
-import { getPrivate, setPrivate } from "../privateStore";
+import { getStore, setStore } from "../store";
 
 export const setPlayerConnection = (
   playerId: string,
   updates: Partial<TPlayerConnection> = { playerId }
 ) => {
-  const { playerConnections } = getPrivate();
+  const { playerConnections } = getStore();
 
   const conn: PlayerConnection =
     playerConnections[playerId] || new PlayerConnection();
 
-  setPrivate({
+  setStore({
     playerConnections: {
       ...playerConnections,
       [playerId]: conn.set(updates),

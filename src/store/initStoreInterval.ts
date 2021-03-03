@@ -1,12 +1,10 @@
 import { ConnectionStatus } from "../core/player/ConnectionStatus";
-import { getPrivate } from "./privateStore";
-import { getShared, setShared } from "./sharedStore";
+import { getStore, setStore } from "./store";
 
 const updatePlayerConnectionStatuses = () => {
-  const { isHost, playerConnections } = getPrivate();
-  const { players } = getShared();
+  const { isHost, playerConnections, players } = getStore();
   if (isHost) {
-    setShared({
+    setStore({
       players: players.map(player => {
         const conn = playerConnections[player.id];
 

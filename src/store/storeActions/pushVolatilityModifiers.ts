@@ -1,18 +1,17 @@
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
-import { getPrivate, setPrivate } from "../privateStore";
+import { setStore } from "../store";
 
 export const pushVolatilityModifiers = (
   stockTicker: string,
   volMods: VolatilityModifier[]
 ) => {
-  const { stockVolatilityModifierMap } = getPrivate();
-  setPrivate({
+  setStore(s => ({
     stockVolatilityModifierMap: {
-      ...stockVolatilityModifierMap,
+      ...s.stockVolatilityModifierMap,
       [stockTicker]: [
-        ...(stockVolatilityModifierMap[stockTicker] || []),
+        ...(s.stockVolatilityModifierMap[stockTicker] || []),
         ...volMods,
       ],
     },
-  });
+  }));
 };

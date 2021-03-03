@@ -13,6 +13,8 @@ import { Player } from "../core/player/Player";
 import { PlayerConnection } from "../core/player/PlayerConnection";
 import { RollModifier } from "../core/stock/RollModifier";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
+import { PeerAction } from "../peer/PeerAction";
+import { StoreSelector } from "./StoreSelector";
 import { stocks } from "./mockData/stocks";
 import { TMap } from "./types/TMap";
 
@@ -84,7 +86,7 @@ export type TStoreKey = keyof TStore;
 
 export const useStore = create<TStore>(
   // @ts-ignore See: https://github.com/microsoft/TypeScript/issues/19360
-  devtools(() => privateState, "Zustand Store")
+  devtools(() => initialState, "Zustand Store")
 );
 
 export const getStore = useStore.getState;
@@ -117,6 +119,17 @@ useStore.subscribe((newState, oldState) => {
     // @ts-ignore
     if (getStateConfig(key).storeLocally) {
       storageSet(key, value);
+    }
+  }
+});
+
+// Automatically emit changes to all peers, if hosting
+useStore.subscribe((newState, oldState) => {
+  if (oldState.isHost) {
+    const stateChanges = diff(newState, oldState);
+    const peerSyncedChanges = StoreSelector.syncedState(stateChanges);
+    if (Object.keys(peerSyncedChanges).length) {
+      PeerAction.broadcastShared(peerSyncedChanges);
     }
   }
 });

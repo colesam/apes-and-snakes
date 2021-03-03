@@ -1,12 +1,10 @@
-import { getPrivate, setPrivate } from "../privateStore";
+import { setStore } from "../store";
 
 export const mapSecretKeyToPlayerId = (key: string, playerId: string) => {
-  const { secretKeyPlayerIdMap } = getPrivate();
-
-  setPrivate({
+  setStore(s => ({
     secretKeyPlayerIdMap: {
-      ...secretKeyPlayerIdMap,
+      ...s.secretKeyPlayerIdMap,
       [key]: playerId,
     },
-  });
+  }));
 };

@@ -1,18 +1,17 @@
 import { RollModifier } from "../../core/stock/RollModifier";
-import { getPrivate, setPrivate } from "../privateStore";
+import { setStore } from "../store";
 
 export const pushRollModifiers = (
   stockTicker: string,
   rollMods: RollModifier[]
 ) => {
-  const { stockRollModifierMap } = getPrivate();
-  setPrivate({
+  setStore(s => ({
     stockRollModifierMap: {
-      ...stockRollModifierMap,
+      ...s.stockRollModifierMap,
       [stockTicker]: [
-        ...(stockRollModifierMap[stockTicker] || []),
+        ...(s.stockRollModifierMap[stockTicker] || []),
         ...rollMods,
       ],
     },
-  });
+  }));
 };

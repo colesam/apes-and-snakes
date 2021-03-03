@@ -1,10 +1,10 @@
-import { StoreAction } from "../../store/StoreAction";
+import { resetStore } from "../../store/store";
 import PeerConnectionManager from "../PeerConnectionManager";
 import { PeerRoutine } from "../PeerRoutine";
 
 const handleEndGame = () => {
   PeerRoutine.clearPing();
-  StoreAction.resetStores();
+  resetStore();
   PeerConnectionManager.clearConnections();
 };
 

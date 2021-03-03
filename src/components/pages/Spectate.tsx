@@ -3,16 +3,16 @@ import { last } from "lodash";
 import React, { useEffect } from "react";
 import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
-import { getShared, useSharedStore } from "../../store/sharedStore";
+import { getStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import StockRender from "../render/Stock";
 
 function Spectate() {
   // Shared store
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const players = useSharedStore(s => s.players);
-  const stocks = useSharedStore(s => s.stocks);
-  const flopDisplay = useSharedStore(s => s.flopDisplay);
+  const players = useStore(s => s.players);
+  const stocks = useStore(s => s.stocks);
+  const flopDisplay = useStore(s => s.flopDisplay);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
@@ -27,7 +27,7 @@ function Spectate() {
   useEffect(() => {
     StoreAction.setupGame();
     const id = setInterval(() => {
-      const { tick } = getShared();
+      const { tick } = getStore();
       if (
         (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
         tick < NUM_WEEKS * TICKS_PER_WEEK

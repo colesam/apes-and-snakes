@@ -8,13 +8,13 @@ import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { NAME_TAKEN_ERROR } from "../../peer/error/NameTakenError";
 import { StoreAction } from "../../store/StoreAction";
-import { usePrivateStore } from "../../store/privateStore";
+import { useStore } from "../../store/store";
 import JoinForm from "../forms/JoinForm";
 import FloatingContainer from "../render/FloatingContainer";
 
 function Join() {
   // Hooks
-  const [secretKey, hostPeerId] = usePrivateStore(
+  const [secretKey, hostPeerId] = useStore(
     s => [s.secretKey, s.hostPeerId],
     shallow
   );

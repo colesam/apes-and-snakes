@@ -2,17 +2,15 @@ import { Button, Divider, Stack } from "@chakra-ui/react";
 import React from "react";
 import { Link as RouterLink } from "wouter";
 import shallow from "zustand/shallow";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function MainMenu() {
   // State
-  const [isHost, previousRoomCode] = usePrivateStore(
-    s => [s.isHost, s.previousRoomCode],
+  const [isHost, previousRoomCode, roomCode] = useStore(
+    s => [s.isHost, s.previousRoomCode, s.roomCode],
     shallow
   );
-  const roomCode = useSharedStore(s => s.roomCode);
 
   return (
     <FloatingContainer>

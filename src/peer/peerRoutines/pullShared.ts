@@ -1,7 +1,7 @@
-import { setShared } from "../../store/sharedStore";
+import { setStore } from "../../store/store";
 import { PeerAction } from "../PeerAction";
 
 export const pullShared = async (hostPeerId: string) => {
   const sharedState = await PeerAction.pullShared(hostPeerId);
-  setShared(sharedState);
+  setStore(sharedState);
 };

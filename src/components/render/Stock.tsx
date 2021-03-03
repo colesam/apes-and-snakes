@@ -12,8 +12,7 @@ import React from "react";
 import { DEBUG, GENERAL_FLUCTUATION_MAX, TICKS_PER_WEEK } from "../../config";
 import { stackRollMods } from "../../core/helpers";
 import { TStock } from "../../core/stock/Stock";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 import CardStack from "./CardStack";
 import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
@@ -39,10 +38,10 @@ function Stock({
   onBuy,
 }: PropTypes) {
   // TODO
-  const tick = useSharedStore(s => s.tick);
-  const isHost = usePrivateStore(s => s.isHost);
-  const volModMap = usePrivateStore(s => s.stockVolatilityModifierMap);
-  const rollModMap = usePrivateStore(s => s.stockRollModifierMap);
+  const tick = useStore(s => s.tick);
+  const isHost = useStore(s => s.isHost);
+  const volModMap = useStore(s => s.stockVolatilityModifierMap);
+  const rollModMap = useStore(s => s.stockRollModifierMap);
 
   const volatility =
     volModMap[ticker]?.map(m => m.value).reduce((a, b) => a + b, 0) +

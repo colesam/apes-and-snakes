@@ -1,8 +1,8 @@
 import { StoreAction } from "../StoreAction";
-import { setPrivate } from "../privateStore";
+import { setStore } from "../store";
 
 export const hostGame = (roomCode: string, resetPlayerKeys = true) => {
-  setPrivate({
+  setStore({
     isHost: true,
     ...(resetPlayerKeys && { secretKeyPlayerIdMap: {} }),
   });

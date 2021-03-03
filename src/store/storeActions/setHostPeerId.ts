@@ -1,3 +1,3 @@
-import { setPrivate } from "../privateStore";
+import { setStore } from "../store";
 
-export const setHostPeerId = (hostPeerId: string) => setPrivate({ hostPeerId });
+export const setHostPeerId = (hostPeerId: string) => setStore({ hostPeerId });

@@ -4,7 +4,7 @@ type Entries<T> = {
   [key in keyof T]: [key, T[key]];
 }[keyof T][];
 
-export const syncedState = (s: TStore) =>
+export const syncedState = (s: Partial<TStore>) =>
   (Object.entries(s) as Entries<TStore>)
     .filter(([key]) => getStateConfig(key).peerSync)
     .reduce((acc, [key, value]) => {

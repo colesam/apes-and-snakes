@@ -14,16 +14,14 @@ import { Redirect } from "wouter";
 import shallow from "zustand/shallow";
 import { GameStatus } from "../../core/game/GameStatus";
 import { PeerRoutine } from "../../peer/PeerRoutine";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 import PlayerConnectionStatus from "../render/PlayerConnectionStatus";
 
 function Lobby() {
   // State
-  const isHost = usePrivateStore(s => s.isHost);
-  const [gameStatus, roomCode, players] = useSharedStore(
-    s => [s.gameStatus, s.roomCode, s.players],
+  const [isHost, gameStatus, roomCode, players] = useStore(
+    s => [s.isHost, s.gameStatus, s.roomCode, s.players],
     shallow
   );
 

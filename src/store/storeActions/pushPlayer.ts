@@ -1,7 +1,6 @@
 import { Player } from "../../core/player/Player";
-import { getShared, setShared } from "../sharedStore";
+import { setStore } from "../store";
 
 export const pushPlayer = (player: Player) => {
-  const { players } = getShared();
-  setShared({ players: [...players, player] });
+  setStore(s => ({ players: [...s.players, player] }));
 };

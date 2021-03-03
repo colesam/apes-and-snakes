@@ -23,8 +23,7 @@ import {
   WEEKEND_START,
 } from "../../config";
 import { PeerAction } from "../../peer/PeerAction";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockRender from "../render/Stock";
@@ -39,16 +38,16 @@ function isWeekend(tick: number) {
 
 function Play() {
   // Shared store
-  const tick = useSharedStore(s => s.tick);
-  const players = useSharedStore(s => s.players);
-  const stocks = useSharedStore(s => s.stocks);
-  const flopDisplay = useSharedStore(s => s.flopDisplay);
+  const tick = useStore(s => s.tick);
+  const players = useStore(s => s.players);
+  const stocks = useStore(s => s.stocks);
+  const flopDisplay = useStore(s => s.flopDisplay);
 
   // Private store
-  const ping = usePrivateStore(s => s.ping);
-  const hostPeerId = usePrivateStore(s => s.hostPeerId);
-  const playerId = usePrivateStore(s => s.playerId);
-  const secretKey = usePrivateStore(s => s.secretKey);
+  const ping = useStore(s => s.ping);
+  const hostPeerId = useStore(s => s.hostPeerId);
+  const playerId = useStore(s => s.playerId);
+  const secretKey = useStore(s => s.secretKey);
 
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);

@@ -1,9 +1,9 @@
-import { getPrivate, setPrivate } from "../../store/privateStore";
+import { getStore, setStore } from "../../store/store";
 
 export const clearPing = () => {
-  const { pingIntervalId } = getPrivate();
+  const { pingIntervalId } = getStore();
   if (pingIntervalId) {
     clearInterval(pingIntervalId);
-    setPrivate({ pingIntervalId: null });
+    setStore({ pingIntervalId: null });
   }
 };
