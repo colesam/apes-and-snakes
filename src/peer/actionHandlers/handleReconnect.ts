@@ -1,6 +1,7 @@
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 import { StoreAction } from "../../store/StoreAction";
-import { getStore, Selector } from "../../store/store";
+import { StoreSelector } from "../../store/StoreSelector";
+import { getStore } from "../../store/store";
 import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
@@ -8,7 +9,7 @@ export const makeHandleReconnect = (
   _getStore: typeof getStore,
   _StoreAction: typeof StoreAction
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
-  const authorizedPlayer = Selector.getAuthorizedPlayer(_getStore())(
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(_getStore())(
     payload.secretKey
   );
 

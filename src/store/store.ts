@@ -1,4 +1,4 @@
-import { isFunction, last } from "lodash";
+import { isFunction } from "lodash";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { NUM_STOCKS } from "../config";
@@ -120,32 +120,3 @@ useStore.subscribe((newState, oldState) => {
     }
   }
 });
-
-// TODO: Own file
-type Entries<T> = {
-  [key in keyof T]: [key, T[key]];
-}[keyof T][];
-
-export const Selector = {
-  syncedState: (s: TStore) =>
-    (Object.entries(s) as Entries<TStore>)
-      .filter(([key]) => getStateConfig(key).peerSync)
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {} as Record<TStoreKey, TStore[TStoreKey]>) as Partial<TStore>, // TODO: fix
-
-  stockPriceMap: (s: TStore) =>
-    s.stocks.reduce<{ [key: string]: number }>((acc, stock) => {
-      acc[stock.ticker] = last(stock.priceHistory) || 0;
-      return acc;
-    }, {}),
-
-  getAuthorizedPlayer: (s: TStore) => (secretKey: string) => {
-    const playerId = s.secretKeyPlayerIdMap[secretKey];
-    if (!playerId) return null;
-
-    const player = s.players.find(player => player.id === playerId);
-    return player || null;
-  },
-};

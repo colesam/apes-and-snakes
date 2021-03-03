@@ -6,7 +6,8 @@ import {
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
-import { getStore, Selector, setStore } from "../../store/store";
+import { StoreSelector } from "../../store/StoreSelector";
+import { getStore, setStore } from "../../store/store";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
@@ -16,7 +17,7 @@ export const makeHandleClosePosition = (
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
   const { tick, secretKeyPlayerIdMap, players } = _getStore();
-  const stockPriceMap = Selector.stockPriceMap(_getStore());
+  const stockPriceMap = StoreSelector.stockPriceMap(_getStore());
 
   // Auth
   const playerId = secretKeyPlayerIdMap[payload.secretKey];

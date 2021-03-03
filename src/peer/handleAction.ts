@@ -1,4 +1,5 @@
-import { getStore, Selector, setStore } from "../store/store";
+import { StoreSelector } from "../store/StoreSelector";
+import { getStore, setStore } from "../store/store";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -34,7 +35,7 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
   [TPeerAction.CLOSE_POSITION]: handleClosePosition,
 
   [TPeerAction.PULL_DATA]: ({ respond }) =>
-    respond(Selector.syncedState(getStore())),
+    respond(StoreSelector.syncedState(getStore())),
 
   [TPeerAction.PUSH_DATA]: ({ payload, respond }) => {
     setStore(payload);

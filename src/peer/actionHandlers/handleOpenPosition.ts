@@ -7,7 +7,8 @@ import { Position } from "../../core/stock/Position";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
-import { getStore, Selector, setStore } from "../../store/store";
+import { StoreSelector } from "../../store/StoreSelector";
+import { getStore, setStore } from "../../store/store";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
@@ -17,7 +18,7 @@ export const makeHandleOpenPosition = (
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
   const { tick } = _getStore();
-  const authorizedPlayer = Selector.getAuthorizedPlayer(_getStore())(
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(_getStore())(
     payload.secretKey
   );
 
