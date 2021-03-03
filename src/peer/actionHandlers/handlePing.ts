@@ -5,8 +5,8 @@ import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
 const handlePing = ({ payload, respond, error }: TActionHandlerProps) => {
-  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(getStore())(
-    payload.secretKey
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    getStore()
   );
 
   if (!authorizedPlayer) {

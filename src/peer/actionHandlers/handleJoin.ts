@@ -7,7 +7,7 @@ import NameTakenError from "../error/NameTakenError";
 import { TActionHandlerProps } from "../handleAction";
 
 const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
-  const { players } = getStore();
+  const { players, setSecretKeyPlayerIdMap } = getStore();
   const playerName = payload.playerName.trim();
 
   const existingPlayer = players.find(({ name }) => name === playerName);
@@ -22,7 +22,7 @@ const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
   });
 
   StoreAction.pushPlayer(newPlayer);
-  StoreAction.mapSecretKeyToPlayerId(payload.secretKey, playerId);
+  setSecretKeyPlayerIdMap(payload.secretKey, playerId);
   StoreAction.setPlayerConnection(playerId);
 
   return respond({ playerId });

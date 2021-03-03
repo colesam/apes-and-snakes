@@ -1,17 +1,16 @@
+import { produce } from "immer";
 import { RollModifier } from "../../core/stock/RollModifier";
-import { setStore } from "../store";
+import { setStore, TStore } from "../store";
 
 export const pushRollModifiers = (
   stockTicker: string,
-  rollMods: RollModifier[]
+  mods: RollModifier[]
 ) => {
-  setStore(s => ({
-    stockRollModifierMap: {
-      ...s.stockRollModifierMap,
-      [stockTicker]: [
-        ...(s.stockRollModifierMap[stockTicker] || []),
-        ...rollMods,
-      ],
-    },
-  }));
+  setStore(
+    produce((draft: TStore) => {
+      const rollMods = draft.stockRollModifierMap.get(stockTicker) || [];
+      rollMods.push(...mods);
+      draft.stockRollModifierMap.set(stockTicker, rollMods);
+    })
+  );
 };

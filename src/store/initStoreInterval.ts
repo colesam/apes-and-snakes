@@ -2,11 +2,11 @@ import { ConnectionStatus } from "../core/player/ConnectionStatus";
 import { getStore, setStore } from "./store";
 
 const updatePlayerConnectionStatuses = () => {
-  const { isHost, playerConnections, players } = getStore();
+  const { isHost, playerConnectionMap, players } = getStore();
   if (isHost) {
     setStore({
       players: players.map(player => {
-        const conn = playerConnections[player.id];
+        const conn = playerConnectionMap.get(player.id);
 
         if (!conn || !conn.lastPing) return player;
 

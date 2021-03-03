@@ -18,8 +18,8 @@ export const makeHandleOpenPosition = (
   _StoreAction: typeof StoreAction
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
   const { tick } = _getStore();
-  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(_getStore())(
-    payload.secretKey
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    _getStore()
   );
 
   if (!authorizedPlayer) {

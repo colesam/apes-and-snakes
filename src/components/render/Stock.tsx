@@ -12,6 +12,7 @@ import React from "react";
 import { DEBUG, GENERAL_FLUCTUATION_MAX, TICKS_PER_WEEK } from "../../config";
 import { stackRollMods } from "../../core/helpers";
 import { TStock } from "../../core/stock/Stock";
+import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import CardStack from "./CardStack";
 import PercentChange from "./PercentChange";
@@ -40,11 +41,11 @@ function Stock({
   // TODO
   const tick = useStore(s => s.tick);
   const isHost = useStore(s => s.isHost);
-  const volModMap = useStore(s => s.stockVolatilityModifierMap);
-  const rollModMap = useStore(s => s.stockRollModifierMap);
+  const volMods = useStore(StoreSelector.getVolatilityModifiers(ticker));
+  const rollMods = useStore(StoreSelector.getRollModifiers(ticker));
 
   const volatility =
-    volModMap[ticker]?.map(m => m.value).reduce((a, b) => a + b, 0) +
+    volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
     GENERAL_FLUCTUATION_MAX;
 
   // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
@@ -117,18 +118,14 @@ function Stock({
       {DEBUG && isHost && (
         <>
           <Divider />
-          {volModMap[ticker] && (
-            <div>
-              <strong>Volatility:</strong>
-              {(volatility * 100).toFixed(2)}%
-            </div>
-          )}
-          {rollModMap[ticker] && (
-            <div style={{ maxWidth: "300px" }}>
-              <strong>Roll Mods:</strong>
-              {JSON.stringify(stackRollMods(rollModMap[ticker]))}
-            </div>
-          )}
+          <div>
+            <strong>Volatility:</strong>
+            {(volatility * 100).toFixed(2)}%
+          </div>
+          <div style={{ maxWidth: "300px" }}>
+            <strong>Roll Mods:</strong>
+            {JSON.stringify(stackRollMods(rollMods))}
+          </div>
         </>
       )}
       <Divider />

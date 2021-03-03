@@ -11,7 +11,7 @@ const makeParams = (opts = {}) => ({
 });
 
 const makeGetStore = (opts = {}) => () => ({
-  secretKeyPlayerIdMap: { "existing-secret": "player-id" },
+  secretKeyPlayerIdMap: new Map([["existing-secret", "player-id"]]),
   ...opts,
 });
 

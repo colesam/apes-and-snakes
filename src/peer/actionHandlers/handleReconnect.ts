@@ -9,8 +9,8 @@ export const makeHandleReconnect = (
   _getStore: typeof getStore,
   _StoreAction: typeof StoreAction
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
-  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(_getStore())(
-    payload.secretKey
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    _getStore()
   );
 
   if (!authorizedPlayer) {

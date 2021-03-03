@@ -1,5 +1,6 @@
+import { produce } from "immer";
 import { isFunction } from "lodash";
-import create from "zustand";
+import create, { State } from "zustand";
 import { devtools } from "zustand/middleware";
 import { NUM_STOCKS } from "../config";
 import { Deck } from "../core/card/Deck";
@@ -12,43 +13,120 @@ import initStorage from "../core/localStorage";
 import { Player } from "../core/player/Player";
 import { PlayerConnection } from "../core/player/PlayerConnection";
 import { RollModifier } from "../core/stock/RollModifier";
+import { Stock } from "../core/stock/Stock";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 import { PeerAction } from "../peer/PeerAction";
 import { StoreSelector } from "./StoreSelector";
 import { stocks } from "./mockData/stocks";
-import { TMap } from "./types/TMap";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "store");
 
-export const initialState = {
+export interface TStore extends State {
   // Shared state
-  tick: 0,
-  roomCode: "",
-  gameStatus: GameStatus.LOBBY,
-  players: [] as Player[],
-  stocks: stocks.slice(0, NUM_STOCKS),
-  flopDisplay: null as Flop | FlopPreview | null,
+
+  tick: number;
+  roomCode: string;
+  gameStatus: GameStatus;
+  players: Player[];
+  flopDisplay: Flop | FlopPreview | null;
+
+  // Stock state
+
+  stocks: Stock[];
+
+  stockRollModifierMap: Map<string, RollModifier[]>;
+  setStockRollModifierMap: (k: string, v: RollModifier[]) => void;
+
+  stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
+  setStockVolatilityModifierMap: (k: string, v: VolatilityModifier[]) => void;
 
   // Host state
-  isHost: false,
-  secretKeyPlayerIdMap: {} as TMap<string>,
-  playerConnections: {} as TMap<PlayerConnection>,
-  deck: new Deck().shuffle(),
-  flop: null as Flop | null,
-  stockRollModifierMap: {} as TMap<RollModifier[]>,
-  stockVolatilityModifierMap: {} as TMap<VolatilityModifier[]>,
+
+  isHost: boolean;
+
+  secretKeyPlayerIdMap: Map<string, string>;
+  setSecretKeyPlayerIdMap: (k: string, v: string) => void;
+
+  playerConnectionMap: Map<string, PlayerConnection>;
+  setPlayerConnectionMap: (k: string, v: PlayerConnection) => void;
+
+  deck: Deck;
+  flop: Flop | null;
 
   // Player state
-  ping: null as number | null,
-  hostPeerId: "",
-  previousRoomCode: "",
-  playerId: "",
-  pingIntervalId: null as NodeJS.Timeout | null,
-  secretKey: generateId(),
-};
 
-const defaultConfig = { peerSync: false, storeLocally: false };
-const stateConfig = {
+  ping: number | null;
+  hostPeerId: string;
+  previousRoomCode: string;
+  playerId: string;
+  pingIntervalId: NodeJS.Timeout | null;
+  secretKey: string;
+}
+export type TStoreKey = keyof TStore;
+export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
+
+// Generalized producers
+const setMap = <T, K>(k: T, v: K) => produce(draft => draft.set(k, v));
+
+// Create store
+export const useStore = create<TStore>(
+  devtools(
+    set =>
+      ({
+        // Shared state
+
+        tick: 0,
+        roomCode: "",
+        gameStatus: GameStatus.LOBBY,
+        players: [],
+        flopDisplay: null,
+
+        // Stock state
+
+        stocks: stocks.slice(0, NUM_STOCKS),
+
+        stockRollModifierMap: new Map(),
+        setStockRollModifierMap: (ticker, rollMods) =>
+          set(s => setMap(ticker, rollMods)(s.stockRollModifierMap)),
+
+        stockVolatilityModifierMap: new Map(),
+        setStockVolatilityModifierMap: (ticker, volMods) =>
+          set(s => setMap(ticker, volMods)(s.stockVolatilityModifierMap)),
+
+        // Host state
+
+        isHost: false,
+
+        secretKeyPlayerIdMap: new Map(),
+        setSecretKeyPlayerIdMap: (secretKey, playerId) =>
+          set(s => setMap(secretKey, playerId)(s.secretKeyPlayerIdMap)),
+
+        playerConnectionMap: new Map(),
+        setPlayerConnectionMap: (playerId, conn) =>
+          set(s => setMap(playerId, conn)(s.playerConnectionMap)),
+
+        deck: new Deck().shuffle(),
+        flop: null as Flop | null,
+
+        // Player state
+
+        ping: null as number | null,
+        hostPeerId: "",
+        previousRoomCode: "",
+        playerId: "",
+        pingIntervalId: null as NodeJS.Timeout | null,
+        secretKey: generateId(),
+      } as TStore),
+    "Zustand Store"
+  )
+);
+
+interface TStateConfig {
+  peerSync: boolean;
+  storeLocally: boolean;
+}
+const defaultConfig: TStateConfig = { peerSync: false, storeLocally: false };
+const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
@@ -60,7 +138,7 @@ const stateConfig = {
   // Host state
   isHost: {},
   secretKeyPlayerIdMap: {},
-  playerConnections: {},
+  playerConnectionMap: {},
   deck: {},
   flop: {},
   stockRollModifierMap: {},
@@ -74,21 +152,12 @@ const stateConfig = {
   pingIntervalId: {},
   secretKey: {},
 };
-
-export const getStateConfig = (key: TStoreKey) => ({
+export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,
-  // @ts-ignore - see if this can be more strictly typed in the future
   ...(stateConfig[key] || {}),
 });
 
-export type TStore = typeof initialState;
-export type TStoreKey = keyof TStore;
-
-export const useStore = create<TStore>(
-  // @ts-ignore See: https://github.com/microsoft/TypeScript/issues/19360
-  devtools(() => initialState, "Zustand Store")
-);
-
+// Helper exports
 export const getStore = useStore.getState;
 export const setStore = (
   update: Partial<TStore> | ((s: TStore) => Partial<TStore>)
@@ -101,7 +170,6 @@ export const setStore = (
 };
 export const resetStore = () => setStore(initialState);
 
-// TODO: Refactor below into some sort of middleware
 // Initialize state from local storage
 const initialStorageState: any = {};
 for (const key in initialState) {
@@ -133,3 +201,5 @@ useStore.subscribe((newState, oldState) => {
     }
   }
 });
+
+// TODO: Once I have a solid pattern for the store worked out, begin splitting store.ts into multiple files

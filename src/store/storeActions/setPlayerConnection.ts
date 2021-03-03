@@ -2,21 +2,18 @@ import {
   PlayerConnection,
   TPlayerConnection,
 } from "../../core/player/PlayerConnection";
-import { getStore, setStore } from "../store";
+import { getStore } from "../store";
 
 export const setPlayerConnection = (
   playerId: string,
   updates: Partial<TPlayerConnection> = { playerId }
 ) => {
-  const { playerConnections } = getStore();
+  const { playerConnectionMap, setPlayerConnectionMap } = getStore();
 
   const conn: PlayerConnection =
-    playerConnections[playerId] || new PlayerConnection();
+    playerConnectionMap.get(playerId) || new PlayerConnection();
 
-  setStore({
-    playerConnections: {
-      ...playerConnections,
-      [playerId]: conn.set(updates),
-    },
-  });
+  setPlayerConnectionMap(playerId, conn.set(updates));
 };
+
+// TODO: This action is almost so simple it can be removed

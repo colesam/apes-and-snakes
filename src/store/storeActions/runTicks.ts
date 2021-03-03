@@ -1,3 +1,4 @@
+import produce from "immer";
 import {
   DRAW_PAIR_CHANCE,
   FLOP_PREVIEW_POINT,
@@ -9,14 +10,12 @@ import {
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank } from "../../core/poker";
+import { RollModifier } from "../../core/stock/RollModifier";
+import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { getStore, setStore } from "../store";
-import { TMap } from "../types/TMap";
-
-// TODO: break up this file
 
 type Modifier = { expirationTick: number };
-type ModifierMap<T extends Modifier> = TMap<T[]>;
 
 function isFlopPreview(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
@@ -34,12 +33,16 @@ function isEndOfWeek(tick: number) {
 
 const expireModifiers = <T extends Modifier>(
   tick: number,
-  modMap: ModifierMap<T>
-): ModifierMap<T> =>
-  Object.entries(modMap).reduce<ModifierMap<T>>((acc, [key, mods]) => {
-    acc[key] = mods.filter(m => m.expirationTick > tick);
-    return acc;
-  }, {});
+  modMap: Map<string, T[]>
+): Map<string, T[]> =>
+  produce(modMap, (draft: Map<string, T[]>) => {
+    for (const [key, mods] of modMap.entries()) {
+      draft.set(
+        key,
+        mods.filter(m => m.expirationTick > tick)
+      );
+    }
+  });
 
 export const runTicks = (numTicks: number) => {
   let {
@@ -65,8 +68,8 @@ export const runTicks = (numTicks: number) => {
     stocks = stocks.map(stock =>
       tickPrice(
         stock,
-        stockVolatilityModifierMap[stock.ticker] || [],
-        stockRollModifierMap[stock.ticker] || []
+        stockVolatilityModifierMap.get(stock.ticker) || [],
+        stockRollModifierMap.get(stock.ticker) || []
       )
     );
 
@@ -91,24 +94,38 @@ export const runTicks = (numTicks: number) => {
 
       const stockRankMap = mapPairsToRank(stockPairMap, flop);
 
-      for (const stockTicker in stockRankMap) {
-        // @ts-ignore
-        stockVolatilityModifierMap[stockTicker] = [
-          ...(stockVolatilityModifierMap[stockTicker] || []),
-          {
-            expirationTick: tick + TICKS_PER_WEEKEND,
-            value: WEEKEND_VOLATILITY_MOD,
-          },
-        ];
-        // @ts-ignore
-        stockRollModifierMap[stockTicker] = [
-          ...(stockRollModifierMap[stockTicker] || []),
-          ...RANK_MODIFIERS[stockRankMap[stockTicker]].map(value => ({
-            expirationTick: tick + TICKS_PER_WEEKEND,
-            value,
-          })),
-        ];
-      }
+      stockVolatilityModifierMap = produce(
+        stockVolatilityModifierMap,
+        draft => {
+          for (const stockTicker in stockRankMap) {
+            const mods = stockVolatilityModifierMap.get(stockTicker) || [];
+            draft.set(stockTicker, [
+              ...mods,
+              new VolatilityModifier({
+                expirationTick: tick + TICKS_PER_WEEKEND,
+                value: WEEKEND_VOLATILITY_MOD,
+              }),
+            ]);
+          }
+        }
+      );
+
+      stockRollModifierMap = produce(stockRollModifierMap, draft => {
+        for (const stockTicker in stockRankMap) {
+          const rank = stockRankMap[stockTicker];
+          const mods = stockRollModifierMap.get(stockTicker) || [];
+          draft.set(stockTicker, [
+            ...mods,
+            ...RANK_MODIFIERS[rank].map(
+              value =>
+                new RollModifier({
+                  expirationTick: tick + TICKS_PER_WEEKEND,
+                  value,
+                })
+            ),
+          ]);
+        }
+      });
 
       stocks = stocks.map(stock =>
         stock.set({

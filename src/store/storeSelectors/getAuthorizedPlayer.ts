@@ -1,7 +1,7 @@
 import { TStore } from "../store";
 
-export const getAuthorizedPlayer = (s: TStore) => (secretKey: string) => {
-  const playerId = s.secretKeyPlayerIdMap[secretKey];
+export const getAuthorizedPlayer = (secretKey: string) => (s: TStore) => {
+  const playerId = s.secretKeyPlayerIdMap.get(secretKey);
   if (!playerId) return null;
 
   const player = s.players.find(player => player.id === playerId);

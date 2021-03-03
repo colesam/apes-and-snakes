@@ -20,7 +20,7 @@ export const makeHandleClosePosition = (
   const stockPriceMap = StoreSelector.stockPriceMap(_getStore());
 
   // Auth
-  const playerId = secretKeyPlayerIdMap[payload.secretKey];
+  const playerId = secretKeyPlayerIdMap.get(payload.secretKey);
 
   if (!playerId) {
     return error(
