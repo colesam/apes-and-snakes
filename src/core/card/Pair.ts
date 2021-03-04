@@ -10,7 +10,7 @@ export class Pair extends CardCombination {
 
   public cards;
 
-  constructor({ cards = [new Card(), new Card()] } = {} as TParams) {
+  constructor({ cards = [new Card(), new Card()] } = {} as Partial<TParams>) {
     super();
     this.cards = cards;
   }

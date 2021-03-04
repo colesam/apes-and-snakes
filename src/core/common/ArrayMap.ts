@@ -1,7 +1,7 @@
 import { GuaranteedMap } from "./GuaranteedMap";
 
 interface TParams<K, V> {
-  entries: [K, V][];
+  entries?: [K, V][];
 }
 
 // Serializable version of GuaranteedMap, hardcoded to use arrays as default value

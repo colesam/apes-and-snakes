@@ -1,9 +1,19 @@
 import { ImmerClass } from "../ImmerClass";
 
+interface TParams {
+  value: number;
+  expirationTick: number;
+}
+
 export class VolatilityModifier extends ImmerClass {
   protected readonly __class = "VolatilityModifier";
 
-  constructor(public value: number = 0, public expirationTick: number = 0) {
+  public value;
+  public expirationTick;
+
+  constructor({ value = 0, expirationTick = 0 } = {} as Partial<TParams>) {
     super();
+    this.value = value;
+    this.expirationTick = expirationTick;
   }
 }

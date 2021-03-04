@@ -5,6 +5,7 @@ import { FlopPreview } from "./FlopPreview";
 interface TParams {
   cards: [Card, Card, Card, Card, Card];
 }
+
 export class Flop extends CardCombination {
   protected readonly __class = "Flop";
 
@@ -21,6 +22,6 @@ export class Flop extends CardCombination {
 
   get preview() {
     const [a, b, c] = this.cards;
-    return new FlopPreview([a, b, c]);
+    return new FlopPreview({ cards: [a, b, c] });
   }
 }

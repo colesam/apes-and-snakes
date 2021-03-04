@@ -1,13 +1,24 @@
 import { ImmerClass } from "../ImmerClass";
 
+interface TParams {
+  value: number;
+  expirationTick: number;
+  stackKey: string | null;
+}
+
 export class RollModifier extends ImmerClass {
   protected readonly __class = "RollModifier";
 
+  public value;
+  public expirationTick;
+  public stackKey;
+
   constructor(
-    public value: number = 0,
-    public expirationTick: number = 0,
-    public stackKey: string | null = null
+    { value = 0, expirationTick = 0, stackKey = null } = {} as Partial<TParams>
   ) {
     super();
+    this.value = value;
+    this.expirationTick = expirationTick;
+    this.stackKey = stackKey;
   }
 }

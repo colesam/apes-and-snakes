@@ -1,17 +1,38 @@
 import { ImmerClass } from "../ImmerClass";
 import generateId from "../generateId";
 
+interface TParams {
+  id: string;
+  stockTicker: string;
+  quantity: number;
+  purchasePrice: number;
+  isClosed: boolean;
+}
+
 export class Position extends ImmerClass {
   protected readonly __class = "Position";
 
+  public id;
+  public stockTicker;
+  public quantity;
+  public purchasePrice;
+  public isClosed;
+
   constructor(
-    public id: string = generateId(),
-    public stockTicker: string = "",
-    public quantity: number = 0,
-    public purchasePrice: number = 0,
-    public isClosed: boolean = false
+    {
+      id = generateId(),
+      stockTicker = "",
+      quantity = 0,
+      purchasePrice = 0,
+      isClosed = false,
+    } = {} as Partial<TParams>
   ) {
     super();
+    this.id = id;
+    this.stockTicker = stockTicker;
+    this.quantity = quantity;
+    this.purchasePrice = purchasePrice;
+    this.isClosed = isClosed;
   }
 
   close() {

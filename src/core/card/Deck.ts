@@ -6,21 +6,18 @@ import { Pair } from "./Pair";
 import { allRanks } from "./Rank";
 import { allSuits } from "./Suit";
 
-const generateDeck = () => {
-  const res = [];
-  for (const suit of allSuits) {
-    for (const rank of allRanks) {
-      res.push(new Card(rank, suit));
-    }
-  }
-  return res;
-};
+interface TParams {
+  cards: Card[];
+}
 
 export class Deck extends ImmerClass {
   protected readonly __class = "Deck";
 
-  constructor(public cards: Card[] = generateDeck()) {
+  public cards;
+
+  constructor({ cards = generateDeck() } = {} as Partial<TParams>) {
     super();
+    this.cards = cards;
   }
 
   shuffle() {
@@ -68,3 +65,13 @@ export class Deck extends ImmerClass {
     return this.cards.length;
   }
 }
+
+const generateDeck = () => {
+  const res = [];
+  for (const suit of allSuits) {
+    for (const rank of allRanks) {
+      res.push(new Card({ rank, suit }));
+    }
+  }
+  return res;
+};
