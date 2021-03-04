@@ -2,9 +2,9 @@ const path = require("path");
 const { insertIntoNamespace } = require("./insertIntoNamespace");
 
 // Script start
-const [selectorName] = process.argv.slice(2);
+const [name] = process.argv.slice(2);
 
-if (!selectorName) {
+if (!name) {
   console.log("[Error] Please specify the name of your selector.");
   process.exit(1);
 }
@@ -12,17 +12,17 @@ if (!selectorName) {
 const fileContents = `
 import {TStore} from "../store";
 
-export const ${selectorName} = (s: TStore) => {};
+export const ${name} = (s: TStore) => {};
 `;
 
-const namespaceImportLine = `import {${selectorName}} from "./storeSelectors/${selectorName}"`;
+const namespaceImportLine = `import {${name}} from "./storeActions/${name}"`;
 
 insertIntoNamespace(
-  selectorName,
-  path.resolve("./src/store/storeSelectors/" + selectorName + ".ts"),
+  name,
+  path.resolve("./src/store/storeActions/" + name + ".ts"),
   fileContents,
-  "StoreSelector",
-  path.resolve("./src/store/StoreSelector.ts"),
+  "StoreAction",
+  path.resolve("./src/store/StoreAction.ts"),
   namespaceImportLine
 )
   .then(() => process.exit(0))

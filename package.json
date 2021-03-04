@@ -50,7 +50,8 @@
     "eject": "react-scripts eject",
     "lint:fix": "eslint --fix",
     "prettier:fix": "prettier --write ./src",
-    "make:store-selector": "node ./scripts/makeStoreSelector.js"
+    "make:store-selector": "node ./scripts/makeStoreSelector.js",
+    "make:store-action": "node ./scripts/makeStoreAction.js"
   },
   "eslintConfig": {
     "extends": [
