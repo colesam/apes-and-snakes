@@ -1,5 +1,5 @@
 import { shuffle } from "lodash";
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 import { Card } from "./Card";
 import { Flop } from "./Flop";
 import { Pair } from "./Pair";
@@ -10,79 +10,58 @@ const generateDeck = () => {
   const res = [];
   for (const suit of allSuits) {
     for (const rank of allRanks) {
-      res.push(new Card({ rank, suit }));
+      res.push(new Card(rank, suit));
     }
   }
   return res;
 };
 
-type TDeck = {
-  cards: Card[];
-};
+export class Deck extends ImmerClass {
+  protected readonly __class = "Deck";
 
-export interface Deck extends DeepReadonly<TDeck> {}
-
-export class Deck extends ImmutableRecord<TDeck> {
-  constructor(data?: Partial<TDeck>) {
-    super(
-      {
-        cards: generateDeck(),
-      },
-      data,
-      "Deck"
-    );
-  }
-
-  get cards() {
-    return this.data.cards;
+  constructor(public cards: Card[] = generateDeck()) {
+    super();
   }
 
   shuffle() {
-    return new Deck({ cards: shuffle(this.cards) });
+    this.cards = shuffle(this.cards);
+    return this;
   }
 
   // TODO: prevent duplicate cards
   insert(cards: Card[]) {
-    return this.set({ cards: [...this.cards, ...cards] });
+    this.cards.push(...cards);
+    return this;
   }
 
-  deal(numHands: number, cardsPerHand: number): [Card[][], Deck] {
+  deal(numHands: number, cardsPerHand: number): Card[][] {
     const hands = [];
-    const cards = [...this.cards];
-
     for (let i = 0; i < numHands; i++) {
-      hands.push(cards.splice(0, cardsPerHand));
+      hands.push(this.cards.splice(0, cardsPerHand));
     }
-
-    return [hands, new Deck({ cards })];
+    return hands;
   }
 
-  dealPairs(numHands: Number): [Pair[], Deck] {
+  dealPairs(numHands: Number): Pair[] {
     const pairs = [];
-
-    let deck: Deck = this;
-    let pair;
     for (let i = 0; i < numHands; i++) {
-      [pair, deck] = deck.drawPair();
-      pairs.push(pair);
+      pairs.push(this.drawPair());
     }
-
-    return [pairs, deck];
+    return pairs;
   }
 
-  draw(numCards: number): [Card[], Deck] {
-    const cards = [...this.cards];
-    return [cards.splice(0, numCards), new Deck({ cards })];
+  draw(numCards: number): Card[] {
+    return this.cards.splice(0, numCards);
   }
 
-  drawPair(): [Pair, Deck] {
-    const [[a, b], deck] = this.draw(2);
-    return [new Pair({ cards: [a, b] }), deck];
+  drawPair(): Pair {
+    const [a, b] = this.draw(2);
+    return new Pair({ cards: [a, b] });
   }
 
-  drawFlop(): [Flop, Deck] {
-    const [[a, b, c, d, e], deck] = this.draw(5);
-    return [new Flop({ cards: [a, b, c, d, e] }), deck];
+  drawFlop(): Flop {
+    const [a, b, c, d, e] = this.draw(5);
+    return new Flop({ cards: [a, b, c, d, e] });
   }
 
   get size() {

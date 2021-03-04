@@ -1,19 +1,13 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 
-export type TRollModifier = {
-  value: number;
-  expirationTick: number;
-  stackKey: string | null;
-};
+export class RollModifier extends ImmerClass {
+  protected readonly __class = "RollModifier";
 
-export interface RollModifier extends DeepReadonly<TRollModifier> {}
-
-export class RollModifier extends ImmutableRecord<TRollModifier> {
-  constructor(data?: Partial<TRollModifier>) {
-    super(
-      { value: 0, expirationTick: 0, stackKey: null },
-      data,
-      "RollModifier"
-    );
+  constructor(
+    public value: number = 0,
+    public expirationTick: number = 0,
+    public stackKey: string | null = null
+  ) {
+    super();
   }
 }

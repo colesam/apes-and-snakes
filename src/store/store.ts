@@ -6,6 +6,7 @@ import { NUM_STOCKS } from "../config";
 import { Deck } from "../core/card/Deck";
 import { Flop } from "../core/card/Flop";
 import { FlopPreview } from "../core/card/FlopPreview";
+import { GuaranteedMap } from "../core/common/GuaranteedMap";
 import { GameStatus } from "../core/game/GameStatus";
 import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
@@ -23,7 +24,6 @@ const [storageGet, storageSet] = initStorage("sessionStorage", "store");
 
 export interface TStore extends State {
   // Shared state
-
   tick: number;
   roomCode: string;
   gameStatus: GameStatus;
@@ -31,30 +31,18 @@ export interface TStore extends State {
   flopDisplay: Flop | FlopPreview | null;
 
   // Stock state
-
   stocks: Stock[];
-
-  stockRollModifierMap: Map<string, RollModifier[]>;
-  setStockRollModifierMap: (k: string, v: RollModifier[]) => void;
-
-  stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
-  setStockVolatilityModifierMap: (k: string, v: VolatilityModifier[]) => void;
+  stockRollModifierMap: GuaranteedMap<string, RollModifier[]>;
+  stockVolatilityModifierMap: GuaranteedMap<string, VolatilityModifier[]>;
 
   // Host state
-
   isHost: boolean;
-
   secretKeyPlayerIdMap: Map<string, string>;
-  setSecretKeyPlayerIdMap: (k: string, v: string) => void;
-
   playerConnectionMap: Map<string, PlayerConnection>;
-  setPlayerConnectionMap: (k: string, v: PlayerConnection) => void;
-
   deck: Deck;
   flop: Flop | null;
 
   // Player state
-
   ping: number | null;
   hostPeerId: string;
   previousRoomCode: string;
@@ -65,62 +53,43 @@ export interface TStore extends State {
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
 
-// Generalized producers
-const setMap = <T, K>(k: T, v: K) => produce(draft => draft.set(k, v));
+export const initialState: TStore = {
+  // Shared state
+  tick: 0,
+  roomCode: "",
+  gameStatus: GameStatus.LOBBY,
+  players: [],
+  flopDisplay: null,
+
+  // Stock state
+  stocks: stocks.slice(0, NUM_STOCKS),
+  stockRollModifierMap: new GuaranteedMap<string, RollModifier[]>(() => []),
+  stockVolatilityModifierMap: new GuaranteedMap<string, VolatilityModifier[]>(
+    () => []
+  ),
+
+  // Host state
+  isHost: false,
+  secretKeyPlayerIdMap: new Map(),
+  playerConnectionMap: new Map(),
+  deck: new Deck().shuffle(),
+  flop: null,
+
+  // Player state
+  ping: null,
+  hostPeerId: "",
+  previousRoomCode: "",
+  playerId: "",
+  pingIntervalId: null,
+  secretKey: generateId(),
+};
 
 // Create store
 export const useStore = create<TStore>(
-  devtools(
-    set =>
-      ({
-        // Shared state
-
-        tick: 0,
-        roomCode: "",
-        gameStatus: GameStatus.LOBBY,
-        players: [],
-        flopDisplay: null,
-
-        // Stock state
-
-        stocks: stocks.slice(0, NUM_STOCKS),
-
-        stockRollModifierMap: new Map(),
-        setStockRollModifierMap: (ticker, rollMods) =>
-          set(s => setMap(ticker, rollMods)(s.stockRollModifierMap)),
-
-        stockVolatilityModifierMap: new Map(),
-        setStockVolatilityModifierMap: (ticker, volMods) =>
-          set(s => setMap(ticker, volMods)(s.stockVolatilityModifierMap)),
-
-        // Host state
-
-        isHost: false,
-
-        secretKeyPlayerIdMap: new Map(),
-        setSecretKeyPlayerIdMap: (secretKey, playerId) =>
-          set(s => setMap(secretKey, playerId)(s.secretKeyPlayerIdMap)),
-
-        playerConnectionMap: new Map(),
-        setPlayerConnectionMap: (playerId, conn) =>
-          set(s => setMap(playerId, conn)(s.playerConnectionMap)),
-
-        deck: new Deck().shuffle(),
-        flop: null as Flop | null,
-
-        // Player state
-
-        ping: null as number | null,
-        hostPeerId: "",
-        previousRoomCode: "",
-        playerId: "",
-        pingIntervalId: null as NodeJS.Timeout | null,
-        secretKey: generateId(),
-      } as TStore),
-    "Zustand Store"
-  )
+  devtools(() => initialState, "Zustand Store")
 );
 
+// State configuration
 interface TStateConfig {
   peerSync: boolean;
   storeLocally: boolean;
@@ -159,11 +128,9 @@ export const getStateConfig = (key: TStoreKey): TStateConfig => ({
 
 // Helper exports
 export const getStore = useStore.getState;
-export const setStore = (
-  update: Partial<TStore> | ((s: TStore) => Partial<TStore>)
-) => {
+export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
   if (isFunction(update)) {
-    useStore.setState(update(getStore()));
+    useStore.setState(s => produce(s, update));
   } else {
     useStore.setState(update);
   }

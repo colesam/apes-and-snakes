@@ -1,3 +1,4 @@
+// TODO redo these tests once the refactor is completed
 /* eslint-disable */
 import { makeHandleReconnect } from "./handleReconnect";
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";

@@ -1,31 +1,17 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 import { Pair } from "../card/Pair";
 import { RoundRank } from "../poker";
 
-export type TStock = {
-  name: string;
-  ticker: string;
-  priceHistory: number[];
-  rankHistory: RoundRank[];
-  pair: Pair;
-  pairIsNew: boolean;
-};
-
-export interface Stock extends DeepReadonly<TStock> {}
-
-export class Stock extends ImmutableRecord<TStock> {
-  constructor(data?: Partial<TStock>) {
-    super(
-      {
-        name: "",
-        ticker: "",
-        priceHistory: [],
-        rankHistory: [],
-        pair: new Pair(),
-        pairIsNew: false,
-      },
-      data,
-      "Stock"
-    );
+export class Stock extends ImmerClass {
+  protected readonly __class = "Stock";
+  constructor(
+    public name: string = "",
+    public ticker: string = "",
+    public priceHistory: number[] = [],
+    public rankHistory: RoundRank[] = [],
+    public pair: Pair = new Pair(),
+    public pairIsNew: boolean = false
+  ) {
+    super();
   }
 }

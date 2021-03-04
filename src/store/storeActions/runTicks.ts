@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 import {
   DRAW_PAIR_CHANCE,
   FLOP_PREVIEW_POINT,
@@ -9,6 +9,7 @@ import {
   WEEKEND_START,
 } from "../../config";
 import { Pair } from "../../core/card/Pair";
+import { GuaranteedMap } from "../../core/common/GuaranteedMap";
 import { mapPairsToRank } from "../../core/poker";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
@@ -33,10 +34,10 @@ function isEndOfWeek(tick: number) {
 
 const expireModifiers = <T extends Modifier>(
   tick: number,
-  modMap: Map<string, T[]>
-): Map<string, T[]> =>
+  modMap: GuaranteedMap<string, T[]>
+): GuaranteedMap<string, T[]> =>
   produce(modMap, (draft: Map<string, T[]>) => {
-    for (const [key, mods] of modMap.entries()) {
+    for (const [key, mods] of modMap) {
       draft.set(
         key,
         mods.filter(m => m.expirationTick > tick)
@@ -96,36 +97,35 @@ export const runTicks = (numTicks: number) => {
 
       stockVolatilityModifierMap = produce(
         stockVolatilityModifierMap,
-        draft => {
+        (draft: GuaranteedMap<string, VolatilityModifier[]>) => {
           for (const stockTicker in stockRankMap) {
-            const mods = stockVolatilityModifierMap.get(stockTicker) || [];
-            draft.set(stockTicker, [
-              ...mods,
+            draft.get(stockTicker).push(
               new VolatilityModifier({
                 expirationTick: tick + TICKS_PER_WEEKEND,
                 value: WEEKEND_VOLATILITY_MOD,
-              }),
-            ]);
+              })
+            );
           }
         }
       );
 
-      stockRollModifierMap = produce(stockRollModifierMap, draft => {
-        for (const stockTicker in stockRankMap) {
-          const rank = stockRankMap[stockTicker];
-          const mods = stockRollModifierMap.get(stockTicker) || [];
-          draft.set(stockTicker, [
-            ...mods,
-            ...RANK_MODIFIERS[rank].map(
-              value =>
-                new RollModifier({
-                  expirationTick: tick + TICKS_PER_WEEKEND,
-                  value,
-                })
-            ),
-          ]);
+      stockRollModifierMap = produce(
+        stockRollModifierMap,
+        (draft: GuaranteedMap<string, RollModifier[]>) => {
+          for (const stockTicker in stockRankMap) {
+            const rank = stockRankMap[stockTicker];
+            draft.get(stockTicker)!.push(
+              ...RANK_MODIFIERS[rank].map(
+                value =>
+                  new RollModifier({
+                    expirationTick: tick + TICKS_PER_WEEKEND,
+                    value,
+                  })
+              )
+            );
+          }
         }
-      });
+      );
 
       stocks = stocks.map(stock =>
         stock.set({

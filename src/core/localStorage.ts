@@ -1,4 +1,4 @@
-import { serialize, deserialize, immutableClassMap } from "./serialize";
+import { serialize, deserialize, classMap } from "./serialize";
 
 type Get = (key: string) => any;
 type Set = <T>(key: string, value: T) => T;
@@ -14,7 +14,7 @@ const initStorage = (
   }
 
   const get: Get = key =>
-    deserialize(storageApi.getItem(`${namespace}_${key}`), immutableClassMap);
+    deserialize(storageApi.getItem(`${namespace}_${key}`), classMap);
 
   const set: Set = (key, value) => {
     storageApi.setItem(`${namespace}_${key}`, serialize(value));

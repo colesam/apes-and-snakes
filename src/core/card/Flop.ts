@@ -1,31 +1,26 @@
-import { DeepReadonly } from "../ImmutableRecord";
 import { Card } from "./Card";
 import { CardCombination } from "./CardCombination";
 import { FlopPreview } from "./FlopPreview";
 
-type TFlop = {
+interface TParams {
   cards: [Card, Card, Card, Card, Card];
-};
+}
+export class Flop extends CardCombination {
+  protected readonly __class = "Flop";
 
-export interface Flop extends DeepReadonly<TFlop> {}
+  public cards;
 
-export class Flop extends CardCombination<TFlop> {
-  constructor(data?: Partial<TFlop>) {
-    super(
-      {
-        cards: [new Card(), new Card(), new Card(), new Card(), new Card()],
-      },
-      data,
-      "Flop"
-    );
-  }
-
-  get cards() {
-    return this.data.cards;
+  constructor(
+    {
+      cards = [new Card(), new Card(), new Card(), new Card(), new Card()],
+    } = {} as Partial<TParams>
+  ) {
+    super();
+    this.cards = cards;
   }
 
   get preview() {
     const [a, b, c] = this.cards;
-    return new FlopPreview({ cards: [a, b, c] });
+    return new FlopPreview([a, b, c]);
   }
 }
