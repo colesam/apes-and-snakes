@@ -1,19 +1,21 @@
 import { SIM_WEEKS, TICKS_PER_WEEK } from "../../config";
 import { StoreAction } from "../StoreAction";
-import { initialState, setStore } from "../store";
+import { initialState, TStore } from "../store";
 
-export const setupGame = () => {
+export const setupGame = (s: TStore) => {
   // Reset state
-  setStore(s => ({
-    tick: initialState.tick,
-    stocks: initialState.stocks,
-    players: s.players.map(p => p.set({ positions: [], cash: 1_000_000 })),
-    flopDisplay: null,
-    flop: null,
-    stockVolatilityModifierMap: initialState.stockVolatilityModifierMap,
-    stockRollModifierMap: initialState.stockRollModifierMap,
-  }));
+  s.tick = initialState.tick;
+  s.stocks = initialState.stocks;
+  s.flopDisplay = null;
+  s.flop = null;
+  s.stockVolatilityModifierMap = initialState.stockVolatilityModifierMap;
+  s.stockRollModifierMap = initialState.stockRollModifierMap;
 
-  StoreAction.assignPairsToStocks();
-  StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK);
+  for (let player of s.players) {
+    player.positions = [];
+    player.cash = 1_000_000;
+  }
+
+  StoreAction.assignPairsToStocks(s);
+  StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK)(s);
 };

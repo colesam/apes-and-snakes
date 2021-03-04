@@ -6,7 +6,7 @@ interface TParams {
   id: string;
   name: string;
   connectionStatus: ConnectionStatus;
-  position: Position[];
+  positions: Position[];
   cash: number;
 }
 
@@ -16,7 +16,7 @@ export class Player extends ImmerClass {
   public id;
   public name;
   public connectionStatus;
-  public position;
+  public positions;
   public cash;
 
   constructor(
@@ -24,7 +24,7 @@ export class Player extends ImmerClass {
       id = "",
       name = "",
       connectionStatus = ConnectionStatus.CONNECTED,
-      position = [],
+      positions = [],
       cash = 0,
     } = {} as Partial<TParams>
   ) {
@@ -32,7 +32,7 @@ export class Player extends ImmerClass {
     this.id = id;
     this.name = name;
     this.connectionStatus = connectionStatus;
-    this.position = position;
+    this.positions = positions;
     this.cash = cash;
   }
 }

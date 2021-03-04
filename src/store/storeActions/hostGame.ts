@@ -1,10 +1,13 @@
 import { StoreAction } from "../StoreAction";
-import { setStore } from "../store";
+import { TStore } from "../store";
 
-export const hostGame = (roomCode: string, resetPlayerKeys = true) => {
-  setStore({
-    isHost: true,
-    ...(resetPlayerKeys && { secretKeyPlayerIdMap: new Map() }),
-  });
-  StoreAction.setRoomCode(roomCode);
+export const hostGame = (roomCode: string, resetPlayerKeys = true) => (
+  s: TStore
+) => {
+  s.isHost = true;
+  StoreAction.setRoomCode(roomCode)(s);
+
+  if (resetPlayerKeys) {
+    s.secretKeyPlayerIdMap = new Map();
+  }
 };

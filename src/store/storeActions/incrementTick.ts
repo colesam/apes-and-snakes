@@ -1,5 +1,5 @@
-import { setStore } from "../store";
+import { TStore } from "../store";
 
-export const incrementTick = () => {
-  setStore(s => ({ tick: s.tick + 1 }));
+export const incrementTick = (s: TStore) => {
+  s.tick += 1;
 };

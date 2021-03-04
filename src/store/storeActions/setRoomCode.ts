@@ -1,5 +1,6 @@
-import { setStore } from "../store";
+import { TStore } from "../store";
 
-export const setRoomCode = (roomCode: string) => {
-  setStore({ roomCode, previousRoomCode: roomCode });
+export const setRoomCode = (roomCode: string) => (s: TStore) => {
+  s.roomCode = roomCode;
+  s.previousRoomCode = roomCode;
 };

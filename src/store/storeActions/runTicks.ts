@@ -14,7 +14,7 @@ import { mapPairsToRank } from "../../core/poker";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { tickPrice } from "../../core/stock/tickPrice";
-import { getStore, setStore } from "../store";
+import { TStore } from "../store";
 
 type Modifier = { expirationTick: number };
 
@@ -45,47 +45,36 @@ const expireModifiers = <T extends Modifier>(
     }
   });
 
-export const runTicks = (numTicks: number) => {
-  let {
-    tick: initialTick,
-    stocks,
-    flopDisplay,
-    deck,
-    stockVolatilityModifierMap,
-    stockRollModifierMap,
-    flop,
-  } = getStore();
+export const runTicks = (numTicks: number) => (s: TStore) => {
+  const initialTick = s.tick;
 
   for (let tick = initialTick; tick < initialTick + numTicks; tick++) {
     // Expire modifiers
-    stockVolatilityModifierMap = expireModifiers(
+    s.stockVolatilityModifierMap = expireModifiers(
       tick,
-      stockVolatilityModifierMap
+      s.stockVolatilityModifierMap
     );
-    stockRollModifierMap = expireModifiers(tick, stockRollModifierMap);
+    s.stockRollModifierMap = expireModifiers(tick, s.stockRollModifierMap);
 
     // Tick prices
-    // eslint-disable-next-line no-loop-func
-    stocks = stocks.map(stock =>
+    s.stocks = s.stocks.map(stock =>
       tickPrice(
         stock,
-        stockVolatilityModifierMap.get(stock.ticker) || [],
-        stockRollModifierMap.get(stock.ticker) || []
+        s.stockVolatilityModifierMap.get(stock.ticker),
+        s.stockRollModifierMap.get(stock.ticker)
       )
     );
 
     if (isFlopPreview(tick)) {
-      const [newFlop, newDeck] = deck.drawFlop();
       // State updates
-      flop = newFlop;
-      flopDisplay = flop.preview;
-      deck = newDeck;
+      s.flop = s.deck.drawFlop();
+      s.flopDisplay = s.flop.preview;
     } else if (isWeekend(tick)) {
-      if (!flop) {
+      if (!s.flop) {
         throw Error("Flop is missing!");
       }
 
-      const stockPairMap = stocks.reduce<{ [key: string]: Pair }>(
+      const stockPairMap = s.stocks.reduce<{ [key: string]: Pair }>(
         (acc, stock) => {
           acc[stock.ticker] = stock.pair;
           return acc;
@@ -93,81 +82,55 @@ export const runTicks = (numTicks: number) => {
         {}
       );
 
-      const stockRankMap = mapPairsToRank(stockPairMap, flop);
+      const stockRankMap = mapPairsToRank(stockPairMap, s.flop);
 
-      stockVolatilityModifierMap = produce(
-        stockVolatilityModifierMap,
-        (draft: GuaranteedMap<string, VolatilityModifier[]>) => {
-          for (const stockTicker in stockRankMap) {
-            draft.get(stockTicker).push(
-              new VolatilityModifier({
+      for (const stockTicker in stockRankMap) {
+        s.stockVolatilityModifierMap.get(stockTicker).push(
+          new VolatilityModifier({
+            expirationTick: tick + TICKS_PER_WEEKEND,
+            value: WEEKEND_VOLATILITY_MOD,
+          })
+        );
+      }
+
+      for (const stockTicker in stockRankMap) {
+        const rank = stockRankMap[stockTicker];
+        s.stockRollModifierMap.get(stockTicker).push(
+          ...RANK_MODIFIERS[rank].map(
+            value =>
+              new RollModifier({
                 expirationTick: tick + TICKS_PER_WEEKEND,
-                value: WEEKEND_VOLATILITY_MOD,
+                value,
               })
-            );
-          }
-        }
-      );
+          )
+        );
+      }
 
-      stockRollModifierMap = produce(
-        stockRollModifierMap,
-        (draft: GuaranteedMap<string, RollModifier[]>) => {
-          for (const stockTicker in stockRankMap) {
-            const rank = stockRankMap[stockTicker];
-            draft.get(stockTicker)!.push(
-              ...RANK_MODIFIERS[rank].map(
-                value =>
-                  new RollModifier({
-                    expirationTick: tick + TICKS_PER_WEEKEND,
-                    value,
-                  })
-              )
-            );
-          }
-        }
-      );
+      for (const stock of s.stocks) {
+        stock.rankHistory.push(stockRankMap[stock.ticker]);
+      }
 
-      stocks = stocks.map(stock =>
-        stock.set({
-          rankHistory: [...stock.rankHistory, stockRankMap[stock.ticker]],
-        })
-      );
-
-      // State updates
-      flopDisplay = flop;
+      s.flopDisplay = s.flop;
     } else if (isEndOfWeek(tick)) {
       // Each card has 10% chance of getting new cards
 
       // State updates
       // eslint-disable-next-line no-loop-func
-      stocks = stocks.map(stock => {
+      for (const stock of s.stocks) {
         if (Math.random() < DRAW_PAIR_CHANCE) {
-          const [newPair, newDeck] = deck
-            .insert(stock.pair.cards)
-            .shuffle()
-            .drawPair();
-          deck = newDeck;
-          return stock.set({
-            pair: newPair,
-            pairIsNew: true,
-          });
+          s.deck.insert(stock.pair.cards).shuffle();
+          stock.pair = s.deck.drawPair();
+          stock.pairIsNew = true;
         } else {
-          return stock.set({ pairIsNew: false });
+          stock.pairIsNew = false;
         }
-      });
-      flopDisplay = null;
-      deck = deck.insert(flop ? flop.cards : []).shuffle();
-      flop = null;
+      }
+
+      s.deck.insert(s.flop ? s.flop.cards : []).shuffle();
+      s.flopDisplay = null;
+      s.flop = null;
     }
   }
 
-  setStore({
-    tick: initialTick + numTicks,
-    stocks,
-    flopDisplay,
-    deck,
-    stockVolatilityModifierMap,
-    stockRollModifierMap,
-    flop,
-  });
+  s.tick = initialTick + numTicks;
 };

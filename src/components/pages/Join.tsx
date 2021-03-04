@@ -7,8 +7,7 @@ import { errorLog } from "../../core/helpers";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { NAME_TAKEN_ERROR } from "../../peer/error/NameTakenError";
-import { StoreAction } from "../../store/StoreAction";
-import { useStore } from "../../store/store";
+import { setStore, useStore } from "../../store/store";
 import JoinForm from "../forms/JoinForm";
 import FloatingContainer from "../render/FloatingContainer";
 
@@ -38,7 +37,9 @@ function Join() {
         errorLog(e);
       }
 
-      StoreAction.setHostPeerId(hostPID);
+      setStore(s => {
+        s.hostPeerId = hostPID;
+      });
     }
 
     // Try to join as new player

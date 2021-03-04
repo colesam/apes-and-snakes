@@ -1,13 +1,9 @@
 import { Deck } from "../../core/card/Deck";
-import { getStore, setStore } from "../store";
+import { TStore } from "../store";
 
-export const assignPairsToStocks = () => {
-  const { stocks } = getStore();
-
-  const [pairs, deck] = new Deck().shuffle().dealPairs(stocks.length);
-
-  setStore({
-    stocks: stocks.map((stock, i) => stock.set({ pair: pairs[i] })),
-    deck,
-  });
+export const assignPairsToStocks = (s: TStore) => {
+  s.deck = new Deck().shuffle();
+  for (const stock of s.stocks) {
+    stock.pair = s.deck.drawPair();
+  }
 };

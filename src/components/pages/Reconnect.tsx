@@ -6,8 +6,7 @@ import generateId from "../../core/generateId";
 import { errorLog } from "../../core/helpers";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
-import { StoreAction } from "../../store/StoreAction";
-import { useStore } from "../../store/store";
+import { setStore, useStore } from "../../store/store";
 import ReconnectForm from "../forms/ReconnectForm";
 import FloatingContainer from "../render/FloatingContainer";
 
@@ -36,7 +35,9 @@ function Reconnect() {
         errorLog(e);
       }
 
-      StoreAction.setHostPeerId(hostPID);
+      setStore(s => {
+        s.hostPeerId = hostPID;
+      });
     }
 
     try {
