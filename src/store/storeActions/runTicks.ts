@@ -3,7 +3,6 @@ import {
   TICKS_PER_WEEK,
   WEEKEND_START,
 } from "../../config";
-import { GuaranteedMap } from "../../core/common/GuaranteedMap";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { StoreAction } from "../StoreAction";
 import { TStore } from "../store";
@@ -26,8 +25,8 @@ const runSingleTick = (tick: number) => (s: TStore) => {
   s.stocks = s.stocks.map(stock =>
     tickPrice(
       stock,
-      s.stockVolatilityModifierMap.get(stock.ticker),
-      s.stockRollModifierMap.get(stock.ticker)
+      s.stockVolatilityModifierMap.get(stock.ticker) || [],
+      s.stockRollModifierMap.get(stock.ticker) || []
     )
   );
 
@@ -47,7 +46,7 @@ const runSingleTick = (tick: number) => (s: TStore) => {
 
 type Modifier = { expirationTick: number };
 const expireModifiers = <T extends Modifier>(
-  modMap: GuaranteedMap<string, T[]>,
+  modMap: Map<string, T[]>,
   tick: number
 ): void => {
   for (const [key, mods] of modMap) {

@@ -1,5 +1,4 @@
 import { classMap as cardClassMap } from "./card/classMap";
-import { classMap as commonClassMap } from "./common/classMap";
 import { classMap as playerClassMap } from "./player/classMap";
 import { classMap as stockClassMap } from "./stock/classMap";
 
@@ -25,5 +24,4 @@ export const classMap = {
   ...cardClassMap,
   ...playerClassMap,
   ...stockClassMap,
-  ...commonClassMap,
 };

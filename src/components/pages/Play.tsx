@@ -26,7 +26,7 @@ import { PeerAction } from "../../peer/PeerAction";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
-import StockRender from "../render/Stock";
+import StockBox from "../render/StockBox";
 
 function isWeekend(tick: number) {
   const relativeTick = tick % TICKS_PER_WEEK;
@@ -91,13 +91,8 @@ function Play() {
         </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
-            <StockRender
-              name={stock.name}
-              ticker={stock.ticker}
-              priceHistory={stock.priceHistory}
-              rankHistory={stock.rankHistory}
-              pair={stock.pair}
-              pairIsNew={stock.pairIsNew}
+            <StockBox
+              stock={stock}
               playerCash={player.cash}
               purchaseQuantities={PURCHASE_QUANTITIES}
               disableTransactions={isWeekend(tick) || viewPlayerId !== playerId}

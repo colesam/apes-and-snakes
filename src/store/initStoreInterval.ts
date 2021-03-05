@@ -2,25 +2,22 @@ import { ConnectionStatus } from "../core/player/ConnectionStatus";
 import { getStore, setStore } from "./store";
 
 const updatePlayerConnectionStatuses = () => {
-  const { isHost, playerConnectionMap, players } = getStore();
-  if (isHost) {
-    setStore({
-      players: players.map(player => {
-        const conn = playerConnectionMap.get(player.id);
+  if (getStore().isHost) {
+    setStore(s => {
+      for (const player of s.players) {
+        const conn = s.playerConnectionMap.get(player.id);
 
         if (!conn || !conn.lastPing) return player;
 
         const sinceLastPing = new Date().getTime() - conn.lastPing.getTime();
 
-        return player.set({
-          connectionStatus:
-            sinceLastPing > 20_000
-              ? ConnectionStatus.CONNECTION_LOST
-              : sinceLastPing > 10_000
-              ? ConnectionStatus.UNRESPONSIVE
-              : ConnectionStatus.CONNECTED,
-        });
-      }),
+        player.connectionStatus =
+          sinceLastPing > 20_000
+            ? ConnectionStatus.CONNECTION_LOST
+            : sinceLastPing > 10_000
+            ? ConnectionStatus.UNRESPONSIVE
+            : ConnectionStatus.CONNECTED;
+      }
     });
   }
 };

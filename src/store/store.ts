@@ -6,7 +6,6 @@ import { NUM_STOCKS } from "../config";
 import { Deck } from "../core/card/Deck";
 import { Flop } from "../core/card/Flop";
 import { FlopPreview } from "../core/card/FlopPreview";
-import { GuaranteedMap } from "../core/common/GuaranteedMap";
 import { GameStatus } from "../core/game/GameStatus";
 import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
@@ -32,8 +31,8 @@ export interface TStore extends State {
 
   // Stock state
   stocks: Stock[];
-  stockRollModifierMap: GuaranteedMap<string, RollModifier[]>;
-  stockVolatilityModifierMap: GuaranteedMap<string, VolatilityModifier[]>;
+  stockRollModifierMap: Map<string, RollModifier[]>;
+  stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
 
   // Host state
   isHost: boolean;
@@ -63,10 +62,8 @@ export const initialState: TStore = {
 
   // Stock state
   stocks: stocks.slice(0, NUM_STOCKS),
-  stockRollModifierMap: new GuaranteedMap<string, RollModifier[]>(() => []),
-  stockVolatilityModifierMap: new GuaranteedMap<string, VolatilityModifier[]>(
-    () => []
-  ),
+  stockRollModifierMap: new Map(),
+  stockVolatilityModifierMap: new Map(),
 
   // Host state
   isHost: false,

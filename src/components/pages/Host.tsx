@@ -5,7 +5,7 @@ import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
-import { useStore } from "../../store/store";
+import { setStore, useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function Host() {
@@ -17,7 +17,7 @@ function Host() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${NAMESPACE} ${newRoomCode}`)
       .then(() => {
-        StoreAction.hostGame(newRoomCode);
+        setStore(StoreAction.hostGame(newRoomCode));
       })
       .catch(err => console.error(err));
   }, []);

@@ -5,5 +5,8 @@ export const pushRollModifiers = (
   stockTicker: string,
   mods: RollModifier[]
 ) => (s: TStore) => {
-  s.stockRollModifierMap.get(stockTicker).push(...mods);
+  s.stockRollModifierMap.set(stockTicker, [
+    ...(s.stockRollModifierMap.get(stockTicker) || []),
+    ...mods,
+  ]);
 };

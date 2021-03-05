@@ -7,6 +7,7 @@ import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank } from "../../core/poker";
 import { RollModifier } from "../../core/stock/RollModifier";
 import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
+import { StoreAction } from "../StoreAction";
 import { TStore } from "../store";
 
 export const runFlop = (tick: number) => (s: TStore) => {
@@ -25,25 +26,26 @@ export const runFlop = (tick: number) => (s: TStore) => {
   const stockRankMap = mapPairsToRank(stockPairMap, s.flop);
 
   for (const stockTicker in stockRankMap) {
-    s.stockVolatilityModifierMap.get(stockTicker).push(
+    StoreAction.pushVolatilityModifiers(stockTicker, [
       new VolatilityModifier({
         expirationTick: tick + TICKS_PER_WEEKEND,
         value: WEEKEND_VOLATILITY_MOD,
-      })
-    );
+      }),
+    ])(s);
   }
 
   for (const stockTicker in stockRankMap) {
     const rank = stockRankMap[stockTicker];
-    s.stockRollModifierMap.get(stockTicker).push(
-      ...RANK_MODIFIERS[rank].map(
+    StoreAction.pushRollModifiers(
+      stockTicker,
+      RANK_MODIFIERS[rank].map(
         value =>
           new RollModifier({
             expirationTick: tick + TICKS_PER_WEEKEND,
             value,
           })
       )
-    );
+    )(s);
   }
 
   for (const stock of s.stocks) {

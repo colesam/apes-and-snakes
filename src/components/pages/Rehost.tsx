@@ -5,6 +5,7 @@ import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
+import { setStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function Rehost() {
@@ -16,7 +17,7 @@ function Rehost() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${NAMESPACE} ${newRoomCode}`)
       .then(() => {
-        StoreAction.hostGame(newRoomCode, false);
+        setStore(StoreAction.hostGame(newRoomCode, false));
         setLocation("/lobby");
       })
       .catch(err => console.error(err));

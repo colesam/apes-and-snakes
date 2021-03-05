@@ -34,13 +34,13 @@ export const openPosition = (
         expirationTick: s.tick + BUY_MODIFIER_TICK_LIFETIME,
         stackKey: "BUY",
       }),
-    ]);
+    ])(s);
 
     StoreAction.pushVolatilityModifiers(stockTicker, [
       new VolatilityModifier({
         value: BUY_VOLATILITY_MODIFIER * quantity,
         expirationTick: s.tick + BUY_MODIFIER_TICK_LIFETIME + 20,
       }),
-    ]);
+    ])(s);
   }
 };

@@ -3,9 +3,9 @@ import { last } from "lodash";
 import React, { useEffect } from "react";
 import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
-import { getStore, useStore } from "../../store/store";
+import { getStore, setStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
-import StockRender from "../render/Stock";
+import StockBox from "../render/StockBox";
 
 function Spectate() {
   // Shared store
@@ -25,14 +25,14 @@ function Spectate() {
 
   // Effects
   useEffect(() => {
-    StoreAction.setupGame();
+    setStore(StoreAction.setupGame);
     const id = setInterval(() => {
       const { tick } = getStore();
       if (
         (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
         tick < NUM_WEEKS * TICKS_PER_WEEK
       ) {
-        StoreAction.runTicks(1);
+        setStore(StoreAction.runTicks(1));
       }
     }, TICK_SPEED);
     return () => clearInterval(id);
@@ -57,15 +57,7 @@ function Spectate() {
         </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
-            <StockRender
-              name={stock.name}
-              ticker={stock.ticker}
-              priceHistory={stock.priceHistory}
-              rankHistory={stock.rankHistory}
-              pair={stock.pair}
-              pairIsNew={stock.pairIsNew}
-              key={stock.name}
-            />
+            <StockBox stock={stock} key={stock.ticker} />
           ))}
         </Flex>
         <Text fontSize={"lg"} mb={8}>
@@ -73,7 +65,10 @@ function Spectate() {
           {(((TICK_SPEED / 1000) * TICKS_PER_WEEK) / 60).toFixed(2)}
         </Text>
         {/*Restart game without booting all players, etc.*/}
-        <Button colorScheme={"red"} onClick={StoreAction.setupGame}>
+        <Button
+          colorScheme={"red"}
+          onClick={() => setStore(StoreAction.setupGame)}
+        >
           Reset
         </Button>
       </Box>

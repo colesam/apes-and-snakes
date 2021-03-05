@@ -5,5 +5,8 @@ export const pushVolatilityModifiers = (
   stockTicker: string,
   mods: VolatilityModifier[]
 ) => (s: TStore) => {
-  s.stockVolatilityModifierMap.get(stockTicker).push(...mods);
+  s.stockVolatilityModifierMap.set(stockTicker, [
+    ...(s.stockVolatilityModifierMap.get(stockTicker) || []),
+    ...mods,
+  ]);
 };
