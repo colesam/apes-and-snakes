@@ -35,6 +35,10 @@ export class Position extends ImmerClass {
     this.isClosed = isClosed;
   }
 
+  get initialValue() {
+    return this.quantity * this.purchasePrice;
+  }
+
   close() {
     this.isClosed = true;
   }

@@ -7,5 +7,5 @@ export const reconnect = async (hostPeerId: string, secretKey: string) => {
   setStore({ playerId, hostPeerId });
 
   PeerRoutine.establishPing(hostPeerId);
-  await PeerRoutine.pullShared(hostPeerId);
+  await PeerRoutine.pullData(hostPeerId);
 };

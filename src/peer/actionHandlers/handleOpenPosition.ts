@@ -1,77 +1,40 @@
-import {
-  BUY_MODIFIER_TICK_LIFETIME,
-  BUY_ROLL_MODIFIER,
-  BUY_VOLATILITY_MODIFIER,
-} from "../../config";
-import { Position } from "../../core/stock/Position";
-import { RollModifier } from "../../core/stock/RollModifier";
-import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
+// Testing note: Only test validation, leave other testing to the StoreAction
 export const makeHandleOpenPosition = (
   _getStore: typeof getStore,
-  _setStore: typeof setStore,
-  _StoreAction: typeof StoreAction
+  _setStore: typeof setStore
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
-  const { tick } = _getStore();
-  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+  // Auth
+  const player = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
     _getStore()
   );
-
-  if (!authorizedPlayer) {
-    return error(new PeerError("Could not find player. Failed to reconnect."));
+  if (!player) {
+    return error(new PeerError("Could not find player."));
   }
 
   // Validate price
   const transactionPrice = payload.price * payload.quantity;
-  if (authorizedPlayer.cash < transactionPrice) {
-    return error(new PeerError("Cannot purchase. Not enough cash."));
+  if (player.cash < transactionPrice) {
+    return error(new PeerError("Failed to open position. Not enough cash."));
   }
 
-  // Apply mods
-  _StoreAction.pushRollModifiers(payload.stockTicker, [
-    new RollModifier({
-      value: BUY_ROLL_MODIFIER * payload.quantity,
-      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME,
-      stackKey: "BUY",
-    }),
-  ]);
-  _StoreAction.pushVolatilityModifiers(payload.stockTicker, [
-    new VolatilityModifier({
-      value: BUY_VOLATILITY_MODIFIER * payload.quantity,
-      expirationTick: tick + BUY_MODIFIER_TICK_LIFETIME + 20,
-    }),
-  ]);
-
-  // Save position in storage
-  const position = new Position({
-    stockTicker: payload.stockTicker,
-    quantity: payload.quantity,
-    purchasePrice: payload.price,
-  });
-
-  _setStore(s => ({
-    players: s.players.map(player =>
-      player.id === authorizedPlayer.id
-        ? player.set({
-            positions: [...player.positions, position],
-            cash: player.cash - transactionPrice,
-          })
-        : player
-    ),
-  }));
+  _setStore(
+    StoreAction.openPosition(
+      player.id,
+      payload.stockTicker,
+      payload.price,
+      payload.quantity
+    )
+  );
 
   respond();
 };
 
-const handleOpenPosition = makeHandleOpenPosition(
-  getStore,
-  setStore,
-  StoreAction
-);
+const handleOpenPosition = makeHandleOpenPosition(getStore, setStore);
 
 export default handleOpenPosition;

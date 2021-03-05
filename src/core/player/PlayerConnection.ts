@@ -3,7 +3,7 @@ import { ImmerClass } from "../ImmerClass";
 interface TParams {
   playerId: string;
   peerId: string;
-  lastPing: string;
+  lastPing: Date | null;
 }
 
 export class PlayerConnection extends ImmerClass {

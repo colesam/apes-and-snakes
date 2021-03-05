@@ -1,10 +1,3 @@
-import {
-  SELL_MODIFIER_TICK_LIFETIME,
-  SELL_ROLL_MODIFIER,
-  SELL_VOLATILITY_MODIFIER,
-} from "../../config";
-import { RollModifier } from "../../core/stock/RollModifier";
-import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
 import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
@@ -13,70 +6,29 @@ import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleClosePosition = (
   _getStore: typeof getStore,
-  _setStore: typeof setStore,
-  _StoreAction: typeof StoreAction
+  _setStore: typeof setStore
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
-  const { tick, secretKeyPlayerIdMap, players } = _getStore();
-  const stockPriceMap = StoreSelector.stockPriceMap(_getStore());
-
   // Auth
-  const playerId = secretKeyPlayerIdMap.get(payload.secretKey);
-
-  if (!playerId) {
-    return error(
-      new PeerError("Could not find playerId. Failed to reconnect.")
-    );
+  const player = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    _getStore()
+  );
+  if (!player) {
+    return error(new PeerError("Could not find player."));
   }
 
-  // Find position
-  const position = players
-    .find(player => player.id === playerId)
-    ?.positions.find(pos => pos.id === payload.positionId);
-
+  // Validate position
+  const position = player.positions.find(pos => pos.id === payload.positionId);
   if (!position || position.isClosed) {
     return error(
       new PeerError("Could not find positionId. Failed to close position.")
     );
   }
 
-  // Push modifiers
-  _StoreAction.pushRollModifiers(position.stockTicker, [
-    new RollModifier({
-      value: SELL_ROLL_MODIFIER * position.quantity,
-      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME,
-      stackKey: "CLOSE",
-    }),
-  ]);
-  _StoreAction.pushVolatilityModifiers(position.stockTicker, [
-    new VolatilityModifier({
-      value: SELL_VOLATILITY_MODIFIER * position.quantity,
-      expirationTick: tick + SELL_MODIFIER_TICK_LIFETIME + 10,
-    }),
-  ]);
-
-  // Mark position closed
-  const positionValue = position.quantity * stockPriceMap[position.stockTicker];
-
-  _setStore(s => ({
-    players: s.players.map(player =>
-      player.id === playerId
-        ? player.set({
-            positions: player.positions.map(pos =>
-              pos.id === position.id ? pos.close() : pos
-            ),
-            cash: player.cash + positionValue,
-          })
-        : player
-    ),
-  }));
+  setStore(StoreAction.closePosition(player.id, position.id));
 
   respond();
 };
 
-const handleClosePosition = makeHandleClosePosition(
-  getStore,
-  setStore,
-  StoreAction
-);
+const handleClosePosition = makeHandleClosePosition(getStore, setStore);
 
 export default handleClosePosition;

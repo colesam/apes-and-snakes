@@ -14,14 +14,13 @@ beforeEach(() => {
 });
 
 describe("serialize", () => {
-  test("immutable objects serialize with `__class` and `data` properties", () => {
+  test("objects serialize with `__class` property", () => {
     const pair = new Pair();
     const res = serialize(pair);
-    expect(res.indexOf('__class:"Pair"')).toBeTruthy();
-    expect(res.indexOf("data:")).toBeTruthy();
+    expect(res.indexOf('"__class":"Pair"')).toBeGreaterThan(-1);
   });
 
-  test("immutable objects serialize recursively", () => {
+  test("objects serialize recursively", () => {
     const res = serialize(hand);
     expect(res.split('__class:"Pair"')).toBeTruthy();
     expect(res.split('__class:"Flop"')).toBeTruthy();
@@ -30,20 +29,20 @@ describe("serialize", () => {
 });
 
 describe("deserialize", () => {
-  test("serialized immutable objects deserialize back into their class instances", () => {
+  test("serialized objects deserialize back into their class instances", () => {
     const res = serialize(pair);
     const des = deserialize(res, classMap);
     expect(des.constructor.name).toBe("Pair");
   });
 
-  test("serialized immutable objects deserialize recursively", () => {
+  test("serialized objects deserialize recursively", () => {
     const res = serialize(hand);
     const des = deserialize(res, classMap);
     expect(des.constructor.name).toBe("Hand");
     expect(des.cards.length).toBeTruthy();
   });
 
-  test("deserialize throws an error if __class is missing from classMap", () => {
+  test("deserialize throws an error if `__class` is missing from classMap", () => {
     const res = serialize(hand);
     expect(() => deserialize(res, {})).toThrow();
   });

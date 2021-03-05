@@ -13,7 +13,8 @@ const handlePing = ({ payload, respond, error }: TActionHandlerProps) => {
   }
 
   setStore(s => {
-    s.playerConnectionMap.get(authorizedPlayer.id)!.lastPing = new Date();
+    const conn = s.playerConnectionMap.get(authorizedPlayer.id);
+    if (conn) conn.lastPing = new Date();
   });
 
   return respond();

@@ -8,9 +8,10 @@ import { TActionHandlerProps } from "../handleAction";
 
 const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
   const { players } = getStore();
-  const playerName = payload.playerName.trim();
 
+  const playerName = payload.playerName.trim();
   const existingPlayer = players.find(({ name }) => name === playerName);
+
   if (existingPlayer) return error(new NameTakenError(playerName));
 
   const playerId = generateId();

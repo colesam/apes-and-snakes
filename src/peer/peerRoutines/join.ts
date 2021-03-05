@@ -12,5 +12,5 @@ export const join = async (
   setStore({ playerId, hostPeerId, previousRoomCode: roomCode });
 
   PeerRoutine.establishPing(hostPeerId);
-  await PeerRoutine.pullShared(hostPeerId);
+  await PeerRoutine.pullData(hostPeerId);
 };
