@@ -1,3 +1,4 @@
+import { StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -5,6 +6,7 @@ import {
   Flex,
   HStack,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { last, isNumber } from "lodash";
@@ -104,17 +106,31 @@ function StockBox({
           >
             <Text fontSize="xl">{formatCurrency(currentPrice)}</Text>
             <PercentChange start={startPrice} end={currentPrice} />
-            <Text
-              color={`${rankColor}.600`}
-              bg={`${rankColor}.100`}
-              borderWidth={1}
-              borderColor={`${rankColor}.600`}
-              fontWeight={"bold"}
-              textAlign={"center"}
-              w={8}
-            >
-              {stock.rank}
-            </Text>
+            <Tooltip label={stock.handDescr} aria-label="Hand ranking">
+              <Text
+                position="relative"
+                color={`${rankColor}.600`}
+                bg={`${rankColor}.100`}
+                borderWidth={1}
+                borderColor={`${rankColor}.500`}
+                fontWeight={"bold"}
+                textAlign={"center"}
+                w={8}
+                _hover={{ cursor: "default" }}
+              >
+                {stock.handBonus.length > 0 && (
+                  <StarIcon
+                    position="absolute"
+                    color="yellow.400"
+                    right={0}
+                    transform="translate(50%, -50%)"
+                    w="13px"
+                    h="13px"
+                  />
+                )}
+                {stock.rank}
+              </Text>
+            </Tooltip>
           </Flex>
         </Box>
         <CardStack

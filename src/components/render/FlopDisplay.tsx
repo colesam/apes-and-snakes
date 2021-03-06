@@ -12,11 +12,11 @@ interface PropTypes extends CardStackPropTypes {
 
 function FlopDisplay({ cards = [], retiredCard, ...props }: PropTypes) {
   // Display flop in reverse order (easy to read flow from left -> right)
-  const a = cards[4] || new Card();
-  const b = cards[3] || new Card();
+  const a = cards[0] || new Card();
+  const b = cards[1] || new Card();
   const c = cards[2] || new Card();
-  const d = cards[1] || new Card();
-  const e = cards[0] || new Card();
+  const d = cards[3] || new Card();
+  const e = cards[4] || new Card();
 
   // @ts-ignore
   const flop = new Flop({ cards: [a, b, c, d, e] });
@@ -24,9 +24,9 @@ function FlopDisplay({ cards = [], retiredCard, ...props }: PropTypes) {
 
   return (
     <HStack align="center" spacing={4}>
-      <CardRender card={blankCard} />
-      <CardStack cards={flop.cards} {...props} />
       <CardRender card={retiredCard} opacity={0.4} />
+      <CardStack cards={flop.cards} {...props} />
+      <CardRender card={blankCard} />
     </HStack>
   );
 }

@@ -1,3 +1,4 @@
+import { DRAW_PAIR_CHANCE, FLOP_SHIFT_CHANCE } from "../../config";
 import { isStartOfWeek } from "../../core/helpers";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { StoreAction } from "../StoreAction";
@@ -14,6 +15,8 @@ export const runTicks = (numTicks: number) => (s: TStore) => {
   s.tick = initialTick + numTicks;
 };
 
+let flop = 0;
+
 const runSingleTick = (tick: number) => (s: TStore) => {
   // Updates that run every tick
   expireModifiers(s.stockVolatilityModifierMap, tick);
@@ -29,7 +32,23 @@ const runSingleTick = (tick: number) => (s: TStore) => {
 
   // Updates at specific points of the week
   if (isStartOfWeek(tick)) {
-    StoreAction.runWeekStart(tick)(s);
+    for (const stock of s.stocks) {
+      // Each card has 10% chance of getting new cards
+      if (Math.random() < DRAW_PAIR_CHANCE) {
+        s.deck.push(stock.pair.cards).shuffle();
+        stock.pair = s.deck.drawPair();
+        stock.pairIsNew = true;
+      } else {
+        stock.pairIsNew = false;
+      }
+    }
+  } else {
+    if (Math.random() < FLOP_SHIFT_CHANCE) {
+      // 50% chance per week of extra flop shift
+      flop++;
+      console.log(`Flipping flop #${flop}`);
+      StoreAction.shiftFlop(tick)(s);
+    }
   }
 };
 

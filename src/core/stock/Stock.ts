@@ -47,7 +47,7 @@ export class Stock extends ImmerClass {
   }
 
   get handBonus() {
-    return getHandBonus(this.handDescr.split(",")[0]);
+    return this.rank < 4 ? getHandBonus(this.handDescr.split(",")[0]) : [];
   }
 
   get price() {

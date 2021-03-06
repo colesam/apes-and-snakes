@@ -12,7 +12,7 @@ export const HMR_ENABLED = true;
 // Game config
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 400;
+export const TICK_SPEED = 100;
 
 export const STOCK_PRICE_FLOOR = 10;
 
@@ -48,7 +48,7 @@ export const WEEKEND_END = 7 / 7;
 
 export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 
-export const NUM_WEEKS = 10;
+export const NUM_WEEKS = 20;
 
 // export const SIM_WEEKS = WEEK_MIDDLE;
 export const SIM_WEEKS = NUM_WEEKS;
@@ -57,4 +57,5 @@ export const NUM_STOCKS = 6;
 
 export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];
 
-export const DRAW_PAIR_CHANCE = 0.05;
+export const DRAW_PAIR_CHANCE = 0.1;
+export const FLOP_SHIFT_CHANCE = 1.5 / TICKS_PER_WEEK;

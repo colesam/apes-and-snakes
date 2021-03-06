@@ -7,7 +7,7 @@ import { TStore } from "../store";
 /**
  * Update the flop with a new card and calculate the current rank of all stocks.
  */
-export const runWeekStart = (tick: number) => (s: TStore) => {
+export const shiftFlop = (tick: number) => (s: TStore) => {
   if (!s.flop) {
     throw Error("Flop is missing!");
   }

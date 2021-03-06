@@ -6,15 +6,15 @@ import { openPosition } from "./storeActions/openPosition";
 import { pushRollModifiers } from "./storeActions/pushRollModifiers";
 import { pushVolatilityModifiers } from "./storeActions/pushVolatilityModifiers";
 import { runTicks } from "./storeActions/runTicks";
-import { runWeekStart } from "./storeActions/runWeekStart";
 import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
 import { setupGame } from "./storeActions/setupGame";
+import { shiftFlop } from "./storeActions/shiftFlop";
 
 export const StoreAction = {
+  shiftFlop,
   openPosition,
   closePosition,
-  runWeekStart,
   assignPairsToStocks,
   hostGame,
   incrementTick,
