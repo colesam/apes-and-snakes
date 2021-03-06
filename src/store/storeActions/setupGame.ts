@@ -6,8 +6,6 @@ export const setupGame = (s: TStore) => {
   // Reset state
   s.tick = initialState.tick;
   s.stocks = initialState.stocks;
-  s.flopDisplay = null;
-  s.flop = null;
   s.stockVolatilityModifierMap = initialState.stockVolatilityModifierMap;
   s.stockRollModifierMap = initialState.stockRollModifierMap;
 
@@ -17,5 +15,7 @@ export const setupGame = (s: TStore) => {
   }
 
   StoreAction.assignPairsToStocks(s);
+  s.flop = s.deck.drawFlop();
+
   StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK)(s);
 };

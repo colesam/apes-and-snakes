@@ -1,4 +1,4 @@
-import { isEndOfWeek, isFlopPreview, isWeekendStart } from "../../core/helpers";
+import { isStartOfWeek } from "../../core/helpers";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { StoreAction } from "../StoreAction";
 import { TStore } from "../store";
@@ -27,16 +27,8 @@ const runSingleTick = (tick: number) => (s: TStore) => {
   );
 
   // Updates at specific points of the week
-  if (isFlopPreview(tick)) {
-    StoreAction.runFlopPreview(s);
-  }
-
-  if (isWeekendStart(tick)) {
-    StoreAction.runFlop(tick)(s);
-  }
-
-  if (isEndOfWeek(tick)) {
-    StoreAction.runWeekReset(s);
+  if (isStartOfWeek(tick)) {
+    StoreAction.runWeekStart(tick)(s);
   }
 };
 

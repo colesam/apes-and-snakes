@@ -29,7 +29,7 @@ function Play() {
   const tick = useStore(s => s.tick);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
-  const flopDisplay = useStore(s => s.flopDisplay);
+  const flop = useStore(s => s.flop);
 
   // Private store
   const ping = useStore(s => s.ping);
@@ -71,11 +71,7 @@ function Play() {
     >
       <Box p={4} w={"60%"}>
         <Flex justify={"center"} mb={10}>
-          <FlopDisplay
-            cards={flopDisplay ? flopDisplay.cards : []}
-            spacing={8}
-            cardScale={1.4}
-          />
+          <FlopDisplay cards={flop.cards} spacing={8} cardScale={1.4} />
         </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (

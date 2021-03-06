@@ -2,9 +2,9 @@ import { produce } from "immer";
 import { isFunction } from "lodash";
 import create, { State } from "zustand";
 import { NUM_STOCKS } from "../config";
+import { Card } from "../core/card/Card";
 import { Deck } from "../core/card/Deck";
 import { Flop } from "../core/card/Flop";
-import { FlopPreview } from "../core/card/FlopPreview";
 import { GameStatus } from "../core/game/GameStatus";
 import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
@@ -27,19 +27,21 @@ export interface TStore extends State {
   roomCode: string;
   gameStatus: GameStatus;
   players: Player[];
-  flopDisplay: Flop | FlopPreview | null;
 
   // Stock state
   stocks: Stock[];
   stockRollModifierMap: Map<string, RollModifier[]>;
   stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
 
+  // Flop state
+  flop: Flop;
+  retiredCard: Card;
+
   // Host state
   isHost: boolean;
   secretKeyPlayerIdMap: Map<string, string>;
   playerConnectionMap: Map<string, PlayerConnection>;
   deck: Deck;
-  flop: Flop | null;
 
   // Player state
   ping: number | null;
@@ -58,19 +60,21 @@ export const initialState: TStore = {
   roomCode: "",
   gameStatus: GameStatus.LOBBY,
   players: [],
-  flopDisplay: null,
 
   // Stock state
   stocks: stocks.slice(0, NUM_STOCKS),
   stockRollModifierMap: new Map(),
   stockVolatilityModifierMap: new Map(),
 
+  // Flop state
+  flop: new Flop(),
+  retiredCard: new Card(),
+
   // Host state
   isHost: false,
   secretKeyPlayerIdMap: new Map(),
   playerConnectionMap: new Map(),
   deck: new Deck().shuffle(),
-  flop: null,
 
   // Player state
   ping: null,
@@ -104,14 +108,16 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   gameStatus: { peerSync: true },
   players: { peerSync: true },
   stocks: { peerSync: true },
-  flopDisplay: { peerSync: true },
+
+  // Flop state
+  flop: { peerSync: true },
+  retiredCard: { peerSync: true },
 
   // Host state
   isHost: { storeLocally: true },
   secretKeyPlayerIdMap: {},
   playerConnectionMap: {},
   deck: {},
-  flop: {},
   stockRollModifierMap: {},
   stockVolatilityModifierMap: {},
 

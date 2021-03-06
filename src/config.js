@@ -26,7 +26,7 @@ export const BUY_VOLATILITY_MODIFIER = 0.002 / 10_000;
 export const SELL_VOLATILITY_MODIFIER = BUY_VOLATILITY_MODIFIER;
 export const WEEKEND_VOLATILITY_MOD = GENERAL_FLUCTUATION_MAX;
 
-export const WEEKS_PER_GRAPH = 2;
+export const WEEKS_PER_GRAPH = 1;
 
 export const RANK_MODIFIERS = {
   1: [3, 2, 2],
@@ -42,7 +42,7 @@ export const TICKS_PER_MARKET_OPEN = TICKS_PER_WEEK * (5 / 7);
 export const TICKS_PER_WEEKEND = TICKS_PER_WEEK * (2 / 7);
 
 // Percent positions throughout the week
-export const FLOP_PREVIEW_POINT = 2.5 / 7;
+export const WEEK_MIDDLE = 2.5 / 7;
 export const WEEKEND_START = 5 / 7;
 export const WEEKEND_END = 7 / 7;
 
@@ -50,7 +50,7 @@ export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 
 export const NUM_WEEKS = 4;
 
-export const SIM_WEEKS = 1;
+export const SIM_WEEKS = WEEK_MIDDLE;
 
 export const NUM_STOCKS = 6;
 

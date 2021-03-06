@@ -125,11 +125,7 @@ function StockBox({
         </>
       )}
       <Divider />
-      <StockGraph
-        priceHistory={stock.priceHistory}
-        rankHistory={stock.rankHistory}
-        marketClose={marketClose}
-      />
+      <StockGraph priceHistory={stock.priceHistory} marketClose={marketClose} />
       {buyBtns && (
         <>
           <Divider />
