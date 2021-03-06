@@ -1,3 +1,4 @@
+import { last } from "lodash";
 import { ImmerClass } from "../ImmerClass";
 import { Pair } from "../card/Pair";
 import { RoundRank } from "../poker";
@@ -38,5 +39,13 @@ export class Stock extends ImmerClass {
     this.rankHistory = rankHistory;
     this.pair = pair;
     this.pairIsNew = pairIsNew;
+  }
+
+  get price() {
+    return last(this.priceHistory) || 0
+  }
+
+  get rank() {
+    return last(this.rankHistory) || 1;
   }
 }

@@ -64,6 +64,8 @@ export const isWeekend = (tick: number) => {
 
 export const isStartOfWeek = (tick: number) => {
   const relativeTick = tick % TICKS_PER_WEEK;
+  console.log(`-- relativeTick --`);
+  console.log(relativeTick);
   return relativeTick === 0;
 };
 

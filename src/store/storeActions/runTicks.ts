@@ -5,6 +5,7 @@ import { TStore } from "../store";
 
 export const runTicks = (numTicks: number) => (s: TStore) => {
   const initialTick = s.tick;
+  numTicks = Math.ceil(numTicks);
 
   for (let tick = initialTick; tick < initialTick + numTicks; tick++) {
     runSingleTick(tick)(s);

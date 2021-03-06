@@ -28,13 +28,13 @@ export const WEEKEND_VOLATILITY_MOD = GENERAL_FLUCTUATION_MAX;
 
 export const WEEKS_PER_GRAPH = 1;
 
-export const RANK_MODIFIERS = {
-  1: [3, 2, 2],
-  2: [3, 2],
-  3: [2, 1],
-  4: [-2, -1],
-  5: [-3, -2],
-  6: [-3, -2, -2],
+export const RANK_ROLLS = {
+  1: [1, 1],
+  2: [1, 1, -1],
+  3: [1],
+  4: [-1],
+  5: [-1, -1, 1],
+  6: [-1, -1],
 };
 
 export const TICKS_PER_WEEK = 100;

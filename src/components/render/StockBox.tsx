@@ -44,13 +44,13 @@ function StockBox({
     volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
     GENERAL_FLUCTUATION_MAX;
 
-  // let marketClose = priceHistory.length >= TICKS_PER_GRAPH;
   const marketClose = true; // TODO
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const weekStartTick =
     (Math.floor(tick / TICKS_PER_WEEK) - 1) * TICKS_PER_WEEK;
   const startPrice = stock.priceHistory[Math.max(weekStartTick, 0)] || 0;
   const currentPrice = last(stock.priceHistory) || 0;
+
+  const rankColor = stock.rank > 3 ? "red" : "green";
 
   let buyBtns;
   if (purchaseQuantities && isNumber(playerCash)) {
@@ -85,22 +85,31 @@ function StockBox({
     >
       <Flex justify={"space-between"} position={"relative"}>
         <Box>
-          <Box fontWeight={"semibold"} fontSize={"xl"}>
-            <Text display={"inline-block"} mr={4}>
-              {stock.name}
-            </Text>
+          <HStack spacing={3} fontWeight={"semibold"} fontSize={"xl"}>
+            <Text display={"inline-block"}>{stock.name}</Text>
             <Text display={"inline-block"} color={"gray.500"} fontSize={"sm"}>
               ${stock.ticker}
             </Text>
-          </Box>
+          </HStack>
           <Flex
             fontSize={"md"}
             justify={"space-between"}
             align={"center"}
-            width={"140px"}
+            width={"190px"}
           >
-            <Text fontSize={"xl"}>{formatCurrency(currentPrice)}</Text>
+            <Text fontSize="xl">{formatCurrency(currentPrice)}</Text>
             <PercentChange start={startPrice} end={currentPrice} />
+            <Text
+              color={`${rankColor}.600`}
+              bg={`${rankColor}.100`}
+              borderWidth={1}
+              borderColor={`${rankColor}.600`}
+              fontWeight={"bold"}
+              textAlign={"center"}
+              w={8}
+            >
+              {stock.rank}
+            </Text>
           </Flex>
         </Box>
         <CardStack
