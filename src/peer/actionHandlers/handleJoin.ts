@@ -22,17 +22,11 @@ const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
     positions: [],
   });
 
-  console.log(`-- getStore().secretKeyPlayerIdMap --`);
-  console.log(getStore().secretKeyPlayerIdMap);
-
   setStore(s => {
     s.players.push(newPlayer);
     s.secretKeyPlayerIdMap.set(payload.secretKey, playerId);
     s.playerConnectionMap.set(playerId, new PlayerConnection());
   });
-
-  console.log(`-- getStore().secretKeyPlayerIdMap --`);
-  console.log(getStore().secretKeyPlayerIdMap);
 
   return respond({ playerId });
 };

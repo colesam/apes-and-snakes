@@ -3,7 +3,8 @@ import { Flex } from "@chakra-ui/react";
 import React from "react";
 
 function PercentChange({ start, end }: { start: number; end: number }) {
-  const change = (end - start) / start;
+  const change = start > 0 ? (end - start) / start : 0;
+
   return (
     <Flex align={"center"} color={change < 0 ? "red.500" : "green.500"}>
       {Math.abs(change * 100).toFixed(1)}%

@@ -1,5 +1,6 @@
 import { last } from "lodash";
 import { ImmerClass } from "../ImmerClass";
+import { getHandBonus } from "../card/BonusHand";
 import { Pair } from "../card/Pair";
 import { RoundRank } from "../poker";
 
@@ -10,6 +11,7 @@ interface TParams {
   rankHistory: RoundRank[];
   pair: Pair;
   pairIsNew: boolean;
+  handDescr: string;
 }
 
 export class Stock extends ImmerClass {
@@ -21,6 +23,7 @@ export class Stock extends ImmerClass {
   public rankHistory;
   public pair;
   public pairIsNew;
+  public handDescr;
 
   constructor(
     {
@@ -30,6 +33,7 @@ export class Stock extends ImmerClass {
       rankHistory = [],
       pair = new Pair(),
       pairIsNew = false,
+      handDescr = "",
     } = {} as Partial<TParams>
   ) {
     super();
@@ -39,10 +43,15 @@ export class Stock extends ImmerClass {
     this.rankHistory = rankHistory;
     this.pair = pair;
     this.pairIsNew = pairIsNew;
+    this.handDescr = handDescr;
+  }
+
+  get handBonus() {
+    return getHandBonus(this.handDescr.split(",")[0]);
   }
 
   get price() {
-    return last(this.priceHistory) || 0
+    return last(this.priceHistory) || 0;
   }
 
   get rank() {

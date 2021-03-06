@@ -98,14 +98,14 @@ interface TStateConfig {
 }
 const defaultConfig: TStateConfig = {
   peerSync: false,
-  storeLocally: false,
+  storeLocally: true,
   storeLocallyIfHost: true,
 };
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
-  gameStatus: { peerSync: true },
+  gameStatus: { peerSync: true, storeLocally: false, storeLocallyIfHost: true },
   players: { peerSync: true },
   stocks: { peerSync: true },
 

@@ -3,13 +3,7 @@ import { ResponsiveLineCanvas as ResponsiveLine } from "@nivo/line";
 import { repeat } from "lodash";
 import React from "react";
 import styled from "styled-components";
-import {
-  WEEKS_PER_GRAPH,
-  WEEKEND_START,
-  TICKS_PER_WEEK,
-  TICKS_PER_GRAPH,
-} from "../../config";
-import { useStore } from "../../store/store";
+import { WEEKS_PER_GRAPH, WEEKEND_START, TICKS_PER_GRAPH } from "../../config";
 
 interface PropTypes {
   priceHistory: number[];
@@ -21,18 +15,13 @@ const rounds = () => {
 };
 
 function StockGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
-  const tick = useStore(s => s.tick); // TODO
-  const thisWeek = Math.floor(tick / TICKS_PER_WEEK); // TODO
-  const slicedPriceHistory = priceHistory.slice(
-    viewFullHistory ? 0 : thisWeek * TICKS_PER_WEEK
-  );
-  let priceData = slicedPriceHistory.map((price, i) => ({
+  let priceData = priceHistory.map((price, i) => ({
     x: i + 1,
     y: price,
   }));
 
-  const min = Math.min(...slicedPriceHistory);
-  const max = Math.max(...slicedPriceHistory);
+  const min = Math.min(...priceHistory);
+  const max = Math.max(...priceHistory);
 
   return (
     <Box h={"120px"} bg="#f6f6f6" position={"relative"}>
@@ -54,7 +43,7 @@ function StockGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
         xScale={{
           type: "linear",
           min: 1,
-          max: viewFullHistory ? slicedPriceHistory.length : TICKS_PER_GRAPH,
+          max: viewFullHistory ? priceHistory.length : TICKS_PER_GRAPH,
         }}
         yScale={{
           type: "linear",

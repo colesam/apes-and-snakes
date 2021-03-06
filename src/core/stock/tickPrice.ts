@@ -4,8 +4,6 @@ import {
   RANK_ROLLS,
   STOCK_PRICE_FLOOR,
 } from "../../config";
-import { stackRollMods } from "../helpers";
-import { RoundRank } from "../poker";
 import { RollModifier } from "./RollModifier";
 import { Stock } from "./Stock";
 import { VolatilityModifier } from "./VolatilityModifier";
@@ -16,20 +14,12 @@ function roll(rolls: number[]) {
 
 const nextPrice = (
   currentPrice: number,
-  currentRank: RoundRank,
-  volMods: VolatilityModifier[],
-  rollMods: RollModifier[]
+  additionalRolls: number[],
+  volatilityMod: number
 ): number => {
-  const volatility =
-    volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
-    GENERAL_FLUCTUATION_MAX;
+  const volatility = volatilityMod + GENERAL_FLUCTUATION_MAX;
 
-  const rollPool = [
-    -1,
-    1,
-    ...RANK_ROLLS[currentRank],
-    ...stackRollMods(rollMods),
-  ];
+  const rollPool = [-1, 1, ...additionalRolls];
 
   const mult = currentPrice > STOCK_PRICE_FLOOR ? roll(rollPool) : 1;
 
@@ -43,7 +33,15 @@ export const tickPrice = (
   volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): Stock => {
+  const additionalRolls = [
+    ...stock.handBonus,
+    ...RANK_ROLLS[stock.rank],
+    ...rollMods.map(m => m.value),
+  ];
+  const volatilityModSum = volMods.reduce((a, b) => a + b.value, 0);
   return stock.set(s => {
-    s.priceHistory.push(nextPrice(stock.price, stock.rank, volMods, rollMods));
+    s.priceHistory.push(
+      nextPrice(stock.price, additionalRolls, volatilityModSum)
+    );
   });
 };

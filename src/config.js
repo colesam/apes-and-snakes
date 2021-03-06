@@ -12,7 +12,7 @@ export const HMR_ENABLED = true;
 // Game config
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 1000;
+export const TICK_SPEED = 400;
 
 export const STOCK_PRICE_FLOOR = 10;
 
@@ -50,8 +50,8 @@ export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 
 export const NUM_WEEKS = 10;
 
-// export const SIM_WEEKS = WEEK_MIDDLE;
-export const SIM_WEEKS = NUM_WEEKS;
+export const SIM_WEEKS = WEEK_MIDDLE;
+// export const SIM_WEEKS = NUM_WEEKS;
 
 export const NUM_STOCKS = 6;
 

@@ -15,14 +15,26 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { last } from "lodash";
-import React, { useState } from "react";
-import { PURCHASE_QUANTITIES } from "../../config";
+import React, { useEffect, useState } from "react";
+import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
+import generateId from "../../core/generateId";
 import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
+import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { PeerRoutine } from "../../peer/PeerRoutine";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockBox from "../render/StockBox";
+
+const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
+  console.log(`[DEBUG] Attempting to reconnect to room ${roomCode}`);
+  const hostId = `${NAMESPACE} ${roomCode}`;
+  const peerId = `${hostId} ${generateId()}`;
+  await PeerConnectionManager.register(peerId);
+  await PeerConnectionManager.connect(hostId);
+  await PeerRoutine.reconnect(hostId, secretKey);
+};
 
 function Play() {
   // Shared store
@@ -30,6 +42,8 @@ function Play() {
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flop = useStore(s => s.flop);
+  const gameStatus = useStore(s => s.gameStatus);
+  const previousRoomCode = useStore(s => s.previousRoomCode);
 
   // Private store
   const ping = useStore(s => s.ping);
@@ -39,6 +53,13 @@ function Play() {
 
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
+
+  useEffect(() => {
+    if (!PeerConnectionManager.peerId) {
+      console.log("[DEBUG] Attempting to reconnect to host");
+      attemptReconnectToHost(previousRoomCode, secretKey);
+    }
+  }, [gameStatus]);
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);

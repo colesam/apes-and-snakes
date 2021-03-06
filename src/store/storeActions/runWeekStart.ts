@@ -1,6 +1,7 @@
 import { DRAW_PAIR_CHANCE } from "../../config";
+import { Hand } from "../../core/card/Hand";
 import { Pair } from "../../core/card/Pair";
-import { mapPairsToRank } from "../../core/poker";
+import { mapPairsToRank, solve } from "../../core/poker";
 import { TStore } from "../store";
 
 /**
@@ -39,5 +40,10 @@ export const runWeekStart = (tick: number) => (s: TStore) => {
 
   for (const stock of s.stocks) {
     stock.rankHistory.push(stockRankMap[stock.ticker]);
+
+    // Check for special hands
+    const hand = new Hand({ pair: stock.pair, flop: s.flop });
+    const [solvedHand] = solve([hand]);
+    stock.handDescr = solvedHand.descr;
   }
 };
