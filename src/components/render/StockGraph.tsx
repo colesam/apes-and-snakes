@@ -5,50 +5,56 @@ import React from "react";
 import styled from "styled-components";
 import {
   WEEKS_PER_GRAPH,
-  TICKS_PER_GRAPH,
   WEEKEND_START,
   TICKS_PER_WEEK,
+  TICKS_PER_GRAPH,
 } from "../../config";
 import { useStore } from "../../store/store";
 
 interface PropTypes {
   priceHistory: number[];
-  marketClose: boolean;
+  viewFullHistory?: boolean;
 }
 
 const rounds = () => {
   return repeat("_", WEEKS_PER_GRAPH).split("");
 };
 
-function StockGraph({ priceHistory, marketClose }: PropTypes) {
+function StockGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
   const tick = useStore(s => s.tick); // TODO
   const thisWeek = Math.floor(tick / TICKS_PER_WEEK); // TODO
-  const priceData = priceHistory
-    .slice(thisWeek * TICKS_PER_WEEK)
-    .map((price, i) => ({ x: i + 1, y: price }));
+  const slicedPriceHistory = priceHistory.slice(
+    viewFullHistory ? 0 : thisWeek * TICKS_PER_WEEK
+  );
+  let priceData = slicedPriceHistory.map((price, i) => ({
+    x: i + 1,
+    y: price,
+  }));
 
-  const min = Math.min(...priceHistory);
-  const max = Math.max(...priceHistory);
+  const min = Math.min(...slicedPriceHistory);
+  const max = Math.max(...slicedPriceHistory);
 
   return (
     <Box h={"120px"} bg="#f6f6f6" position={"relative"}>
-      <GraphOverlay>
-        {rounds().map((_, i) => (
-          <GraphOverlay_week width={`${100 / WEEKS_PER_GRAPH}%`} key={i}>
-            <GraphOverlay_marker
-              width={(100 * 2) / 7}
-              left={toPercent(WEEKEND_START)}
-            />
-          </GraphOverlay_week>
-        ))}
-      </GraphOverlay>
+      {!viewFullHistory && (
+        <GraphOverlay>
+          {rounds().map((_, i) => (
+            <GraphOverlay_week width={`${100 / WEEKS_PER_GRAPH}%`} key={i}>
+              <GraphOverlay_marker
+                width={(100 * 2) / 7}
+                left={toPercent(WEEKEND_START)}
+              />
+            </GraphOverlay_week>
+          ))}
+        </GraphOverlay>
+      )}
       <ResponsiveLine
         data={[{ id: "price", data: priceData }]}
         colors={"rgb(56, 161,105)"}
         xScale={{
           type: "linear",
           min: 1,
-          max: TICKS_PER_GRAPH,
+          max: viewFullHistory ? slicedPriceHistory.length : TICKS_PER_GRAPH,
         }}
         yScale={{
           type: "linear",
@@ -59,7 +65,7 @@ function StockGraph({ priceHistory, marketClose }: PropTypes) {
         enableGridX={false}
         enableGridY={true}
         gridYValues={[min, max]}
-        enableArea={marketClose}
+        enableArea={viewFullHistory}
         axisLeft={null}
         axisBottom={null}
         lineWidth={2}

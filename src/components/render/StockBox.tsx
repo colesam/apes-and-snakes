@@ -22,6 +22,7 @@ interface PropTypes {
   stock: Stock;
   playerCash?: number;
   purchaseQuantities?: number[];
+  viewFullHistory?: boolean;
   disableTransactions?: boolean;
   onBuy?: (n: number, s: number) => void;
   onSell?: (n: number) => void;
@@ -31,6 +32,7 @@ function StockBox({
   stock,
   playerCash,
   purchaseQuantities,
+  viewFullHistory = false,
   disableTransactions = true,
   onBuy,
 }: PropTypes) {
@@ -44,7 +46,6 @@ function StockBox({
     volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
     GENERAL_FLUCTUATION_MAX;
 
-  const marketClose = true; // TODO
   const weekStartTick =
     (Math.floor(tick / TICKS_PER_WEEK) - 1) * TICKS_PER_WEEK;
   const startPrice = stock.priceHistory[Math.max(weekStartTick, 0)] || 0;
@@ -134,7 +135,10 @@ function StockBox({
         </>
       )}
       <Divider />
-      <StockGraph priceHistory={stock.priceHistory} marketClose={marketClose} />
+      <StockGraph
+        priceHistory={stock.priceHistory}
+        viewFullHistory={viewFullHistory}
+      />
       {buyBtns && (
         <>
           <Divider />

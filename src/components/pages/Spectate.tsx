@@ -1,5 +1,13 @@
-import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
@@ -11,24 +19,28 @@ function Spectate() {
   const stocks = useStore(s => s.stocks);
   const flop = useStore(s => s.flop);
 
+  // State
+  const [viewFullHistory, setViewFullHistory] = useState<boolean>(false);
+
   // Effects
   useEffect(() => {
     const { tick } = getStore();
     let id: NodeJS.Timeout | null = null;
     if (tick === 0) {
       setStore(StoreAction.setupGame);
-    } else {
-      console.log("[DEBUG] Starting new game interval");
-      id = setInterval(() => {
-        const { tick } = getStore();
-        if (
-          (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
-          tick < NUM_WEEKS * TICKS_PER_WEEK
-        ) {
-          setStore(StoreAction.runTicks(1));
-        }
-      }, TICK_SPEED);
     }
+
+    console.log("[DEBUG] Starting new game interval");
+    id = setInterval(() => {
+      const { tick } = getStore();
+      if (
+        (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
+        tick <= NUM_WEEKS * TICKS_PER_WEEK
+      ) {
+        setStore(StoreAction.runTicks(1));
+      }
+    }, TICK_SPEED);
+
     return () => {
       console.log("[DEBUG] Clearing interval!");
       if (id) clearInterval(id);
@@ -38,36 +50,53 @@ function Spectate() {
   // Render
   return (
     <Flex
-      justify={"space-between"}
-      w={"100vw"}
-      h={"100vh"}
+      direction="column"
+      align="stretch"
+      w="98vw"
+      minHeight="100vh"
       bg={"white"}
       color={"black"}
     >
-      <Box p={4} w={"60%"}>
-        <Flex justify={"center"} mb={10}>
-          <FlopDisplay cards={flop.cards} spacing={8} cardScale={1.4} />
-        </Flex>
-        <Flex justify={"space-around"} flexWrap={"wrap"}>
-          {stocks.map(stock => (
-            <StockBox stock={stock} key={stock.ticker} />
-          ))}
-        </Flex>
-        <Text fontSize={"lg"} mb={8}>
-          Time Per Week:{" "}
-          {(((TICK_SPEED / 1000) * TICKS_PER_WEEK) / 60).toFixed(2)}
-        </Text>
-        {/*Restart game without booting all players, etc.*/}
+      <HStack
+        bg="gray.400"
+        borderBottomWidth={1}
+        borderColor="gray.600"
+        px={4}
+        py={2}
+      >
+        <Button size="sm" onClick={() => setViewFullHistory(!viewFullHistory)}>
+          {viewFullHistory ? "Viewing Full History" : "Viewing This Week"}
+        </Button>
+        <Center height="20px">
+          <Divider orientation="vertical" />
+        </Center>
         <Button
+          size="sm"
           colorScheme={"red"}
           onClick={() => setStore(StoreAction.setupGame)}
         >
-          Reset
+          Reset Game
         </Button>
-      </Box>
-      <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
-        TODO
-      </VStack>
+      </HStack>
+      <Flex justify={"space-between"}>
+        <Box w={"60%"} p={4}>
+          <Flex justify={"center"} mb={10}>
+            <FlopDisplay cards={flop.cards} spacing={8} cardScale={1.4} />
+          </Flex>
+          <Flex justify={"space-between"} flexWrap={"wrap"}>
+            {stocks.map(stock => (
+              <StockBox
+                stock={stock}
+                viewFullHistory={viewFullHistory}
+                key={stock.ticker}
+              />
+            ))}
+          </Flex>
+        </Box>
+        <VStack spacing={8} align={"flex-start"} w={"40%"}>
+          TODO
+        </VStack>
+      </Flex>
     </Flex>
   );
 }

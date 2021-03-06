@@ -29,12 +29,12 @@ export const WEEKEND_VOLATILITY_MOD = GENERAL_FLUCTUATION_MAX;
 export const WEEKS_PER_GRAPH = 1;
 
 export const RANK_ROLLS = {
-  1: [1, 1],
-  2: [1, 1, -1],
+  1: [2, 2, 1],
+  2: [2, 1],
   3: [1],
   4: [-1],
-  5: [-1, -1, 1],
-  6: [-1, -1],
+  5: [-2, -1],
+  6: [-2, -2, -1],
 };
 
 export const TICKS_PER_WEEK = 100;
@@ -48,9 +48,10 @@ export const WEEKEND_END = 7 / 7;
 
 export const TICKS_PER_GRAPH = WEEKS_PER_GRAPH * TICKS_PER_WEEK;
 
-export const NUM_WEEKS = 4;
+export const NUM_WEEKS = 10;
 
-export const SIM_WEEKS = WEEK_MIDDLE;
+// export const SIM_WEEKS = WEEK_MIDDLE;
+export const SIM_WEEKS = NUM_WEEKS;
 
 export const NUM_STOCKS = 6;
 
