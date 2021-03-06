@@ -13,10 +13,10 @@ import {
   RadioGroup,
   Radio,
   HStack,
+  Spinner,
 } from "@chakra-ui/react";
 import { last } from "lodash";
-import React, { useState } from "react";
-import { Redirect } from "wouter";
+import React, { useEffect, useState } from "react";
 import {
   PURCHASE_QUANTITIES,
   TICKS_PER_WEEK,
@@ -25,18 +25,10 @@ import {
 } from "../../config";
 import { GameStatus } from "../../core/game/GameStatus";
 import { PeerAction } from "../../peer/PeerAction";
-import { useStore } from "../../store/store";
+import { getStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockBox from "../render/StockBox";
-
-function isWeekend(tick: number) {
-  const relativeTick = tick % TICKS_PER_WEEK;
-  return (
-    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
-    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
-  );
-}
 
 function Play() {
   // Shared store
@@ -55,9 +47,16 @@ function Play() {
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
 
-  // Redirects
+  // Special handling
+  useEffect(() => {
+    if (gameStatus !== GameStatus.IN_GAME) {
+      // HMR reset store state
+      handleStoreReset();
+    }
+  }, [gameStatus]);
+
   if (gameStatus !== GameStatus.IN_GAME) {
-    return <Redirect to="/" />;
+    return <Spinner size="xl" color="green.500" />;
   }
 
   // Computed
@@ -203,12 +202,26 @@ function Play() {
   );
 }
 
+// Handling for when HMR resets the store's state
+const handleStoreReset = () => {
+  const { hostPeerId } = getStore();
+  PeerAction.pullData(hostPeerId);
+};
+
 function withCommas(x: number) {
   return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function formatCurrency(x: number) {
   return "$" + withCommas(x);
+}
+
+function isWeekend(tick: number) {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return (
+    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
+    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
+  );
 }
 
 export default Play;

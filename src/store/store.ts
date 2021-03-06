@@ -95,20 +95,20 @@ interface TStateConfig {
 const defaultConfig: TStateConfig = {
   peerSync: false,
   storeLocally: false,
-  storeLocallyIfHost: false,
+  storeLocallyIfHost: true,
 };
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
   gameStatus: { peerSync: true },
-  players: { peerSync: true, storeLocallyIfHost: true },
+  players: { peerSync: true },
   stocks: { peerSync: true },
   flopDisplay: { peerSync: true },
 
   // Host state
   isHost: { storeLocally: true },
-  secretKeyPlayerIdMap: { storeLocallyIfHost: true },
+  secretKeyPlayerIdMap: {},
   playerConnectionMap: {},
   deck: {},
   flop: {},
@@ -117,7 +117,7 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Player state
   ping: {},
-  hostPeerId: {},
+  hostPeerId: { storeLocally: true },
   previousRoomCode: { storeLocally: true },
   playerId: { storeLocally: true },
   pingIntervalId: {},
@@ -140,14 +140,19 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
 export const resetStore = () => setStore(initialState);
 
 // Initialize state from local storage
-const initialStorageState: any = {};
-for (const key in initialState) {
-  const val = storageGet(key);
-  if (val != null) {
-    initialStorageState[key] = val;
+const setStoreFromStorage = () => {
+  console.log("[DEBUG] Loading from local storage!");
+  const initialStorageState: any = {};
+  for (const key in initialState) {
+    const val = storageGet(key);
+    if (val != null) {
+      initialStorageState[key] = val;
+    }
   }
-}
-setStore(initialStorageState);
+  setStore(initialStorageState);
+};
+
+setStoreFromStorage();
 
 // Set up local storage persistance
 useStore.subscribe((newState, oldState) => {

@@ -1,9 +1,6 @@
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
-import { last } from "lodash";
 import React, { useEffect } from "react";
-import { Redirect } from "wouter";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
-import { GameStatus } from "../../core/game/GameStatus";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
@@ -11,40 +8,32 @@ import StockBox from "../render/StockBox";
 
 function Spectate() {
   // Shared store
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flopDisplay = useStore(s => s.flopDisplay);
-  const gameStatus = useStore(s => s.gameStatus);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
-    (acc, stock) => {
-      acc[stock.ticker] = last(stock.priceHistory) || 0;
-      return acc;
-    },
-    {}
-  );
 
   // Effects
   useEffect(() => {
-    setStore(StoreAction.setupGame);
-    const id = setInterval(() => {
-      const { tick } = getStore();
-      if (
-        (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
-        tick < NUM_WEEKS * TICKS_PER_WEEK
-      ) {
-        setStore(StoreAction.runTicks(1));
-      }
-    }, TICK_SPEED);
-    return () => clearInterval(id);
+    const { tick } = getStore();
+    let id: NodeJS.Timeout | null = null;
+    if (tick === 0) {
+      setStore(StoreAction.setupGame);
+    } else {
+      console.log("[DEBUG] Starting new game interval");
+      id = setInterval(() => {
+        const { tick } = getStore();
+        if (
+          (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
+          tick < NUM_WEEKS * TICKS_PER_WEEK
+        ) {
+          setStore(StoreAction.runTicks(1));
+        }
+      }, TICK_SPEED);
+    }
+    return () => {
+      console.log("[DEBUG] Clearing interval!");
+      if (id) clearInterval(id);
+    };
   }, []);
-
-  // Redirects
-  if (gameStatus !== GameStatus.IN_GAME) {
-    return <Redirect to="/" />;
-  }
 
   // Render
   return (

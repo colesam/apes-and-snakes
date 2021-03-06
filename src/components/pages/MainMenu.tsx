@@ -1,43 +1,20 @@
 import { Button, Divider, Stack } from "@chakra-ui/react";
-import React from "react";
-import { Link as RouterLink, useLocation } from "wouter";
+import React, { useEffect } from "react";
+import { Link as RouterLink } from "wouter";
 import shallow from "zustand/shallow";
-import { AUTO_RECONNECT, NAMESPACE } from "../../config";
-import generateId from "../../core/generateId";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
-import { PeerRoutine } from "../../peer/PeerRoutine";
-import { StoreAction } from "../../store/StoreAction";
-import { setStore, useStore } from "../../store/store";
+import { resetStore, useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function MainMenu() {
   // State
-  const [isHost, previousRoomCode, secretKey] = useStore(
-    s => [s.isHost, s.previousRoomCode, s.secretKey],
+  const [isHost, previousRoomCode] = useStore(
+    s => [s.isHost, s.previousRoomCode],
     shallow
   );
-  const [, setLocation] = useLocation();
 
-  if (previousRoomCode && AUTO_RECONNECT) {
-    const hostPeerId = `${NAMESPACE} ${previousRoomCode}`;
-    if (isHost) {
-      // Rehost
-      PeerConnectionManager.register(hostPeerId).then(() => {
-        setStore(StoreAction.hostGame(previousRoomCode, false));
-        setLocation("/lobby");
-      });
-    } else {
-      // Rejoin
-      setTimeout(() => {
-        const peerId = `${hostPeerId} ${generateId()}`;
-        PeerConnectionManager.register(peerId).then(async () => {
-          await PeerConnectionManager.connect(hostPeerId);
-          await PeerRoutine.reconnect(hostPeerId, secretKey);
-          setLocation("/lobby");
-        });
-      }, 1000);
-    }
-  }
+  useEffect(() => {
+    resetStore();
+  }, []);
 
   return (
     <FloatingContainer>

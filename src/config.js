@@ -7,9 +7,10 @@ export const PEER_DEV_SERVER = {
   port: 9000,
   path: "/",
 };
+export const HMR_ENABLED = true;
 
 // Game config
-export const PING_INTERVAL = 5001;
+export const PING_INTERVAL = 5000;
 
 export const TICK_SPEED = 1000;
 
@@ -26,19 +27,6 @@ export const SELL_VOLATILITY_MODIFIER = BUY_VOLATILITY_MODIFIER;
 export const WEEKEND_VOLATILITY_MOD = GENERAL_FLUCTUATION_MAX;
 
 export const WEEKS_PER_GRAPH = 2;
-
-// export const RANK_MODIFIERS = {
-//   1: [3, 2, 2],
-//   2: [3, 2],
-//   3: [2, 1],
-//   4: [2],
-//   5: [1],
-//   6: [-1],
-//   7: [-2],
-//   8: [-2, -1],
-//   9: [-3, -2],
-//   10: [-3, -2, -2],
-// };
 
 export const RANK_MODIFIERS = {
   1: [3, 2, 2],

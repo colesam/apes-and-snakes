@@ -24,11 +24,15 @@ export default class PeerConnectionManager {
 
   private static _messageHandler = new MessageHandler();
 
+  static get peerId() {
+    return this.conn?.id;
+  }
+
   static register(peerId?: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      PeerConnectionManager.conn = new Peer(peerId, { 
+      PeerConnectionManager.conn = new Peer(peerId, {
         ...(USE_PEER_DEV_SERVER ? PEER_DEV_SERVER : {}),
-        debug: 2 
+        debug: 2,
       });
 
       PeerConnectionManager.conn.on(
