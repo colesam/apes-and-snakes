@@ -1,7 +1,9 @@
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
 import { last } from "lodash";
 import React, { useEffect } from "react";
-import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
+import { Redirect } from "wouter";
+import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
+import { GameStatus } from "../../core/game/GameStatus";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
@@ -13,6 +15,7 @@ function Spectate() {
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flopDisplay = useStore(s => s.flopDisplay);
+  const gameStatus = useStore(s => s.gameStatus);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
@@ -37,6 +40,11 @@ function Spectate() {
     }, TICK_SPEED);
     return () => clearInterval(id);
   }, []);
+
+  // Redirects
+  if (gameStatus !== GameStatus.IN_GAME) {
+    return <Redirect to="/" />;
+  }
 
   // Render
   return (

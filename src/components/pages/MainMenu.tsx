@@ -2,7 +2,7 @@ import { Button, Divider, Stack } from "@chakra-ui/react";
 import React from "react";
 import { Link as RouterLink, useLocation } from "wouter";
 import shallow from "zustand/shallow";
-import { AUTO_REHOST, NAMESPACE } from "../../config";
+import { AUTO_RECONNECT, NAMESPACE } from "../../config";
 import generateId from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
@@ -18,7 +18,7 @@ function MainMenu() {
   );
   const [, setLocation] = useLocation();
 
-  if (previousRoomCode && AUTO_REHOST) {
+  if (previousRoomCode && AUTO_RECONNECT) {
     const hostPeerId = `${NAMESPACE} ${previousRoomCode}`;
     if (isHost) {
       // Rehost

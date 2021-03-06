@@ -16,12 +16,14 @@ import {
 } from "@chakra-ui/react";
 import { last } from "lodash";
 import React, { useState } from "react";
+import { Redirect } from "wouter";
 import {
   PURCHASE_QUANTITIES,
   TICKS_PER_WEEK,
   WEEKEND_END,
   WEEKEND_START,
 } from "../../config";
+import { GameStatus } from "../../core/game/GameStatus";
 import { PeerAction } from "../../peer/PeerAction";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
@@ -42,6 +44,7 @@ function Play() {
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flopDisplay = useStore(s => s.flopDisplay);
+  const gameStatus = useStore(s => s.gameStatus);
 
   // Private store
   const ping = useStore(s => s.ping);
@@ -51,6 +54,11 @@ function Play() {
 
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
+
+  // Redirects
+  if (gameStatus !== GameStatus.IN_GAME) {
+    return <Redirect to="/" />;
+  }
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);
