@@ -1,4 +1,3 @@
-import { DRAW_PAIR_CHANCE } from "../../config";
 import { Hand } from "../../core/card/Hand";
 import { Pair } from "../../core/card/Pair";
 import { mapPairsToRank, solve } from "../../core/poker";
@@ -16,17 +15,6 @@ export const shiftFlop = (tick: number) => (s: TStore) => {
   console.log("[DEBUG] Updating flop");
   s.deck.push([s.retiredCard]);
   s.retiredCard = s.flop.push(s.deck.shuffle().drawOne());
-
-  for (const stock of s.stocks) {
-    // Each card has 10% chance of getting new cards
-    if (Math.random() < DRAW_PAIR_CHANCE) {
-      s.deck.push(stock.pair.cards).shuffle();
-      stock.pair = s.deck.drawPair();
-      stock.pairIsNew = true;
-    } else {
-      stock.pairIsNew = false;
-    }
-  }
 
   const stockPairMap = s.stocks.reduce<{ [key: string]: Pair }>(
     (acc, stock) => {
