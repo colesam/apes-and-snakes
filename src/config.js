@@ -16,7 +16,7 @@ export const TICK_SPEED = 100;
 
 export const STOCK_PRICE_FLOOR = 10;
 
-export const GENERAL_FLUCTUATION_MAX = 0.001;
+export const GENERAL_FLUCTUATION_MAX = 0.002;
 export const BUY_ROLL_MODIFIER = 1 / 1_000;
 export const SELL_ROLL_MODIFIER = -1 * BUY_ROLL_MODIFIER;
 export const BUY_MODIFIER_TICK_LIFETIME = 20;
@@ -57,5 +57,5 @@ export const NUM_STOCKS = 6;
 
 export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];
 
-export const DRAW_PAIR_CHANCE = 0.1;
+export const DRAW_PAIR_CHANCE = 0.15;
 export const FLOP_SHIFT_CHANCE = 1.5 / TICKS_PER_WEEK;
