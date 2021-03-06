@@ -1,18 +1,20 @@
 import { Button, Divider, Stack } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link as RouterLink } from "wouter";
 import shallow from "zustand/shallow";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { resetStore, useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function MainMenu() {
   // State
-  const [isHost, previousRoomCode] = usePrivateStore(
+  const [isHost, previousRoomCode] = useStore(
     s => [s.isHost, s.previousRoomCode],
     shallow
   );
-  const roomCode = useSharedStore(s => s.roomCode);
+
+  useEffect(() => {
+    resetStore();
+  }, []);
 
   return (
     <FloatingContainer>
@@ -20,7 +22,7 @@ function MainMenu() {
         <Button colorScheme="green" href="/host" as={RouterLink}>
           Host Game
         </Button>
-        {isHost && roomCode && (
+        {isHost && previousRoomCode && (
           <Button colorScheme="orange" href="/rehost" as={RouterLink}>
             Rehost
           </Button>

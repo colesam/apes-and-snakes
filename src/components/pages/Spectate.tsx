@@ -1,41 +1,38 @@
 import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
-import { last } from "lodash";
 import React, { useEffect } from "react";
-import { TICK_SPEED, SIM_WEEKS, TICKS_PER_WEEK, NUM_WEEKS } from "../../config";
+import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
-import { getShared, useSharedStore } from "../../store/sharedStore";
+import { getStore, setStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
-import StockRender from "../render/Stock";
+import StockBox from "../render/StockBox";
 
 function Spectate() {
   // Shared store
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const players = useSharedStore(s => s.players);
-  const stocks = useSharedStore(s => s.stocks);
-  const flopDisplay = useSharedStore(s => s.flopDisplay);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
-    (acc, stock) => {
-      acc[stock.ticker] = last(stock.priceHistory) || 0;
-      return acc;
-    },
-    {}
-  );
+  const stocks = useStore(s => s.stocks);
+  const flopDisplay = useStore(s => s.flopDisplay);
 
   // Effects
   useEffect(() => {
-    StoreAction.setupGame();
-    const id = setInterval(() => {
-      const { tick } = getShared();
-      if (
-        (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
-        tick < NUM_WEEKS * TICKS_PER_WEEK
-      ) {
-        StoreAction.runTicks(1);
-      }
-    }, TICK_SPEED);
-    return () => clearInterval(id);
+    const { tick } = getStore();
+    let id: NodeJS.Timeout | null = null;
+    if (tick === 0) {
+      setStore(StoreAction.setupGame);
+    } else {
+      console.log("[DEBUG] Starting new game interval");
+      id = setInterval(() => {
+        const { tick } = getStore();
+        if (
+          (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
+          tick < NUM_WEEKS * TICKS_PER_WEEK
+        ) {
+          setStore(StoreAction.runTicks(1));
+        }
+      }, TICK_SPEED);
+    }
+    return () => {
+      console.log("[DEBUG] Clearing interval!");
+      if (id) clearInterval(id);
+    };
   }, []);
 
   // Render
@@ -57,15 +54,7 @@ function Spectate() {
         </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
-            <StockRender
-              name={stock.name}
-              ticker={stock.ticker}
-              priceHistory={stock.priceHistory}
-              rankHistory={stock.rankHistory}
-              pair={stock.pair}
-              pairIsNew={stock.pairIsNew}
-              key={stock.name}
-            />
+            <StockBox stock={stock} key={stock.ticker} />
           ))}
         </Flex>
         <Text fontSize={"lg"} mb={8}>
@@ -73,7 +62,10 @@ function Spectate() {
           {(((TICK_SPEED / 1000) * TICKS_PER_WEEK) / 60).toFixed(2)}
         </Text>
         {/*Restart game without booting all players, etc.*/}
-        <Button colorScheme={"red"} onClick={StoreAction.setupGame}>
+        <Button
+          colorScheme={"red"}
+          onClick={() => setStore(StoreAction.setupGame)}
+        >
           Reset
         </Button>
       </Box>
@@ -82,15 +74,6 @@ function Spectate() {
       </VStack>
     </Flex>
   );
-}
-
-function withCommas(x: number) {
-  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function formatCurrency(x: number) {
-  return "$" + withCommas(x);
 }
 
 export default Spectate;

@@ -1,9 +1,13 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import { enableMapSet, setAutoFreeze } from "immer";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+
+enableMapSet();
+setAutoFreeze(false);
 
 ReactDOM.render(
   <ChakraProvider>

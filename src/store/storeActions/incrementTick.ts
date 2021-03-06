@@ -1,5 +1,5 @@
-import { setShared } from "../sharedStore";
+import { TStore } from "../store";
 
-export const incrementTick = () => {
-  setShared(s => ({ tick: s.tick + 1 }));
+export const incrementTick = (s: TStore) => {
+  s.tick += 1;
 };

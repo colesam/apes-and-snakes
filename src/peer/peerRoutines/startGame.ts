@@ -1,8 +1,8 @@
 import { GameStatus } from "../../core/game/GameStatus";
-import { setShared } from "../../store/sharedStore";
+import { setStore } from "../../store/store";
 import { PeerAction } from "../PeerAction";
 
 export const startGame = () => {
   PeerAction.startGame();
-  setShared({ gameStatus: GameStatus.IN_GAME });
+  setStore({ gameStatus: GameStatus.IN_GAME });
 };

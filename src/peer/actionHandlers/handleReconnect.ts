@@ -1,34 +1,48 @@
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";
+import { PlayerConnection } from "../../core/player/PlayerConnection";
 import { StoreAction } from "../../store/StoreAction";
-import { getPrivate } from "../../store/privateStore";
-import PeerError from "../error/PeerError";
+import { StoreSelector } from "../../store/StoreSelector";
+import { getStore, setStore } from "../../store/store";
+import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
 export const makeHandleReconnect = (
-  _getPrivate: typeof getPrivate,
-  _StoreAction: typeof StoreAction
+  _getStore: typeof getStore,
+  _setStore: typeof setStore
 ) => ({ peerId, payload, respond, error }: TActionHandlerProps) => {
-  const { secretKeyPlayerIdMap } = _getPrivate();
-  const playerId = secretKeyPlayerIdMap[payload.secretKey];
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    _getStore()
+  );
 
-  if (!playerId) {
-    return error(
-      new PeerError("Could not find playerId. Failed to reconnect.")
-    );
+  if (!authorizedPlayer) {
+    return error(new NotAuthorizedError());
   }
 
-  _StoreAction.setPlayerConnection(playerId, {
-    peerId,
-    lastPing: new Date(),
+  _setStore(s => {
+    const conn = s.playerConnectionMap.get(authorizedPlayer.id);
+
+    if (conn) {
+      conn.peerId = peerId;
+      conn.lastPing = new Date();
+    } else {
+      s.playerConnectionMap.set(
+        authorizedPlayer.id,
+        new PlayerConnection({
+          playerId: authorizedPlayer.id,
+          lastPing: new Date(),
+          peerId,
+        })
+      );
+    }
+
+    StoreAction.setPlayerState(authorizedPlayer.id, {
+      connectionStatus: ConnectionStatus.CONNECTED,
+    })(s);
   });
 
-  _StoreAction.setPlayerState(playerId, {
-    connectionStatus: ConnectionStatus.CONNECTED,
-  });
-
-  return respond({ playerId });
+  return respond({ playerId: authorizedPlayer.id });
 };
 
-const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);
+const handleReconnect = makeHandleReconnect(getStore, setStore);
 
 export default handleReconnect;

@@ -17,10 +17,6 @@ const nextPrice = (
   const volatility =
     volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
     GENERAL_FLUCTUATION_MAX;
-  // const volatility = Math.max(
-  //   ...volMods.map(m => m.value),
-  //   GENERAL_FLUCTUATION_MAX
-  // );
 
   const rollPool = [-1, 1, ...stackRollMods(rollMods)];
 
@@ -37,10 +33,7 @@ export const tickPrice = (
   volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): Stock => {
-  return stock.set({
-    priceHistory: [
-      ...stock.priceHistory,
-      nextPrice(stock.priceHistory, volMods, rollMods),
-    ],
+  return stock.set(s => {
+    s.priceHistory.push(nextPrice(stock.priceHistory, volMods, rollMods));
   });
 };

@@ -1,5 +1,5 @@
-import { setPrivate } from "../store/privateStore";
-import { getShared, setShared } from "../store/sharedStore";
+import { StoreSelector } from "../store/StoreSelector";
+import { getStore, setStore } from "../store/store";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -34,15 +34,11 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
 
   [TPeerAction.CLOSE_POSITION]: handleClosePosition,
 
-  [TPeerAction.PULL_SHARED]: ({ respond }) => respond(getShared()),
+  [TPeerAction.PULL_DATA]: ({ respond }) =>
+    respond(StoreSelector.syncedState(getStore())),
 
-  [TPeerAction.PUSH_SHARED]: ({ payload, respond }) => {
-    setShared(payload);
-    respond();
-  },
-
-  [TPeerAction.PUSH_PRIVATE]: ({ payload, respond }) => {
-    setPrivate(payload);
+  [TPeerAction.PUSH_DATA]: ({ payload, respond }) => {
+    setStore(payload);
     respond();
   },
 };

@@ -5,19 +5,19 @@ import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
-import { useSharedStore } from "../../store/sharedStore";
+import { setStore, useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";
 
 function Host() {
   // State
-  const roomCode = useSharedStore(s => s.roomCode);
+  const roomCode = useStore(s => s.roomCode);
 
   // Side effects
   useEffect(() => {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${NAMESPACE} ${newRoomCode}`)
       .then(() => {
-        StoreAction.hostGame(newRoomCode);
+        setStore(StoreAction.hostGame(newRoomCode));
       })
       .catch(err => console.error(err));
   }, []);

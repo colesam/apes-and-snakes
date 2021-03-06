@@ -1,32 +1,45 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 import generateId from "../generateId";
 
-export type TPosition = {
+interface TParams {
   id: string;
   stockTicker: string;
   quantity: number;
   purchasePrice: number;
   isClosed: boolean;
-};
+}
 
-export interface Position extends DeepReadonly<TPosition> {}
+export class Position extends ImmerClass {
+  protected readonly __class = "Position";
 
-export class Position extends ImmutableRecord<TPosition> {
-  constructor(data?: Partial<TPosition>) {
-    super(
-      {
-        id: generateId(),
-        stockTicker: "",
-        quantity: 0,
-        purchasePrice: 0,
-        isClosed: false,
-      },
-      data,
-      "Position"
-    );
+  public id;
+  public stockTicker;
+  public quantity;
+  public purchasePrice;
+  public isClosed;
+
+  constructor(
+    {
+      id = generateId(),
+      stockTicker = "",
+      quantity = 0,
+      purchasePrice = 0,
+      isClosed = false,
+    } = {} as Partial<TParams>
+  ) {
+    super();
+    this.id = id;
+    this.stockTicker = stockTicker;
+    this.quantity = quantity;
+    this.purchasePrice = purchasePrice;
+    this.isClosed = isClosed;
+  }
+
+  get initialValue() {
+    return this.quantity * this.purchasePrice;
   }
 
   close() {
-    return this.set({ isClosed: true });
+    this.isClosed = true;
   }
 }

@@ -1,32 +1,30 @@
 import { assignPairsToStocks } from "./storeActions/assignPairsToStocks";
-import { authPlayerAction } from "./storeActions/authPlayerAction";
+import { closePosition } from "./storeActions/closePosition";
 import { hostGame } from "./storeActions/hostGame";
 import { incrementTick } from "./storeActions/incrementTick";
-import { mapSecretKeyToPlayerId } from "./storeActions/mapSecretKeyToPlayerId";
-import { pushPlayer } from "./storeActions/pushPlayer";
+import { openPosition } from "./storeActions/openPosition";
 import { pushRollModifiers } from "./storeActions/pushRollModifiers";
 import { pushVolatilityModifiers } from "./storeActions/pushVolatilityModifiers";
-import { resetStores } from "./storeActions/resetStores";
+import { runFlop } from "./storeActions/runFlop";
+import { runFlopPreview } from "./storeActions/runFlopPreview";
 import { runTicks } from "./storeActions/runTicks";
-import { setHostPeerId } from "./storeActions/setHostPeerId";
-import { setPlayerConnection } from "./storeActions/setPlayerConnection";
+import { runWeekReset } from "./storeActions/runWeekReset";
 import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
 import { setupGame } from "./storeActions/setupGame";
 
 export const StoreAction = {
+  openPosition,
+  closePosition,
+  runWeekReset,
+  runFlop,
+  runFlopPreview,
   assignPairsToStocks,
-  authPlayerAction,
   hostGame,
   incrementTick,
-  mapSecretKeyToPlayerId,
-  pushPlayer,
   pushRollModifiers,
   pushVolatilityModifiers,
-  resetStores,
   runTicks,
-  setHostPeerId,
-  setPlayerConnection,
   setPlayerState,
   setRoomCode,
   setupGame,

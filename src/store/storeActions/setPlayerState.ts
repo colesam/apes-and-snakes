@@ -1,10 +1,11 @@
-import { TPlayer } from "../../core/player/Player";
-import { getShared, setShared } from "../sharedStore";
+import { Player } from "../../core/player/Player";
+import { TStore } from "../store";
 
-export const setPlayerState = (playerId: string, updates: Partial<TPlayer>) => {
-  setShared({
-    players: getShared().players.map(player =>
-      player.id === playerId ? player.set(updates) : player
-    ),
-  });
+export const setPlayerState = (playerId: string, updates: Partial<Player>) => (
+  s: TStore
+) => {
+  const player = s.players.find(player => player.id === playerId);
+  if (player) {
+    player.merge(updates);
+  }
 };

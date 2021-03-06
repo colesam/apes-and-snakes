@@ -1,20 +1,20 @@
-import { StoreAction } from "../../store/StoreAction";
+import { StoreSelector } from "../../store/StoreSelector";
+import { getStore, setStore } from "../../store/store";
 import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
-const handlePing = ({
-  peerId,
-  payload,
-  respond,
-  error,
-}: TActionHandlerProps) => {
-  // TODO: Turn this into a middleware
-  if (!StoreAction.authPlayerAction(payload.secretKey, payload.playerId)) {
-    return error(new NotAuthorizedError(payload.playerId));
+const handlePing = ({ payload, respond, error }: TActionHandlerProps) => {
+  const authorizedPlayer = StoreSelector.getAuthorizedPlayer(payload.secretKey)(
+    getStore()
+  );
+
+  if (!authorizedPlayer) {
+    return error(new NotAuthorizedError());
   }
 
-  StoreAction.setPlayerConnection(payload.playerId, {
-    lastPing: new Date(),
+  setStore(s => {
+    const conn = s.playerConnectionMap.get(authorizedPlayer.id);
+    if (conn) conn.lastPing = new Date();
   });
 
   return respond();

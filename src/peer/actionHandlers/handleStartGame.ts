@@ -1,8 +1,8 @@
 import { GameStatus } from "../../core/game/GameStatus";
-import { setShared } from "../../store/sharedStore";
+import { setStore } from "../../store/store";
 
 const handleStartGame = () => {
-  setShared({ gameStatus: GameStatus.IN_GAME });
+  setStore({ gameStatus: GameStatus.IN_GAME });
 };
 
 export default handleStartGame;

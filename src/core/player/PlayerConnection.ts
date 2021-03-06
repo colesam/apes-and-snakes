@@ -1,33 +1,24 @@
-import { ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 
-export type TPlayerConnection = {
+interface TParams {
   playerId: string;
   peerId: string;
   lastPing: Date | null;
-};
+}
 
-export class PlayerConnection extends ImmutableRecord<TPlayerConnection> {
-  constructor(data?: Partial<TPlayerConnection>) {
-    super(
-      {
-        playerId: "",
-        peerId: "",
-        lastPing: null,
-      },
-      data,
-      "PlayerConnection"
-    );
-  }
+export class PlayerConnection extends ImmerClass {
+  protected readonly __class = "PlayerConnection";
 
-  get playerId() {
-    return this.data.playerId;
-  }
+  public playerId;
+  public peerId;
+  public lastPing;
 
-  get peerId() {
-    return this.data.peerId;
-  }
-
-  get lastPing() {
-    return this.data.lastPing;
+  constructor(
+    { playerId = "", peerId = "", lastPing = null } = {} as Partial<TParams>
+  ) {
+    super();
+    this.playerId = playerId;
+    this.peerId = peerId;
+    this.lastPing = lastPing;
   }
 }

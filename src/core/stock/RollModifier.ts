@@ -1,19 +1,24 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 
-export type TRollModifier = {
+interface TParams {
   value: number;
   expirationTick: number;
   stackKey: string | null;
-};
+}
 
-export interface RollModifier extends DeepReadonly<TRollModifier> {}
+export class RollModifier extends ImmerClass {
+  protected readonly __class = "RollModifier";
 
-export class RollModifier extends ImmutableRecord<TRollModifier> {
-  constructor(data?: Partial<TRollModifier>) {
-    super(
-      { value: 0, expirationTick: 0, stackKey: null },
-      data,
-      "RollModifier"
-    );
+  public value;
+  public expirationTick;
+  public stackKey;
+
+  constructor(
+    { value = 0, expirationTick = 0, stackKey = null } = {} as Partial<TParams>
+  ) {
+    super();
+    this.value = value;
+    this.expirationTick = expirationTick;
+    this.stackKey = stackKey;
   }
 }

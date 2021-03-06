@@ -1,6 +1,8 @@
+// TODO redo these tests once the refactor is completed
 /* eslint-disable */
 import { makeHandleReconnect } from "./handleReconnect";
 import { ConnectionStatus } from "../../core/player/ConnectionStatus";
+import { Player } from "../../core/player/Player";
 
 const makeParams = (opts = {}) => ({
   peerId: "123",
@@ -10,14 +12,9 @@ const makeParams = (opts = {}) => ({
   ...opts,
 });
 
-const makeGetPrivate = (opts = {}) => () => ({
-  secretKeyPlayerIdMap: { "existing-secret": "player-id" },
-  ...opts,
-});
-
-const makeStoreAction = (opts = {}) => ({
-  setPlayerConnection: jest.fn(),
-  setPlayerState: jest.fn(),
+const makeGetStore = (opts = {}) => () => ({
+  secretKeyPlayerIdMap: new Map([["existing-secret", "player-id"]]),
+  players: [new Player({ id: "player-id" })],
   ...opts,
 });
 
@@ -25,11 +22,11 @@ let callHandleReconnect;
 beforeEach(() => {
   callHandleReconnect = ({
     params = makeParams(),
-    getPrivate = makeGetPrivate(),
-    StoreAction = makeStoreAction(),
+    getStore = makeGetStore(),
+    setStore = jest.fn(),
   }) => {
     // noinspection JSCheckFunctionSignatures
-    const handleReconnect = makeHandleReconnect(getPrivate, StoreAction);
+    const handleReconnect = makeHandleReconnect(getStore, setStore);
     return handleReconnect(params);
   };
 });
@@ -42,40 +39,12 @@ test("responds if secret key is found", () => {
   expect(params.respond.mock.calls.length).toBe(1);
 });
 
-test("updates player's peer id", () => {
-  const params = makeParams();
-  const StoreAction = makeStoreAction();
-
-  callHandleReconnect({ params, StoreAction });
-
-  const { mock } = StoreAction.setPlayerConnection;
-  expect(mock.calls.length).toBe(1);
-
-  const [playerId, { peerId }] = mock.calls[0];
-  expect(playerId).toBe("player-id");
-  expect(peerId).toBe("123");
-});
-
-test("updates player's connection status to CONNECTED", () => {
-  const params = makeParams();
-  const StoreAction = makeStoreAction();
-
-  callHandleReconnect({ params, StoreAction });
-
-  const { mock } = StoreAction.setPlayerState;
-  expect(mock.calls.length).toBe(1);
-
-  const [playerId, { connectionStatus }] = mock.calls[0];
-  expect(playerId).toBe("player-id");
-  expect(connectionStatus).toBe(ConnectionStatus.CONNECTED);
-});
-
-test("errors if secret key is not found", () => {
-  const params = makeParams({
-    payload: { secretKey: "missing-secret" },
-  });
+test("rejects with NotAuthorizedError if player matching secret key cannot be found", () => {
+  const params = makeParams({ payload: { secretKey: "missing-secret" } });
 
   callHandleReconnect({ params });
 
-  expect(params.error.mock.calls.length).toBe(1);
+  const errorMock = params.error.mock;
+  expect(errorMock.calls.length).toBe(1);
+  expect(errorMock.calls[0][0].constructor.name).toBe("NotAuthorizedError");
 });

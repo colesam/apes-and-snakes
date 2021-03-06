@@ -1,18 +1,17 @@
-import { DeepReadonly } from "../ImmutableRecord";
 import { Card } from "./Card";
 import { CardCombination } from "./CardCombination";
 
-type TPair = {
+interface TParams {
   cards: [Card, Card];
-};
+}
 
-export interface Pair extends DeepReadonly<TPair> {}
+export class Pair extends CardCombination {
+  protected readonly __class = "Pair";
 
-export class Pair extends CardCombination<TPair> {
-  constructor(data?: Partial<TPair>) {
-    super({ cards: [new Card(), new Card()] }, data, "Pair");
-  }
-  get cards() {
-    return this.data.cards;
+  public cards;
+
+  constructor({ cards = [new Card(), new Card()] } = {} as Partial<TParams>) {
+    super();
+    this.cards = cards;
   }
 }

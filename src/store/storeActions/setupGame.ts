@@ -1,24 +1,21 @@
 import { SIM_WEEKS, TICKS_PER_WEEK } from "../../config";
 import { StoreAction } from "../StoreAction";
-import { privateState } from "../privateState";
-import { setPrivate } from "../privateStore";
-import { sharedState } from "../sharedState";
-import { setShared } from "../sharedStore";
+import { initialState, TStore } from "../store";
 
-export const setupGame = () => {
+export const setupGame = (s: TStore) => {
   // Reset state
-  setShared(s => ({
-    tick: sharedState.tick,
-    stocks: sharedState.stocks,
-    players: s.players.map(p => p.set({ positions: [], cash: 1_000_000 })),
-    flopDisplay: null,
-  }));
-  setPrivate({
-    flop: null,
-    stockVolatilityModifierMap: privateState.stockVolatilityModifierMap,
-    stockRollModifierMap: privateState.stockRollModifierMap,
-  });
+  s.tick = initialState.tick;
+  s.stocks = initialState.stocks;
+  s.flopDisplay = null;
+  s.flop = null;
+  s.stockVolatilityModifierMap = initialState.stockVolatilityModifierMap;
+  s.stockRollModifierMap = initialState.stockRollModifierMap;
 
-  StoreAction.assignPairsToStocks();
-  StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK);
+  for (let player of s.players) {
+    player.positions = [];
+    player.cash = 1_000_000;
+  }
+
+  StoreAction.assignPairsToStocks(s);
+  StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK)(s);
 };

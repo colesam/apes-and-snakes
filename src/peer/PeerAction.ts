@@ -4,9 +4,8 @@ import { endGame } from "./peerActions/endGame";
 import { join } from "./peerActions/join";
 import { openPosition } from "./peerActions/openPosition";
 import { ping } from "./peerActions/ping";
-import { pullShared } from "./peerActions/pullShared";
-import { pushPrivate } from "./peerActions/pushPrivate";
-import { pushShared } from "./peerActions/pushShared";
+import { pullData } from "./peerActions/pullData";
+import { pushData } from "./peerActions/pushData";
 import { reconnect } from "./peerActions/reconnect";
 import { startGame } from "./peerActions/startGame";
 
@@ -18,8 +17,7 @@ export const PeerAction = {
   join,
   openPosition,
   ping,
-  pullShared,
-  pushPrivate,
-  pushShared,
+  pullData,
+  pushData,
   reconnect,
 };

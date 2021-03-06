@@ -13,7 +13,7 @@ import {
   TICKS_PER_WEEK,
 } from "../../config";
 import { RoundRank } from "../../core/poker";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 
 interface PropTypes {
   priceHistory: number[];
@@ -26,7 +26,7 @@ const rounds = () => {
 };
 
 function StockGraph({ priceHistory, rankHistory, marketClose }: PropTypes) {
-  const tick = useSharedStore(s => s.tick); // TODO
+  const tick = useStore(s => s.tick); // TODO
   const lastWeek = Math.floor(tick / TICKS_PER_WEEK) - 1; // TODO
   const priceData = priceHistory
     .slice(lastWeek * TICKS_PER_WEEK)

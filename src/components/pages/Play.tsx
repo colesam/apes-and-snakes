@@ -16,39 +16,26 @@ import {
 } from "@chakra-ui/react";
 import { last } from "lodash";
 import React, { useState } from "react";
-import {
-  PURCHASE_QUANTITIES,
-  TICKS_PER_WEEK,
-  WEEKEND_END,
-  WEEKEND_START,
-} from "../../config";
+import { PURCHASE_QUANTITIES } from "../../config";
+import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
-import { usePrivateStore } from "../../store/privateStore";
-import { useSharedStore } from "../../store/sharedStore";
+import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
-import StockRender from "../render/Stock";
-
-function isWeekend(tick: number) {
-  const relativeTick = tick % TICKS_PER_WEEK;
-  return (
-    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
-    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
-  );
-}
+import StockBox from "../render/StockBox";
 
 function Play() {
   // Shared store
-  const tick = useSharedStore(s => s.tick);
-  const players = useSharedStore(s => s.players);
-  const stocks = useSharedStore(s => s.stocks);
-  const flopDisplay = useSharedStore(s => s.flopDisplay);
+  const tick = useStore(s => s.tick);
+  const players = useStore(s => s.players);
+  const stocks = useStore(s => s.stocks);
+  const flopDisplay = useStore(s => s.flopDisplay);
 
   // Private store
-  const ping = usePrivateStore(s => s.ping);
-  const hostPeerId = usePrivateStore(s => s.hostPeerId);
-  const playerId = usePrivateStore(s => s.playerId);
-  const secretKey = usePrivateStore(s => s.secretKey);
+  const ping = useStore(s => s.ping);
+  const hostPeerId = useStore(s => s.hostPeerId);
+  const playerId = useStore(s => s.playerId);
+  const secretKey = useStore(s => s.secretKey);
 
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
@@ -92,13 +79,8 @@ function Play() {
         </Flex>
         <Flex justify={"space-around"} flexWrap={"wrap"}>
           {stocks.map(stock => (
-            <StockRender
-              name={stock.name}
-              ticker={stock.ticker}
-              priceHistory={stock.priceHistory}
-              rankHistory={stock.rankHistory}
-              pair={stock.pair}
-              pairIsNew={stock.pairIsNew}
+            <StockBox
+              stock={stock}
               playerCash={player.cash}
               purchaseQuantities={PURCHASE_QUANTITIES}
               disableTransactions={isWeekend(tick) || viewPlayerId !== playerId}
@@ -199,14 +181,6 @@ function Play() {
       </Box>
     </Flex>
   );
-}
-
-function withCommas(x: number) {
-  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function formatCurrency(x: number) {
-  return "$" + withCommas(x);
 }
 
 export default Play;

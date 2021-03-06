@@ -1,10 +1,10 @@
-import { StoreAction } from "../../store/StoreAction";
+import { resetStore } from "../../store/store";
 import { PeerAction } from "../PeerAction";
 import PeerConnectionManager from "../PeerConnectionManager";
 
 // Host only
 export const endGame = () => {
   PeerAction.endGame();
-  StoreAction.resetStores();
+  resetStore();
   PeerConnectionManager.clearConnections();
 };

@@ -6,14 +6,13 @@ import generateId from "../../core/generateId";
 import { errorLog } from "../../core/helpers";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
-import { StoreAction } from "../../store/StoreAction";
-import { usePrivateStore } from "../../store/privateStore";
+import { setStore, useStore } from "../../store/store";
 import ReconnectForm from "../forms/ReconnectForm";
 import FloatingContainer from "../render/FloatingContainer";
 
 function Reconnect() {
   // Hooks
-  const [secretKey, previousRoomCode, hostPeerId] = usePrivateStore(
+  const [secretKey, previousRoomCode, hostPeerId] = useStore(
     s => [s.secretKey, s.previousRoomCode, s.hostPeerId],
     shallow
   );
@@ -36,7 +35,9 @@ function Reconnect() {
         errorLog(e);
       }
 
-      StoreAction.setHostPeerId(hostPID);
+      setStore(s => {
+        s.hostPeerId = hostPID;
+      });
     }
 
     try {

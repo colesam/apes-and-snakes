@@ -1,7 +1,6 @@
-import { setPrivate } from "../privateStore";
-import { setShared } from "../sharedStore";
+import { TStore } from "../store";
 
-export const setRoomCode = (roomCode: string) => {
-  setShared({ roomCode });
-  setPrivate({ previousRoomCode: roomCode });
+export const setRoomCode = (roomCode: string) => (s: TStore) => {
+  s.roomCode = roomCode;
+  s.previousRoomCode = roomCode;
 };

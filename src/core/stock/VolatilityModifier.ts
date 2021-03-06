@@ -1,14 +1,19 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 
-export type TVolatilityModifier = {
+interface TParams {
   value: number;
   expirationTick: number;
-};
+}
 
-export interface VolatilityModifier extends DeepReadonly<TVolatilityModifier> {}
+export class VolatilityModifier extends ImmerClass {
+  protected readonly __class = "VolatilityModifier";
 
-export class VolatilityModifier extends ImmutableRecord<TVolatilityModifier> {
-  constructor(data?: Partial<TVolatilityModifier>) {
-    super({ value: 0, expirationTick: 0 }, data, "VolatilityModifier");
+  public value;
+  public expirationTick;
+
+  constructor({ value = 0, expirationTick = 0 } = {} as Partial<TParams>) {
+    super();
+    this.value = value;
+    this.expirationTick = expirationTick;
   }
 }

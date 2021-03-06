@@ -1,24 +1,22 @@
-import { DeepReadonly, ImmutableRecord } from "../ImmutableRecord";
+import { ImmerClass } from "../ImmerClass";
 import { Rank } from "./Rank";
 import { Suit } from "./Suit";
 
-type TCard = {
+interface TParams {
   rank: Rank;
   suit: Suit;
-};
+}
 
-export interface Card extends DeepReadonly<TCard> {}
+export class Card extends ImmerClass {
+  protected readonly __class = "Card";
 
-export class Card extends ImmutableRecord<TCard> {
-  constructor(data?: Partial<TCard>) {
-    super(
-      {
-        rank: Rank.X,
-        suit: Suit.X,
-      },
-      data,
-      "Card"
-    );
+  public rank;
+  public suit;
+
+  constructor({ rank = Rank.X, suit = Suit.X } = {} as Partial<TParams>) {
+    super();
+    this.rank = rank;
+    this.suit = suit;
   }
 
   toString() {

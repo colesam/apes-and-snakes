@@ -1,4 +1,10 @@
 import { groupBy } from "lodash";
+import {
+  FLOP_PREVIEW_POINT,
+  TICKS_PER_WEEK,
+  WEEKEND_END,
+  WEEKEND_START,
+} from "../config";
 import PeerError from "../peer/error/PeerError";
 import { RollModifier } from "./stock/RollModifier";
 
@@ -16,7 +22,7 @@ export const diff = <T>(newState: T, oldState: T): Partial<T> => {
   return stateChanges;
 };
 
-export const errorLog = (e: PeerError) => console.error(e.toString());
+export const errorLog = (e: PeerError) => e && console.error(e.toString());
 
 const splitInto = (num: number, split: number) => {
   const isNegative = num < 0;
@@ -46,4 +52,31 @@ export const stackRollMods = (mods: RollModifier[]): number[] => {
   );
 
   return [...nonStackableMods.map(m => m.value), ...stackedMods];
+};
+
+export const withCommas = (x: number) =>
+  x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+export const formatCurrency = (x: number) => "$" + withCommas(x);
+
+export const isWeekend = (tick: number) => {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return (
+    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
+    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
+  );
+};
+
+export const isFlopPreview = (tick: number) => {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
+};
+
+export const isWeekendStart = (tick: number) => {
+  const relativeTick = tick % TICKS_PER_WEEK;
+  return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK) - 1;
+};
+
+export const isEndOfWeek = (tick: number) => {
+  return tick % TICKS_PER_WEEK === TICKS_PER_WEEK - 1;
 };

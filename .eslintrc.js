@@ -6,6 +6,7 @@ module.exports = {
     "plugin:import/typescript",
   ],
   rules: {
+    "no-loop-func": "off", // TODO: reenable and fix
     "react/jsx-pascal-case": "off",
     "react-hooks/exhaustive-deps": "off",
     "unused-imports/no-unused-imports": "error",
