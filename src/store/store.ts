@@ -1,7 +1,6 @@
 import { produce } from "immer";
 import { isFunction } from "lodash";
 import create, { State } from "zustand";
-import { devtools } from "zustand/middleware";
 import { NUM_STOCKS } from "../config";
 import { Deck } from "../core/card/Deck";
 import { Flop } from "../core/card/Flop";
@@ -17,6 +16,7 @@ import { Stock } from "../core/stock/Stock";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 import { PeerAction } from "../peer/PeerAction";
 import { StoreSelector } from "./StoreSelector";
+import { devtools } from "./middleware/devtools";
 import { stocks } from "./mockData/stocks";
 
 const [storageGet, storageSet] = initStorage("sessionStorage", "store");

@@ -48,8 +48,9 @@ describe("deserialize", () => {
   });
 
   test("serialized maps deserialize back to a map", () => {
-    const map = new Map([["key", "value"]]);
+    const map = new Map([["key", new Pair()]]);
     const des = deserialize(serialize(map), classMap);
     expect(des.constructor.name).toBe("Map");
+    expect(des.get("key")).toEqual(new Pair());
   });
 });
