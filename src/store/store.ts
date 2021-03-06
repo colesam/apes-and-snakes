@@ -50,6 +50,9 @@ export interface TStore extends State {
   playerId: string;
   pingIntervalId: NodeJS.Timeout | null;
   secretKey: string;
+
+  // Misc
+  viewFullHistory: boolean;
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
@@ -83,6 +86,9 @@ export const initialState: TStore = {
   playerId: "",
   pingIntervalId: null,
   secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
+
+  // Misc
+  viewFullHistory: false,
 };
 
 // Create store
@@ -128,6 +134,9 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   playerId: { storeLocally: true },
   pingIntervalId: {},
   secretKey: { storeLocally: true },
+
+  // Misc
+  viewFullHistory: {},
 };
 export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,

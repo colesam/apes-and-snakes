@@ -1,26 +1,18 @@
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  HStack,
-  VStack,
-} from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Box, Flex, VStack } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import StockBox from "../render/StockBox";
+import CommandBar from "../smart/CommandBar";
 
 function Spectate() {
   // Shared store
   const stocks = useStore(s => s.stocks);
   const flop = useStore(s => s.flop);
-
-  // State
-  const [viewFullHistory, setViewFullHistory] = useState<boolean>(false);
+  const retiredCard = useStore(s => s.retiredCard);
+  const viewFullHistory = useStore(s => s.viewFullHistory);
 
   // Effects
   useEffect(() => {
@@ -57,31 +49,16 @@ function Spectate() {
       bg={"white"}
       color={"black"}
     >
-      <HStack
-        bg="gray.400"
-        borderBottomWidth={1}
-        borderColor="gray.600"
-        px={4}
-        py={2}
-      >
-        <Button size="sm" onClick={() => setViewFullHistory(!viewFullHistory)}>
-          {viewFullHistory ? "Viewing Full History" : "Viewing This Week"}
-        </Button>
-        <Center height="20px">
-          <Divider orientation="vertical" />
-        </Center>
-        <Button
-          size="sm"
-          colorScheme={"red"}
-          onClick={() => setStore(StoreAction.setupGame)}
-        >
-          Reset Game
-        </Button>
-      </HStack>
+      <CommandBar />
       <Flex justify={"space-between"}>
         <Box w={"60%"} p={4}>
           <Flex justify={"center"} mb={10}>
-            <FlopDisplay cards={flop.cards} spacing={8} cardScale={1.4} />
+            <FlopDisplay
+              cards={flop.cards}
+              retiredCard={retiredCard}
+              spacing={8}
+              cardScale={1.4}
+            />
           </Flex>
           <Flex justify={"space-between"} flexWrap={"wrap"}>
             {stocks.map(stock => (

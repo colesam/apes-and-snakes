@@ -1,4 +1,4 @@
-import { Box, LayoutProps, SpaceProps } from "@chakra-ui/react";
+import { Box, HTMLChakraProps } from "@chakra-ui/react";
 import React from "react";
 import styled from "styled-components";
 import cardAssets from "../../assets/cards";
@@ -11,7 +11,7 @@ const StyledImg = styled.img`
   transform: translate(-11px, -2px);
 `;
 
-interface PropTypes extends LayoutProps, SpaceProps {
+interface PropTypes extends HTMLChakraProps<"div"> {
   card: TCard;
   scale?: number;
 }
