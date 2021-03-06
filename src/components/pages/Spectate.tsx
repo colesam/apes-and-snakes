@@ -76,13 +76,4 @@ function Spectate() {
   );
 }
 
-function withCommas(x: number) {
-  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function formatCurrency(x: number) {
-  return "$" + withCommas(x);
-}
-
 export default Spectate;

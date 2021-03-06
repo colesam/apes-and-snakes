@@ -10,7 +10,7 @@ import {
 import { last, isNumber } from "lodash";
 import React from "react";
 import { DEBUG, GENERAL_FLUCTUATION_MAX, TICKS_PER_WEEK } from "../../config";
-import { stackRollMods } from "../../core/helpers";
+import { formatCurrency, stackRollMods } from "../../core/helpers";
 import { Stock } from "../../core/stock/Stock";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
@@ -138,14 +138,6 @@ function StockBox({
       )}
     </VStack>
   );
-}
-
-function withCommas(x: number) {
-  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function formatCurrency(x: number) {
-  return "$" + withCommas(x);
 }
 
 function formatPriceEst(price: number) {

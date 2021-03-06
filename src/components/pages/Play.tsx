@@ -13,19 +13,13 @@ import {
   RadioGroup,
   Radio,
   HStack,
-  Spinner,
 } from "@chakra-ui/react";
 import { last } from "lodash";
-import React, { useEffect, useState } from "react";
-import {
-  PURCHASE_QUANTITIES,
-  TICKS_PER_WEEK,
-  WEEKEND_END,
-  WEEKEND_START,
-} from "../../config";
-import { GameStatus } from "../../core/game/GameStatus";
+import React, { useState } from "react";
+import { PURCHASE_QUANTITIES } from "../../config";
+import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
-import { getStore, useStore } from "../../store/store";
+import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
 import StockBox from "../render/StockBox";
@@ -36,7 +30,6 @@ function Play() {
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flopDisplay = useStore(s => s.flopDisplay);
-  const gameStatus = useStore(s => s.gameStatus);
 
   // Private store
   const ping = useStore(s => s.ping);
@@ -46,18 +39,6 @@ function Play() {
 
   // State
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
-
-  // Special handling
-  useEffect(() => {
-    if (gameStatus !== GameStatus.IN_GAME) {
-      // HMR reset store state
-      handleStoreReset();
-    }
-  }, [gameStatus]);
-
-  if (gameStatus !== GameStatus.IN_GAME) {
-    return <Spinner size="xl" color="green.500" />;
-  }
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);
@@ -199,28 +180,6 @@ function Play() {
         <span>{ping ? `${ping}ms` : "none"}</span>
       </Box>
     </Flex>
-  );
-}
-
-// Handling for when HMR resets the store's state
-const handleStoreReset = () => {
-  const { hostPeerId } = getStore();
-  PeerAction.pullData(hostPeerId);
-};
-
-function withCommas(x: number) {
-  return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function formatCurrency(x: number) {
-  return "$" + withCommas(x);
-}
-
-function isWeekend(tick: number) {
-  const relativeTick = tick % TICKS_PER_WEEK;
-  return (
-    relativeTick >= Math.floor(WEEKEND_START * TICKS_PER_WEEK) &&
-    relativeTick <= Math.floor(WEEKEND_END * TICKS_PER_WEEK)
   );
 }
 

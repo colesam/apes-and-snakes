@@ -1,8 +1,4 @@
-import {
-  FLOP_PREVIEW_POINT,
-  TICKS_PER_WEEK,
-  WEEKEND_START,
-} from "../../config";
+import { isEndOfWeek, isFlopPreview, isWeekendStart } from "../../core/helpers";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { StoreAction } from "../StoreAction";
 import { TStore } from "../store";
@@ -35,7 +31,7 @@ const runSingleTick = (tick: number) => (s: TStore) => {
     StoreAction.runFlopPreview(s);
   }
 
-  if (isWeekend(tick)) {
+  if (isWeekendStart(tick)) {
     StoreAction.runFlop(tick)(s);
   }
 
@@ -55,18 +51,4 @@ const expireModifiers = <T extends Modifier>(
       mods.filter(m => m.expirationTick > tick)
     );
   }
-};
-
-const isFlopPreview = (tick: number) => {
-  const relativeTick = tick % TICKS_PER_WEEK;
-  return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
-};
-
-const isWeekend = (tick: number) => {
-  const relativeTick = tick % TICKS_PER_WEEK;
-  return relativeTick === Math.floor(WEEKEND_START * TICKS_PER_WEEK) - 1;
-};
-
-const isEndOfWeek = (tick: number) => {
-  return tick % TICKS_PER_WEEK === TICKS_PER_WEEK - 1;
 };
