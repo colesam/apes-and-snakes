@@ -16,7 +16,7 @@ export const diff = <T>(newState: T, oldState: T): Partial<T> => {
   return stateChanges;
 };
 
-export const errorLog = (e: PeerError) => console.error(e.toString());
+export const errorLog = (e: PeerError) => e && console.error(e.toString());
 
 const splitInto = (num: number, split: number) => {
   const isNegative = num < 0;

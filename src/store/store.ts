@@ -78,7 +78,7 @@ export const initialState: TStore = {
   previousRoomCode: "",
   playerId: "",
   pingIntervalId: null,
-  secretKey: generateId(),
+  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
 };
 
 // Create store
@@ -90,20 +90,25 @@ export const useStore = create<TStore>(
 interface TStateConfig {
   peerSync: boolean;
   storeLocally: boolean;
+  storeLocallyIfHost: boolean;
 }
-const defaultConfig: TStateConfig = { peerSync: false, storeLocally: false };
+const defaultConfig: TStateConfig = {
+  peerSync: false,
+  storeLocally: false,
+  storeLocallyIfHost: false,
+};
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
   gameStatus: { peerSync: true },
-  players: { peerSync: true },
+  players: { peerSync: true, storeLocallyIfHost: true },
   stocks: { peerSync: true },
   flopDisplay: { peerSync: true },
 
   // Host state
-  isHost: {},
-  secretKeyPlayerIdMap: {},
+  isHost: { storeLocally: true },
+  secretKeyPlayerIdMap: { storeLocallyIfHost: true },
   playerConnectionMap: {},
   deck: {},
   flop: {},
@@ -116,7 +121,7 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   previousRoomCode: { storeLocally: true },
   playerId: { storeLocally: true },
   pingIntervalId: {},
-  secretKey: {},
+  secretKey: { storeLocally: true },
 };
 export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,
@@ -149,7 +154,8 @@ useStore.subscribe((newState, oldState) => {
   const stateChanges = diff(newState, oldState);
   for (const [key, value] of Object.entries(stateChanges)) {
     // @ts-ignore
-    if (getStateConfig(key).storeLocally) {
+    const { storeLocally, storeLocallyIfHost } = getStateConfig(key);
+    if (storeLocally || (oldState.isHost && storeLocallyIfHost)) {
       storageSet(key, value);
     }
   }

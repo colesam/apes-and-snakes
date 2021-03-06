@@ -1,4 +1,5 @@
 import Peer, { DataConnection } from "peerjs";
+import { PEER_DEV_SERVER, USE_PEER_DEV_SERVER } from "../config";
 import MessageHandler from "./MessageHandler";
 import PeerError from "./error/PeerError";
 import TimeoutError, { TIMEOUT_ERROR } from "./error/TimeoutError";
@@ -25,7 +26,10 @@ export default class PeerConnectionManager {
 
   static register(peerId?: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      PeerConnectionManager.conn = new Peer(peerId, { debug: 2 });
+      PeerConnectionManager.conn = new Peer(peerId, { 
+        ...(USE_PEER_DEV_SERVER ? PEER_DEV_SERVER : {}),
+        debug: 2 
+      });
 
       PeerConnectionManager.conn.on(
         "connection",

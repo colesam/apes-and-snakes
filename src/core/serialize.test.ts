@@ -46,4 +46,10 @@ describe("deserialize", () => {
     const res = serialize(hand);
     expect(() => deserialize(res, {})).toThrow();
   });
+
+  test("serialized maps deserialize back to a map", () => {
+    const map = new Map([["key", "value"]]);
+    const des = deserialize(serialize(map), classMap);
+    expect(des.constructor.name).toBe("Map");
+  });
 });

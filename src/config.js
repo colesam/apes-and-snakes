@@ -1,6 +1,14 @@
 export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 export const DEBUG = true;
+export const AUTO_REHOST = true;
+export const USE_PEER_DEV_SERVER = true;
+export const PEER_DEV_SERVER = {
+  host: "localhost",
+  port: 9000,
+  path: "/",
+};
 
+// Game config
 export const PING_INTERVAL = 5000;
 
 export const TICK_SPEED = 1000;
