@@ -11,10 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { last, isNumber } from "lodash";
 import React from "react";
-import { DEBUG, GENERAL_FLUCTUATION_MAX, TICKS_PER_WEEK } from "../../config";
-import { formatCurrency, stackRollMods } from "../../core/helpers";
+import { TICKS_PER_WEEK } from "../../config";
+import { formatCurrency } from "../../core/helpers";
 import { Stock } from "../../core/stock/Stock";
-import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import CardStack from "./CardStack";
 import PercentChange from "./PercentChange";
@@ -38,16 +37,7 @@ function StockBox({
   disableTransactions = true,
   onBuy,
 }: PropTypes) {
-  // TODO
   const tick = useStore(s => s.tick);
-  const isHost = useStore(s => s.isHost);
-  const volMods = useStore(StoreSelector.getVolatilityModifiers(stock.ticker));
-  const rollMods = useStore(StoreSelector.getRollModifiers(stock.ticker));
-
-  const volatility =
-    volMods.map(m => m.value).reduce((a, b) => a + b, 0) +
-    GENERAL_FLUCTUATION_MAX;
-
   const rankColor = stock.rank > 3 ? "red" : "green";
 
   const thisWeek = Math.floor(tick / TICKS_PER_WEEK); // TODO
@@ -141,19 +131,6 @@ function StockBox({
           right={"0"}
         />
       </Flex>
-      {DEBUG && isHost && (
-        <>
-          <Divider />
-          <div>
-            <strong>Volatility:</strong>
-            {(volatility * 100).toFixed(2)}%
-          </div>
-          <div style={{ maxWidth: "300px" }}>
-            <strong>Roll Mods:</strong>
-            {JSON.stringify(stackRollMods(rollMods))}
-          </div>
-        </>
-      )}
       <Divider />
       <StockGraph
         priceHistory={slicedPriceHistory}

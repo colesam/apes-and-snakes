@@ -42,12 +42,13 @@ const runSingleTick = (tick: number) => (s: TStore) => {
         stock.pairIsNew = false;
       }
     }
+    StoreAction.rankStocks(s);
   } else {
     if (Math.random() < FLOP_SHIFT_CHANCE) {
       // 50% chance per week of extra flop shift
       flop++;
       console.log(`Flipping flop #${flop}`);
-      StoreAction.shiftFlop(tick)(s);
+      StoreAction.shiftFlop(s);
     }
   }
 };

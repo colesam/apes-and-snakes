@@ -14,7 +14,6 @@ import {
   Radio,
   HStack,
 } from "@chakra-ui/react";
-import { last } from "lodash";
 import React, { useEffect, useState } from "react";
 import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
@@ -22,6 +21,7 @@ import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
 import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
+import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import PercentChange from "../render/PercentChange";
@@ -47,6 +47,7 @@ function Play() {
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const retiredCard = useStore(s => s.retiredCard);
+  const stockPriceMap = useStore(StoreSelector.stockPriceMap);
 
   // Private store
   const ping = useStore(s => s.ping);
@@ -70,14 +71,6 @@ function Play() {
   if (!player) {
     throw new Error("No player found!");
   }
-
-  const stockPriceMap = stocks.reduce<{ [key: string]: number }>(
-    (acc, stock) => {
-      acc[stock.ticker] = last(stock.priceHistory) || 0;
-      return acc;
-    },
-    {}
-  );
 
   // Handlers
   const handleBuy = (ticker: string, qty: number, price: number) => {
