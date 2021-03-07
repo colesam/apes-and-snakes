@@ -8,25 +8,37 @@ import CardStack, { PropTypes as CardStackPropTypes } from "./CardStack";
 interface PropTypes extends CardStackPropTypes {
   cards: Card[];
   retiredCard: Card;
+  flopAge: number;
 }
 
-function FlopDisplay({ cards = [], retiredCard, ...props }: PropTypes) {
+function FlopDisplay({
+  cards = [],
+  retiredCard,
+  flopAge,
+  ...props
+}: PropTypes) {
   // Display flop in reverse order (easy to read flow from left -> right)
-  const a = cards[0] || new Card();
-  const b = cards[1] || new Card();
+  const a = cards[4] || new Card();
+  const b = cards[3] || new Card();
   const c = cards[2] || new Card();
-  const d = cards[3] || new Card();
-  const e = cards[4] || new Card();
+  const d = cards[1] || new Card();
+  const e = cards[0] || new Card();
 
   // @ts-ignore
   const flop = new Flop({ cards: [a, b, c, d, e] });
   const blankCard = new Card();
 
   return (
-    <HStack align="center" spacing={4}>
-      <CardRender card={retiredCard} opacity={0.4} />
-      <CardStack cards={flop.cards} {...props} />
+    <HStack
+      align="center"
+      spacing={4}
+      borderWidth={1}
+      p={4}
+      borderColor={flopAge < 10 ? "red.400" : undefined}
+    >
       <CardRender card={blankCard} />
+      <CardStack cards={flop.cards} {...props} />
+      <CardRender card={retiredCard} opacity={0.4} />
     </HStack>
   );
 }

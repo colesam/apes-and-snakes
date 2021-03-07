@@ -31,15 +31,21 @@ export const tickPrice = (
   volMods: VolatilityModifier[],
   rollMods: RollModifier[]
 ): void => {
-  const rollPool = stock.hasBuySqueeze
-    ? [3]
-    : [
-        -1,
-        1,
-        ...stock.handBonus,
-        ...RANK_ROLLS[stock.rank],
-        ...rollMods.map(m => m.value),
-      ];
+  let rollPool = [
+    -1,
+    1,
+    ...stock.handBonus,
+    ...RANK_ROLLS[stock.rank],
+    ...rollMods.map(m => m.value),
+  ];
+
+  if (stock.hasBuySqueeze) {
+    rollPool = [5];
+  }
+
+  if (stock.hasSellSqueeze) {
+    rollPool = [-5];
+  }
 
   const volatilityModSum = volMods.reduce((a, b) => a + b.value, 0);
 

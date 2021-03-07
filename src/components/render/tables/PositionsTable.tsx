@@ -1,10 +1,11 @@
 import { Button, Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { formatCurrency } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
 import PercentChange from "../PercentChange";
 
 type PropTypes = {
+  tick: number;
   player: Player;
   isOwnPlayer: boolean;
   stockPriceMap: { [key: string]: number };
@@ -13,12 +14,14 @@ type PropTypes = {
 };
 
 function PositionsTable({
+  tick,
   player,
   isOwnPlayer,
   stockPriceMap,
   isWeekend,
   onSell,
 }: PropTypes) {
+  const [disableBundleIds, setDisableBundleIds] = useState<string[]>([]);
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
@@ -28,6 +31,7 @@ function PositionsTable({
           <Th w={"20%"}>Acquired Value</Th>
           <Th w={"20%"}>Current Value</Th>
           <Th>% Change</Th>
+          <Th>CGT</Th>
           {isOwnPlayer && <Th w={100}></Th>}
         </Tr>
       </Thead>
@@ -51,14 +55,23 @@ function PositionsTable({
                 <Td>
                   <PercentChange start={initialValue} end={currentValue} />
                 </Td>
+                <Td>{(bundle.capitalGainsTax(tick) * 100).toFixed(1)}%</Td>
                 {isOwnPlayer && (
                   <Td>
                     <Button
                       size={"xs"}
                       colorScheme={"red"}
                       w={"100%"}
-                      disabled={isWeekend}
-                      onClick={() => onSell(bundle.id)}
+                      disabled={
+                        isWeekend ||
+                        bundle.isLiquidating ||
+                        bundle.capitalGainsTax(tick) === 1 ||
+                        disableBundleIds.includes(bundle.id)
+                      }
+                      onClick={() => {
+                        setDisableBundleIds([...disableBundleIds, bundle.id]);
+                        onSell(bundle.id);
+                      }}
                     >
                       SELL
                     </Button>

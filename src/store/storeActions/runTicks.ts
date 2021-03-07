@@ -60,8 +60,13 @@ const runSingleTick = (tick: number) => (s: TStore) => {
       }
     }
     StoreAction.rankStocks(s);
+    if (tick > 0) {
+      for (const player of s.players) {
+        player.cash += player.cash * 0.03;
+      }
+    }
   } else {
-    if (Math.random() < FLOP_SHIFT_CHANCE) {
+    if (tick - s.flopSetAt > 10 && Math.random() < FLOP_SHIFT_CHANCE) {
       // 50% chance per week of extra flop shift
       flop++;
       console.log(`Flipping flop #${flop}`);

@@ -7,6 +7,7 @@ import {
   Radio,
   HStack,
 } from "@chakra-ui/react";
+import { sum } from "lodash";
 import React, { useEffect, useState } from "react";
 import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
@@ -34,6 +35,7 @@ const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
 function Play() {
   // Shared store
   const tick = useStore(s => s.tick);
+  const flopSetAt = useStore(s => s.flopSetAt);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
   const flop = useStore(s => s.flop);
@@ -61,10 +63,17 @@ function Play() {
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);
-
   if (!player) {
     throw new Error("No player found!");
   }
+
+  const playerAssetValue = sum(
+    player.positionBundleList.flatMap(bundle =>
+      bundle.openPositionList.map(([, pos]) =>
+        pos.currentValue(stockPriceMap[bundle.stockTicker])
+      )
+    )
+  );
 
   // Handlers
   const handleBuy = (ticker: string, qty: number, price: number) => {
@@ -88,6 +97,7 @@ function Play() {
             <FlopDisplay
               cards={flop.cards}
               retiredCard={retiredCard}
+              flopAge={tick - flopSetAt}
               spacing={8}
               cardScale={1.4}
             />
@@ -128,11 +138,27 @@ function Play() {
             </RadioGroup>
           </Box>
 
-          <Text>
-            <strong>Player Cash:</strong> {formatCurrency(player.cash)}
-          </Text>
+          <VStack mb={10} spacing={4} align="flex-start">
+            <Text>
+              <strong style={{ display: "block" }}>
+                Player Cash (3% increase per week):
+              </strong>{" "}
+              {formatCurrency(player.cash)}
+            </Text>
+
+            <Text>
+              <strong style={{ display: "block" }}>Player Asset Value:</strong>{" "}
+              {formatCurrency(playerAssetValue)}
+            </Text>
+
+            <Text>
+              <strong style={{ display: "block" }}>Player Total Value:</strong>{" "}
+              {formatCurrency(player.cash + playerAssetValue)}
+            </Text>
+          </VStack>
 
           <PositionsTable
+            tick={tick}
             player={player}
             isOwnPlayer={viewPlayerId === playerId}
             stockPriceMap={stockPriceMap}

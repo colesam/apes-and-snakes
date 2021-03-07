@@ -16,6 +16,8 @@ const updateSells = (stock: Stock) => (s: TStore) => {
   const shuffledPlayers = shuffle(s.players);
 
   for (const player of shuffledPlayers) {
+    if (stock.sellVolume < 1_000) break;
+
     const bids = player
       .getBids(stock.ticker)
       .filter(bid => bid.type === PositionBidType.SELL);
@@ -36,8 +38,11 @@ const updateSells = (stock: Stock) => (s: TStore) => {
         continue;
       }
 
+      const profit = position.currentValue(stock.price) - position.initialValue;
+      const taxedProfit = profit - profit * bundle.capitalGainsTax(s.tick);
+
       position.isClosed = true;
-      player.cash += position.currentValue(stock.price);
+      player.cash += position.initialValue + taxedProfit;
       stock.sellVolume -= position.quantity;
       stock.buyVolume = Math.min(15_000, stock.buyVolume + position.quantity);
 
@@ -57,6 +62,8 @@ const updateBuys = (stock: Stock) => (s: TStore) => {
   const shuffledPlayers = shuffle(s.players);
 
   for (const player of shuffledPlayers) {
+    if (stock.buyVolume < 1_000) break;
+
     const bids = player
       .getBids(stock.ticker)
       .filter(bid => bid.type === PositionBidType.BUY);

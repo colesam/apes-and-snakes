@@ -12,6 +12,7 @@ export const openPosition = (
 
   if (player) {
     const positionBundle = new PositionBundle({
+      openedAtTick: s.tick,
       stockTicker,
     });
 

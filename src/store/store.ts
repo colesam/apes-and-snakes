@@ -1,5 +1,5 @@
 import { produce } from "immer";
-import { isFunction } from "lodash";
+import { cloneDeep, isFunction } from "lodash";
 import create, { State } from "zustand";
 import { NUM_STOCKS } from "../config";
 import { Card } from "../core/card/Card";
@@ -35,6 +35,7 @@ export interface TStore extends State {
 
   // Flop state
   flop: Flop;
+  flopSetAt: number;
   retiredCard: Card;
 
   // Host state
@@ -57,44 +58,44 @@ export interface TStore extends State {
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
 
-export const initialState: TStore = {
-  // Shared state
-  tick: 0,
-  roomCode: "",
-  gameStatus: GameStatus.LOBBY,
-  players: [],
+export const initialState = () =>
+  cloneDeep({
+    // Shared state
+    tick: 0,
+    roomCode: "",
+    gameStatus: GameStatus.LOBBY,
+    players: [],
 
-  // Stock state
-  stocks: stocks.slice(0, NUM_STOCKS),
-  stockRollModifierMap: new Map(),
-  stockVolatilityModifierMap: new Map(),
+    // Stock state
+    stocks: stocks.slice(0, NUM_STOCKS),
+    stockRollModifierMap: new Map(),
+    stockVolatilityModifierMap: new Map(),
 
-  // Flop state
-  flop: new Flop(),
-  retiredCard: new Card(),
+    // Flop state
+    flop: new Flop(),
+    flopSetAt: 0,
+    retiredCard: new Card(),
 
-  // Host state
-  isHost: false,
-  secretKeyPlayerIdMap: new Map(),
-  playerConnectionMap: new Map(),
-  deck: new Deck().shuffle(),
+    // Host state
+    isHost: false,
+    secretKeyPlayerIdMap: new Map(),
+    playerConnectionMap: new Map(),
+    deck: new Deck().shuffle(),
 
-  // Player state
-  ping: null,
-  hostPeerId: "",
-  previousRoomCode: "",
-  playerId: "",
-  pingIntervalId: null,
-  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
+    // Player state
+    ping: null,
+    hostPeerId: "",
+    previousRoomCode: "",
+    playerId: "",
+    pingIntervalId: null,
+    secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
 
-  // Misc
-  viewFullHistory: false,
-};
+    // Misc
+    viewFullHistory: false,
+  } as TStore);
 
 // Create store
-export const useStore = create<TStore>(
-  devtools(() => initialState, "Zustand Store")
-);
+export const useStore = create<TStore>(devtools(initialState, "Zustand Store"));
 
 // State configuration
 interface TStateConfig {
@@ -117,6 +118,7 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Flop state
   flop: { peerSync: true },
+  flopSetAt: { peerSync: true },
   retiredCard: { peerSync: true },
 
   // Host state

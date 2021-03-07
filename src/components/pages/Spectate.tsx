@@ -9,6 +9,8 @@ import CommandBar from "../smart/CommandBar";
 
 function Spectate() {
   // Shared store
+  const tick = useStore(s => s.tick);
+  const flopSetAt = useStore(s => s.flopSetAt);
   const stocks = useStore(s => s.stocks);
   const flop = useStore(s => s.flop);
   const retiredCard = useStore(s => s.retiredCard);
@@ -56,6 +58,7 @@ function Spectate() {
             <FlopDisplay
               cards={flop.cards}
               retiredCard={retiredCard}
+              flopAge={tick - flopSetAt}
               spacing={8}
               cardScale={1.4}
             />
