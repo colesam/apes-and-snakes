@@ -18,6 +18,7 @@ import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
 import StockBox from "../render/StockBox";
+import BidsTable from "../render/tables/BidsTable";
 import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
 
@@ -138,6 +139,8 @@ function Play() {
             isWeekend={isWeekend(tick)}
             onSell={() => console.log("selling!")}
           />
+
+          {viewPlayerId === playerId && (<BidsTable player={player} stockPriceMap={stockPriceMap} />)}
         </VStack>
         <Box
           position={"absolute"}

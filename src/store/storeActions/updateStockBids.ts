@@ -27,9 +27,11 @@ export const updateStockBids = (s: TStore) => {
         player.cash -= purchasePrice;
         stock.buyVolume -= 1_000;
         if (bundle.quantity === bid.quantity) {
+          bundle.isSecured = true;
           deleteBid(bid.id, player);
         }
       } else {
+        if (bundle) bundle.isSecured = true;
         deleteBid(bid.id, player);
       }
     }

@@ -7,6 +7,7 @@ interface TParams {
   id: string;
   stockTicker: string;
   positions: Map<string, Position>;
+  isSecured: boolean;
 }
 
 export class PositionBundle extends ImmerClass {
@@ -15,18 +16,21 @@ export class PositionBundle extends ImmerClass {
   public id;
   public stockTicker;
   public positions;
+  public isSecured;
 
   constructor(
     {
       id = generateId(),
       stockTicker = "",
       positions = new Map<string, Position>(),
+      isSecured = false,
     } = {} as Partial<TParams>
   ) {
     super();
     this.id = id;
     this.stockTicker = stockTicker;
     this.positions = positions;
+    this.isSecured = isSecured;
   }
 
   push(quantity: number, purchasePrice: number) {

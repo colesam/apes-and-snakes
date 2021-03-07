@@ -53,7 +53,7 @@ function StockBox({
   let buyBtns;
   if (purchaseQuantities && isNumber(playerCash)) {
     buyBtns = purchaseQuantities.map(qty => (
-      <VStack w={"100%"}>
+      <VStack w={"100%"} key={qty}>
         <Button
           size={"xs"}
           colorScheme={"green"}
