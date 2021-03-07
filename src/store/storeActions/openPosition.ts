@@ -1,4 +1,4 @@
-import { PositionBid } from "../../core/stock/PositionBid";
+import { PositionBid, PositionBidType } from "../../core/stock/PositionBid";
 import { PositionBundle } from "../../core/stock/PositionBundle";
 import { StoreSelector } from "../StoreSelector";
 import { TStore } from "../store";
@@ -17,6 +17,7 @@ export const openPosition = (
 
     const positionBid = new PositionBid({
       stockTicker,
+      type: PositionBidType.BUY,
       quantity,
       playerId: player.id,
       positionBundleId: positionBundle.id,

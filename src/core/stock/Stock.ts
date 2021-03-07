@@ -70,7 +70,7 @@ export class Stock extends ImmerClass {
     return this.buyVolume < 1_000;
   }
 
-  get hasShortSqueeze() {
+  get hasSellSqueeze() {
     return this.buyVolume < 1_000;
   }
 }

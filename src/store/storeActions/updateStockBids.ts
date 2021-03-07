@@ -1,39 +1,88 @@
-import { shuffle } from "lodash";
+import { head, shuffle } from "lodash";
 import { Player } from "../../core/player/Player";
 import { Position } from "../../core/stock/Position";
+import { PositionBidType } from "../../core/stock/PositionBid";
+import { Stock } from "../../core/stock/Stock";
 import { TStore } from "../store";
 
 export const updateStockBids = (s: TStore) => {
   for (const stock of s.stocks) {
-    if (stock.buyVolume < 1_000) break;
+    updateBuys(stock)(s);
+    updateSells(stock)(s);
+  }
+};
 
-    const shuffledPlayers = shuffle(s.players);
+const updateSells = (stock: Stock) => (s: TStore) => {
+  const shuffledPlayers = shuffle(s.players);
 
-    for (const player of shuffledPlayers) {
-      const bids = player.getBids(stock.ticker);
-      if (bids.length < 1) continue;
+  for (const player of shuffledPlayers) {
+    const bids = player
+      .getBids(stock.ticker)
+      .filter(bid => bid.type === PositionBidType.SELL);
 
-      const purchasePrice = stock.price * 1_000;
+    if (bids.length < 1) continue;
 
-      const bid = bids[0];
-      const bundle = player.positionBundles.get(bid.positionBundleId);
+    const bid = bids[0];
+    const bundle = player.positionBundles.get(bid.positionBundleId);
 
-      if (player.cash > purchasePrice && bundle) {
-        const position = new Position({
-          quantity: 1_000,
-          purchasePrice: stock.price,
-        });
-        bundle.positions.set(position.id, position);
-        player.cash -= purchasePrice;
-        stock.buyVolume -= 1_000;
-        if (bundle.quantity === bid.quantity) {
-          bundle.isSecured = true;
-          deleteBid(bid.id, player);
-        }
-      } else {
-        if (bundle) bundle.isSecured = true;
+    if (bundle) {
+      const position = head(bundle.openPositionList.map(([, pos]) => pos));
+      if (!position) {
+        // Should not get to this point
+        bundle.isSecured = true;
+        bundle.isLiquidating = false;
+        bundle.isLiquidated = true;
+        deleteBid(bid.id, player);
+        continue;
+      }
+
+      position.isClosed = true;
+      player.cash += position.currentValue(stock.price);
+      stock.sellVolume -= position.quantity;
+      stock.buyVolume = Math.min(15_000, stock.buyVolume + position.quantity);
+
+      if (bundle.quantity === 0) {
+        bundle.isSecured = true;
+        bundle.isLiquidating = false;
+        bundle.isLiquidated = true;
         deleteBid(bid.id, player);
       }
+    } else {
+      deleteBid(bid.id, player);
+    }
+  }
+};
+
+const updateBuys = (stock: Stock) => (s: TStore) => {
+  const shuffledPlayers = shuffle(s.players);
+
+  for (const player of shuffledPlayers) {
+    const bids = player
+      .getBids(stock.ticker)
+      .filter(bid => bid.type === PositionBidType.BUY);
+    if (bids.length < 1) continue;
+
+    const purchasePrice = stock.price * 1_000;
+
+    const bid = bids[0];
+    const bundle = player.positionBundles.get(bid.positionBundleId);
+
+    if (player.cash > purchasePrice && bundle) {
+      const position = new Position({
+        quantity: 1_000,
+        purchasePrice: stock.price,
+      });
+      bundle.positions.set(position.id, position);
+      player.cash -= purchasePrice;
+      stock.buyVolume -= 1_000;
+      stock.sellVolume = Math.min(15_000, stock.sellVolume + 1_000);
+      if (bundle.quantity === bid.quantity) {
+        bundle.isSecured = true;
+        deleteBid(bid.id, player);
+      }
+    } else {
+      if (bundle) bundle.isSecured = true;
+      deleteBid(bid.id, player);
     }
   }
 };

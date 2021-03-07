@@ -36,6 +36,13 @@ const runSingleTick = (tick: number) => (s: TStore) => {
     ) {
       stock.buyVolume += 1_000;
     }
+
+    if (
+      stock.hasSellSqueeze ||
+      (stock.sellVolume < 15_000 && Math.random() < 0.1)
+    ) {
+      stock.sellVolume += 1_000;
+    }
   }
 
   StoreAction.updateStockBids(s);

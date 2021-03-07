@@ -9,7 +9,7 @@ type PropTypes = {
   isOwnPlayer: boolean;
   stockPriceMap: { [key: string]: number };
   isWeekend: boolean;
-  onSell: (playerId: string, bundleId: string) => void;
+  onSell: (bundleId: string) => void;
 };
 
 function PositionsTable({
@@ -33,7 +33,10 @@ function PositionsTable({
       </Thead>
       <Tbody>
         {player.positionBundleList
-          .filter(bundle => bundle.isSecured)
+          .filter(
+            bundle =>
+              bundle.isSecured && bundle.quantity && !bundle.isLiquidated
+          )
           .map(bundle => {
             const initialValue = bundle.initialValue;
             const currentValue = bundle.currentValue(
@@ -55,7 +58,7 @@ function PositionsTable({
                       colorScheme={"red"}
                       w={"100%"}
                       disabled={isWeekend}
-                      onClick={() => onSell(player.id, bundle.id)}
+                      onClick={() => onSell(bundle.id)}
                     >
                       SELL
                     </Button>

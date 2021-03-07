@@ -137,10 +137,14 @@ function Play() {
             isOwnPlayer={viewPlayerId === playerId}
             stockPriceMap={stockPriceMap}
             isWeekend={isWeekend(tick)}
-            onSell={() => console.log("selling!")}
+            onSell={bundleId =>
+              PeerAction.closePosition(hostPeerId, secretKey, bundleId)
+            }
           />
 
-          {viewPlayerId === playerId && (<BidsTable player={player} stockPriceMap={stockPriceMap} />)}
+          {viewPlayerId === playerId && (
+            <BidsTable player={player} stockPriceMap={stockPriceMap} />
+          )}
         </VStack>
         <Box
           position={"absolute"}

@@ -16,15 +16,16 @@ export const makeHandleClosePosition = (
     return error(new PeerError("Could not find player."));
   }
 
+  // TODO
   // Validate position
-  const position = player.positions.find(pos => pos.id === payload.positionId);
-  if (!position || position.isClosed) {
-    return error(
-      new PeerError("Could not find positionId. Failed to close position.")
-    );
-  }
+  // const position = player.positions.find(pos => pos.id === payload.positionId);
+  // if (!position || position.isClosed) {
+  //   return error(
+  //     new PeerError("Could not find positionId. Failed to close position.")
+  //   );
+  // }
 
-  setStore(StoreAction.closePosition(player.id, position.id));
+  setStore(StoreAction.closePosition(player.id, payload.bundleId));
 
   respond();
 };
