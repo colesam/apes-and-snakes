@@ -3,6 +3,7 @@ import { PlayerConnection } from "../../core/player/PlayerConnection";
 import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
+import PeerConnectionManager from "../PeerConnectionManager";
 import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 
@@ -16,6 +17,12 @@ export const makeHandleReconnect = (
 
   if (!authorizedPlayer) {
     return error(new NotAuthorizedError());
+  }
+
+  // Remove old connection
+  const conn = getStore().playerConnectionMap.get(authorizedPlayer.id);
+  if (conn) {
+    PeerConnectionManager.removeConnection(conn.peerId);
   }
 
   _setStore(s => {

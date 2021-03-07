@@ -24,12 +24,7 @@ export const makeHandleOpenPosition = (
   }
 
   _setStore(
-    StoreAction.openPosition(
-      player.id,
-      payload.stockTicker,
-      payload.price,
-      payload.quantity
-    )
+    StoreAction.openPosition(player.id, payload.stockTicker, payload.quantity)
   );
 
   respond();

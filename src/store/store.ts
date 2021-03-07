@@ -1,10 +1,10 @@
 import { produce } from "immer";
-import { isFunction } from "lodash";
+import { cloneDeep, isFunction } from "lodash";
 import create, { State } from "zustand";
 import { NUM_STOCKS } from "../config";
+import { Card } from "../core/card/Card";
 import { Deck } from "../core/card/Deck";
 import { Flop } from "../core/card/Flop";
-import { FlopPreview } from "../core/card/FlopPreview";
 import { GameStatus } from "../core/game/GameStatus";
 import generateId from "../core/generateId";
 import { diff } from "../core/helpers";
@@ -27,19 +27,22 @@ export interface TStore extends State {
   roomCode: string;
   gameStatus: GameStatus;
   players: Player[];
-  flopDisplay: Flop | FlopPreview | null;
 
   // Stock state
   stocks: Stock[];
   stockRollModifierMap: Map<string, RollModifier[]>;
   stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
 
+  // Flop state
+  flop: Flop;
+  flopSetAt: number;
+  retiredCard: Card;
+
   // Host state
   isHost: boolean;
   secretKeyPlayerIdMap: Map<string, string>;
   playerConnectionMap: Map<string, PlayerConnection>;
   deck: Deck;
-  flop: Flop | null;
 
   // Player state
   ping: number | null;
@@ -48,43 +51,51 @@ export interface TStore extends State {
   playerId: string;
   pingIntervalId: NodeJS.Timeout | null;
   secretKey: string;
+
+  // Misc
+  viewFullHistory: boolean;
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
 
-export const initialState: TStore = {
-  // Shared state
-  tick: 0,
-  roomCode: "",
-  gameStatus: GameStatus.LOBBY,
-  players: [],
-  flopDisplay: null,
+export const initialState = () =>
+  cloneDeep({
+    // Shared state
+    tick: 0,
+    roomCode: "",
+    gameStatus: GameStatus.LOBBY,
+    players: [],
 
-  // Stock state
-  stocks: stocks.slice(0, NUM_STOCKS),
-  stockRollModifierMap: new Map(),
-  stockVolatilityModifierMap: new Map(),
+    // Stock state
+    stocks: stocks.slice(0, NUM_STOCKS),
+    stockRollModifierMap: new Map(),
+    stockVolatilityModifierMap: new Map(),
 
-  // Host state
-  isHost: false,
-  secretKeyPlayerIdMap: new Map(),
-  playerConnectionMap: new Map(),
-  deck: new Deck().shuffle(),
-  flop: null,
+    // Flop state
+    flop: new Flop(),
+    flopSetAt: 0,
+    retiredCard: new Card(),
 
-  // Player state
-  ping: null,
-  hostPeerId: "",
-  previousRoomCode: "",
-  playerId: "",
-  pingIntervalId: null,
-  secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
-};
+    // Host state
+    isHost: false,
+    secretKeyPlayerIdMap: new Map(),
+    playerConnectionMap: new Map(),
+    deck: new Deck().shuffle(),
+
+    // Player state
+    ping: null,
+    hostPeerId: "",
+    previousRoomCode: "",
+    playerId: "",
+    pingIntervalId: null,
+    secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
+
+    // Misc
+    viewFullHistory: false,
+  } as TStore);
 
 // Create store
-export const useStore = create<TStore>(
-  devtools(() => initialState, "Zustand Store")
-);
+export const useStore = create<TStore>(devtools(initialState, "Zustand Store"));
 
 // State configuration
 interface TStateConfig {
@@ -94,24 +105,27 @@ interface TStateConfig {
 }
 const defaultConfig: TStateConfig = {
   peerSync: false,
-  storeLocally: false,
+  storeLocally: true,
   storeLocallyIfHost: true,
 };
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
-  gameStatus: { peerSync: true },
+  gameStatus: { peerSync: true, storeLocally: false, storeLocallyIfHost: true },
   players: { peerSync: true },
   stocks: { peerSync: true },
-  flopDisplay: { peerSync: true },
+
+  // Flop state
+  flop: { peerSync: true },
+  flopSetAt: { peerSync: true },
+  retiredCard: { peerSync: true },
 
   // Host state
   isHost: { storeLocally: true },
   secretKeyPlayerIdMap: {},
   playerConnectionMap: {},
   deck: {},
-  flop: {},
   stockRollModifierMap: {},
   stockVolatilityModifierMap: {},
 
@@ -122,6 +136,9 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   playerId: { storeLocally: true },
   pingIntervalId: {},
   secretKey: { storeLocally: true },
+
+  // Misc
+  viewFullHistory: {},
 };
 export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,

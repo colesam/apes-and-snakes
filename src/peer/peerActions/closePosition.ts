@@ -4,9 +4,9 @@ import { TPeerAction } from "../types/TPeerAction";
 export const closePosition = (
   peerId: string,
   secretKey: string,
-  positionId: string
+  bundleId: string
 ) =>
   PeerConnectionManager.send(peerId, {
     action: TPeerAction.CLOSE_POSITION,
-    payload: { secretKey, positionId },
+    payload: { secretKey, bundleId },
   });

@@ -25,9 +25,21 @@ export class Deck extends ImmerClass {
     return this;
   }
 
-  // TODO: prevent duplicate cards
-  insert(cards: Card[]) {
-    this.cards.push(...cards);
+  /**
+   * Push cards back onto the deck. Will filter out any blank cards, or any
+   * cards that already exist in the deck.
+   */
+  push(cards: Card[]) {
+    this.cards.push(
+      ...cards.filter(card => {
+        return (
+          !card.isBlank &&
+          this.cards.findIndex(
+            deckCard => deckCard.toString() === card.toString()
+          ) < 0
+        );
+      })
+    );
     return this;
   }
 
@@ -49,6 +61,11 @@ export class Deck extends ImmerClass {
 
   draw(numCards: number): Card[] {
     return this.cards.splice(0, numCards);
+  }
+
+  drawOne(): Card {
+    const [card] = this.draw(1);
+    return card;
   }
 
   drawPair(): Pair {

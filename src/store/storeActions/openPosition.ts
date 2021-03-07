@@ -1,46 +1,30 @@
-import {
-  BUY_MODIFIER_TICK_LIFETIME,
-  BUY_ROLL_MODIFIER,
-  BUY_VOLATILITY_MODIFIER,
-} from "../../config";
-import { Position } from "../../core/stock/Position";
-import { RollModifier } from "../../core/stock/RollModifier";
-import { VolatilityModifier } from "../../core/stock/VolatilityModifier";
-import { StoreAction } from "../StoreAction";
+import { PositionBid, PositionBidType } from "../../core/stock/PositionBid";
+import { PositionBundle } from "../../core/stock/PositionBundle";
 import { StoreSelector } from "../StoreSelector";
 import { TStore } from "../store";
 
 export const openPosition = (
   playerId: string,
   stockTicker: string,
-  price: number,
   quantity: number
 ) => (s: TStore) => {
   const player = StoreSelector.getPlayer(playerId)(s);
 
   if (player) {
-    const position = new Position({
+    const positionBundle = new PositionBundle({
+      openedAtTick: s.tick,
       stockTicker,
-      quantity,
-      purchasePrice: price,
     });
 
-    player.positions.push(position);
-    player.cash -= position.initialValue;
+    const positionBid = new PositionBid({
+      stockTicker,
+      type: PositionBidType.BUY,
+      quantity,
+      playerId: player.id,
+      positionBundleId: positionBundle.id,
+    });
 
-    StoreAction.pushRollModifiers(stockTicker, [
-      new RollModifier({
-        value: BUY_ROLL_MODIFIER * quantity,
-        expirationTick: s.tick + BUY_MODIFIER_TICK_LIFETIME,
-        stackKey: "BUY",
-      }),
-    ])(s);
-
-    StoreAction.pushVolatilityModifiers(stockTicker, [
-      new VolatilityModifier({
-        value: BUY_VOLATILITY_MODIFIER * quantity,
-        expirationTick: s.tick + BUY_MODIFIER_TICK_LIFETIME + 20,
-      }),
-    ])(s);
+    player.pushBundle(positionBundle);
+    player.pushBid(positionBid);
   }
 };

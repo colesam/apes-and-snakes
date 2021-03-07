@@ -1,10 +1,5 @@
 import { groupBy } from "lodash";
-import {
-  FLOP_PREVIEW_POINT,
-  TICKS_PER_WEEK,
-  WEEKEND_END,
-  WEEKEND_START,
-} from "../config";
+import { TICKS_PER_WEEK, WEEKEND_END, WEEKEND_START } from "../config";
 import PeerError from "../peer/error/PeerError";
 import { RollModifier } from "./stock/RollModifier";
 
@@ -67,9 +62,9 @@ export const isWeekend = (tick: number) => {
   );
 };
 
-export const isFlopPreview = (tick: number) => {
+export const isStartOfWeek = (tick: number) => {
   const relativeTick = tick % TICKS_PER_WEEK;
-  return relativeTick === Math.floor(FLOP_PREVIEW_POINT * TICKS_PER_WEEK);
+  return relativeTick === 0;
 };
 
 export const isWeekendStart = (tick: number) => {

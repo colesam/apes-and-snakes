@@ -112,6 +112,12 @@ export default class PeerConnectionManager {
     PeerConnectionManager.peers = {};
   }
 
+  static removeConnection(peerId: string) {
+    if (this.peers[peerId]) {
+      delete this.peers[peerId];
+    }
+  }
+
   private static _establishConnection(peerId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!PeerConnectionManager.conn) {

@@ -5,20 +5,20 @@ import { incrementTick } from "./storeActions/incrementTick";
 import { openPosition } from "./storeActions/openPosition";
 import { pushRollModifiers } from "./storeActions/pushRollModifiers";
 import { pushVolatilityModifiers } from "./storeActions/pushVolatilityModifiers";
-import { runFlop } from "./storeActions/runFlop";
-import { runFlopPreview } from "./storeActions/runFlopPreview";
+import { rankStocks } from "./storeActions/rankStocks";
 import { runTicks } from "./storeActions/runTicks";
-import { runWeekReset } from "./storeActions/runWeekReset";
 import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
 import { setupGame } from "./storeActions/setupGame";
+import { shiftFlop } from "./storeActions/shiftFlop";
+import { updateStockBids } from "./storeActions/updateStockBids";
 
 export const StoreAction = {
+  updateStockBids,
+  rankStocks,
+  shiftFlop,
   openPosition,
   closePosition,
-  runWeekReset,
-  runFlop,
-  runFlopPreview,
   assignPairsToStocks,
   hostGame,
   incrementTick,

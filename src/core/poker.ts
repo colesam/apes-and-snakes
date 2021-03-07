@@ -10,6 +10,7 @@ export type SolvedHand = {
   cards: { value: string; suit: string }[];
   rank: number;
   descr: string;
+  name: string;
 };
 
 const getKey = (hand: SolvedHand) => {

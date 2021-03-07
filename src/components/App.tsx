@@ -1,8 +1,6 @@
 import React from "react";
-import { hot } from "react-hot-loader";
 import styled from "styled-components";
 import { Route } from "wouter";
-import { HMR_ENABLED } from "../config";
 import Host from "./pages/Host";
 import Join from "./pages/Join";
 import Lobby from "./pages/Lobby";
@@ -65,4 +63,4 @@ function App() {
   );
 }
 
-export default HMR_ENABLED ? hot(module)(App) : App;
+export default App;

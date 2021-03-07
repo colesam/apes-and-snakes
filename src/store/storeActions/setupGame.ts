@@ -4,18 +4,20 @@ import { initialState, TStore } from "../store";
 
 export const setupGame = (s: TStore) => {
   // Reset state
-  s.tick = initialState.tick;
-  s.stocks = initialState.stocks;
-  s.flopDisplay = null;
-  s.flop = null;
-  s.stockVolatilityModifierMap = initialState.stockVolatilityModifierMap;
-  s.stockRollModifierMap = initialState.stockRollModifierMap;
+  const init = initialState();
+  s.tick = init.tick;
+  s.stocks = init.stocks;
+  s.stockVolatilityModifierMap = init.stockVolatilityModifierMap;
+  s.stockRollModifierMap = init.stockRollModifierMap;
 
   for (let player of s.players) {
-    player.positions = [];
-    player.cash = 1_000_000;
+    player.positionBids = [];
+    player.positionBundles = new Map();
+    player.cash = 5_000_000;
   }
 
   StoreAction.assignPairsToStocks(s);
+  s.flop = s.deck.drawFlop();
+
   StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK)(s);
 };

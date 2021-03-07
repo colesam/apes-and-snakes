@@ -19,6 +19,10 @@ export class Card extends ImmerClass {
     this.suit = suit;
   }
 
+  get isBlank() {
+    return this.rank === Rank.X || this.suit === Suit.X;
+  }
+
   toString() {
     return this.rank + this.suit;
   }
