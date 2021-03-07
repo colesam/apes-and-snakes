@@ -1,15 +1,8 @@
 import {
   Text,
   Box,
-  Button,
   Flex,
-  Table,
-  Tr,
-  Thead,
   VStack,
-  Tbody,
-  Td,
-  Th,
   RadioGroup,
   Radio,
   HStack,
@@ -24,8 +17,8 @@ import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import FlopDisplay from "../render/FlopDisplay";
-import PercentChange from "../render/PercentChange";
 import StockBox from "../render/StockBox";
+import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
@@ -138,59 +131,13 @@ function Play() {
             <strong>Player Cash:</strong> {formatCurrency(player.cash)}
           </Text>
 
-          <Table variant="simple" size={"sm"} bg={"white"}>
-            <Thead>
-              <Tr>
-                <Th w={100}>Stock</Th>
-                <Th w={100}>Qty</Th>
-                <Th w={"20%"}>Orig Value</Th>
-                <Th w={"20%"}>Curr Value</Th>
-                <Th>% Change</Th>
-                {viewPlayerId === playerId && <Th w={100}></Th>}
-              </Tr>
-            </Thead>
-            <Tbody>
-              {player.positions
-                .filter(pos => !pos.isClosed)
-                .map(pos => (
-                  <Tr key={pos.id} data-position-id={pos.id}>
-                    <Td fontWeight={"bold"}>${pos.stockTicker}</Td>
-                    <Td>{pos.quantity / 1000}K</Td>
-                    <Td>{formatCurrency(pos.quantity * pos.purchasePrice)}</Td>
-                    <Td>
-                      {formatCurrency(
-                        pos.quantity * stockPriceMap[pos.stockTicker]
-                      )}
-                    </Td>
-                    <Td>
-                      <PercentChange
-                        start={pos.purchasePrice}
-                        end={stockPriceMap[pos.stockTicker]}
-                      />
-                    </Td>
-                    {viewPlayerId === playerId && (
-                      <Td>
-                        <Button
-                          size={"xs"}
-                          colorScheme={"red"}
-                          w={"100%"}
-                          disabled={isWeekend(tick)}
-                          onClick={() =>
-                            PeerAction.closePosition(
-                              hostPeerId,
-                              secretKey,
-                              pos.id
-                            )
-                          }
-                        >
-                          SELL
-                        </Button>
-                      </Td>
-                    )}
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
+          <PositionsTable
+            player={player}
+            isOwnPlayer={viewPlayerId === playerId}
+            stockPriceMap={stockPriceMap}
+            isWeekend={isWeekend(tick)}
+            onSell={() => console.log("selling!")}
+          />
         </VStack>
         <Box
           position={"absolute"}

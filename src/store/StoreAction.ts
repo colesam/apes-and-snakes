@@ -11,8 +11,10 @@ import { setPlayerState } from "./storeActions/setPlayerState";
 import { setRoomCode } from "./storeActions/setRoomCode";
 import { setupGame } from "./storeActions/setupGame";
 import { shiftFlop } from "./storeActions/shiftFlop";
+import { updateStockBids } from "./storeActions/updateStockBids";
 
 export const StoreAction = {
+  updateStockBids,
   rankStocks,
   shiftFlop,
   openPosition,

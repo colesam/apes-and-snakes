@@ -22,13 +22,23 @@ const runSingleTick = (tick: number) => (s: TStore) => {
   expireModifiers(s.stockVolatilityModifierMap, tick);
   expireModifiers(s.stockRollModifierMap, tick);
 
-  s.stocks = s.stocks.map(stock =>
+  for (const stock of s.stocks) {
     tickPrice(
       stock,
       s.stockVolatilityModifierMap.get(stock.ticker) || [],
       s.stockRollModifierMap.get(stock.ticker) || []
-    )
-  );
+    );
+
+    // Update volume
+    if (
+      stock.hasBuySqueeze ||
+      (stock.buyVolume < 15_000 && Math.random() < 0.1)
+    ) {
+      stock.buyVolume += 1_000;
+    }
+  }
+
+  StoreAction.updateStockBids(s);
 
   // Updates at specific points of the week
   if (isStartOfWeek(tick)) {

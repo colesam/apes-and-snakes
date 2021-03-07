@@ -14,12 +14,10 @@ function roll(rolls: number[]) {
 
 const nextPrice = (
   currentPrice: number,
-  additionalRolls: number[],
+  rollPool: number[],
   volatilityMod: number
 ): number => {
   const volatility = volatilityMod + GENERAL_FLUCTUATION_MAX;
-
-  const rollPool = [-1, 1, ...additionalRolls];
 
   const mult = currentPrice > STOCK_PRICE_FLOOR ? roll(rollPool) : 1;
 
@@ -32,16 +30,18 @@ export const tickPrice = (
   stock: Stock,
   volMods: VolatilityModifier[],
   rollMods: RollModifier[]
-): Stock => {
-  const additionalRolls = [
-    ...stock.handBonus,
-    ...RANK_ROLLS[stock.rank],
-    ...rollMods.map(m => m.value),
-  ];
+): void => {
+  const rollPool = stock.hasBuySqueeze
+    ? [3]
+    : [
+        -1,
+        1,
+        ...stock.handBonus,
+        ...RANK_ROLLS[stock.rank],
+        ...rollMods.map(m => m.value),
+      ];
+
   const volatilityModSum = volMods.reduce((a, b) => a + b.value, 0);
-  return stock.set(s => {
-    s.priceHistory.push(
-      nextPrice(stock.price, additionalRolls, volatilityModSum)
-    );
-  });
+
+  stock.priceHistory.push(nextPrice(stock.price, rollPool, volatilityModSum));
 };

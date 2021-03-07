@@ -3,7 +3,6 @@ import generateId from "../generateId";
 
 interface TParams {
   id: string;
-  stockTicker: string;
   quantity: number;
   purchasePrice: number;
   isClosed: boolean;
@@ -13,7 +12,6 @@ export class Position extends ImmerClass {
   protected readonly __class = "Position";
 
   public id;
-  public stockTicker;
   public quantity;
   public purchasePrice;
   public isClosed;
@@ -21,7 +19,6 @@ export class Position extends ImmerClass {
   constructor(
     {
       id = generateId(),
-      stockTicker = "",
       quantity = 0,
       purchasePrice = 0,
       isClosed = false,
@@ -29,7 +26,6 @@ export class Position extends ImmerClass {
   ) {
     super();
     this.id = id;
-    this.stockTicker = stockTicker;
     this.quantity = quantity;
     this.purchasePrice = purchasePrice;
     this.isClosed = isClosed;
@@ -37,6 +33,10 @@ export class Position extends ImmerClass {
 
   get initialValue() {
     return this.quantity * this.purchasePrice;
+  }
+
+  currentValue(currentPrice: number) {
+    return this.quantity * currentPrice;
   }
 
   close() {

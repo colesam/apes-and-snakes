@@ -12,6 +12,8 @@ interface TParams {
   pair: Pair;
   pairIsNew: boolean;
   handDescr: string;
+  buyVolume: number;
+  sellVolume: number;
 }
 
 export class Stock extends ImmerClass {
@@ -24,6 +26,8 @@ export class Stock extends ImmerClass {
   public pair;
   public pairIsNew;
   public handDescr;
+  public buyVolume;
+  public sellVolume;
 
   constructor(
     {
@@ -34,6 +38,8 @@ export class Stock extends ImmerClass {
       pair = new Pair(),
       pairIsNew = false,
       handDescr = "",
+      buyVolume = 10_000,
+      sellVolume = 10_000,
     } = {} as Partial<TParams>
   ) {
     super();
@@ -44,6 +50,8 @@ export class Stock extends ImmerClass {
     this.pair = pair;
     this.pairIsNew = pairIsNew;
     this.handDescr = handDescr;
+    this.buyVolume = buyVolume;
+    this.sellVolume = sellVolume;
   }
 
   get handBonus() {
@@ -56,5 +64,13 @@ export class Stock extends ImmerClass {
 
   get rank() {
     return last(this.rankHistory) || 1;
+  }
+
+  get hasBuySqueeze() {
+    return this.buyVolume < 1_000;
+  }
+
+  get hasShortSqueeze() {
+    return this.buyVolume < 1_000;
   }
 }

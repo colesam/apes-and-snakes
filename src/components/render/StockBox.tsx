@@ -18,6 +18,7 @@ import { useStore } from "../../store/store";
 import CardStack from "./CardStack";
 import PercentChange from "./PercentChange";
 import StockGraph from "./StockGraph";
+import Volume from "./stock/Volume";
 
 interface PropTypes {
   stock: Stock;
@@ -80,6 +81,7 @@ function StockBox({
       spacing={4}
       align={"stretch"}
     >
+      {/* General info section */}
       <Flex justify={"space-between"} position={"relative"}>
         <Box>
           <HStack spacing={3} fontWeight={"semibold"} fontSize={"xl"}>
@@ -131,11 +133,34 @@ function StockBox({
           right={"0"}
         />
       </Flex>
+
       <Divider />
+
+      {/* Volume section */}
+      <Flex justify="space-between">
+        <Box w="48%">
+          <Text fontWeight="bold" fontSize="sm">
+            Buy Volume:
+          </Text>
+          <Volume volume={stock.buyVolume} />
+        </Box>
+        <Box w="48%">
+          <Text fontWeight="bold" fontSize="sm">
+            Sell Volume:
+          </Text>
+          <Volume volume={stock.sellVolume} />
+        </Box>
+      </Flex>
+
+      <Divider />
+
+      {/* Stock graph section */}
       <StockGraph
         priceHistory={slicedPriceHistory}
         viewFullHistory={viewFullHistory}
       />
+
+      {/* Purchase buttons section */}
       {buyBtns && (
         <>
           <Divider />

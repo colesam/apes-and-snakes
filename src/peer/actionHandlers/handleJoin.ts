@@ -1,5 +1,4 @@
 import generateId from "../../core/generateId";
-import { ConnectionStatus } from "../../core/player/ConnectionStatus";
 import { Player } from "../../core/player/Player";
 import { PlayerConnection } from "../../core/player/PlayerConnection";
 import { getStore, setStore } from "../../store/store";
@@ -18,8 +17,6 @@ const handleJoin = ({ payload, respond, error }: TActionHandlerProps) => {
   const newPlayer = new Player({
     id: playerId,
     name: payload.playerName,
-    connectionStatus: ConnectionStatus.CONNECTED,
-    positions: [],
   });
 
   setStore(s => {

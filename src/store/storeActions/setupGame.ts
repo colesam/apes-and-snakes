@@ -1,16 +1,19 @@
+import { cloneDeep } from "lodash";
 import { SIM_WEEKS, TICKS_PER_WEEK } from "../../config";
 import { StoreAction } from "../StoreAction";
 import { initialState, TStore } from "../store";
 
 export const setupGame = (s: TStore) => {
   // Reset state
-  s.tick = initialState.tick;
-  s.stocks = initialState.stocks;
-  s.stockVolatilityModifierMap = initialState.stockVolatilityModifierMap;
-  s.stockRollModifierMap = initialState.stockRollModifierMap;
+  const init = cloneDeep(initialState);
+  s.tick = init.tick;
+  s.stocks = init.stocks;
+  s.stockVolatilityModifierMap = init.stockVolatilityModifierMap;
+  s.stockRollModifierMap = init.stockRollModifierMap;
 
   for (let player of s.players) {
-    player.positions = [];
+    player.positionBids = [];
+    player.positionBundles = new Map();
     player.cash = 1_000_000;
   }
 

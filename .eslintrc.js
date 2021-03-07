@@ -10,6 +10,7 @@ module.exports = {
     "react/jsx-pascal-case": "off",
     "react-hooks/exhaustive-deps": "off",
     "unused-imports/no-unused-imports": "error",
+    "import/no-named-as-default": "off",
     "import/order": [
       "error",
       {
