@@ -12,7 +12,7 @@ export const HMR_ENABLED = true;
 // Game config
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 1000;
+export const TICK_SPEED = 1300;
 
 export const STOCK_PRICE_FLOOR = 10;
 
