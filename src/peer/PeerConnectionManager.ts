@@ -1,5 +1,6 @@
 import Peer, { DataConnection } from "peerjs";
 import { PEER_DEV_SERVER, USE_PEER_DEV_SERVER } from "../config";
+import { logDebug, logError } from "../util/log";
 import MessageHandler from "./MessageHandler";
 import PeerError from "./error/PeerError";
 import TimeoutError, { TIMEOUT_ERROR } from "./error/TimeoutError";
@@ -53,9 +54,7 @@ export default class PeerConnectionManager {
 
     // Chrome bug causes connections to never trigger correctly, attempt 3 times.
     while (true) {
-      console.log(
-        `[DEBUG] Establishing connection to ${peerId}. Attempt ${attempt}/3.`
-      );
+      logDebug(`Establishing connection to ${peerId}. Attempt ${attempt}/3.`);
 
       try {
         await PeerConnectionManager._establishConnection(peerId);
@@ -78,8 +77,8 @@ export default class PeerConnectionManager {
     const peerConn = PeerConnectionManager.peers[peerId];
 
     if (!peerConn) {
-      console.log(`[DEBUG] PeerConnectionManager.peers`);
-      console.log(PeerConnectionManager.peers);
+      logError(`Failed to send message to ${peerId}, no connection exists.`);
+      logDebug("PeerConnectionManager.peers", PeerConnectionManager.peers);
       throw new Error(
         `Cannot send message to ${peerId}, no connection exists.`
       );
@@ -134,7 +133,7 @@ export default class PeerConnectionManager {
         clearTimeout(timeoutId);
 
         if (!PeerConnectionManager.peers.hasOwnProperty(peerId)) {
-          console.log(`[DEBUG] Peer connection opened to: ${peerId}`);
+          logDebug(`Peer connection opened to ${peerId}`);
 
           peerConn.on("data", data =>
             PeerConnectionManager._handleReceiveData(peerConn, data)
@@ -193,7 +192,7 @@ export default class PeerConnectionManager {
   }
 
   private static _handleReceiveConnection(conn: DataConnection) {
-    console.log(`[DEBUG] New connection from peer ${conn.peer}`);
+    logDebug(`New connection from peer ${conn.peer}`);
 
     PeerConnectionManager.peers[conn.peer] = conn;
 

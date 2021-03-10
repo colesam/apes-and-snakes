@@ -17,6 +17,7 @@ import PeerConnectionManager from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
+import { logDebug } from "../../util/log";
 import FlopDisplay from "../render/FlopDisplay";
 import StockBox from "../render/StockBox";
 import BidsTable from "../render/tables/BidsTable";
@@ -24,7 +25,7 @@ import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
-  console.log(`[DEBUG] Attempting to reconnect to room ${roomCode}`);
+  logDebug(`Attempting to reconnect to room ${roomCode}`);
   const hostId = `${NAMESPACE} ${roomCode}`;
   const peerId = `${hostId} ${generateId()}`;
   await PeerConnectionManager.register(peerId);
@@ -55,8 +56,12 @@ function Play() {
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
 
   useEffect(() => {
+    logDebug(`Play.tsx initial load`);
+  }, []);
+
+  useEffect(() => {
     if (!PeerConnectionManager.peerId) {
-      console.log("[DEBUG] Attempting to reconnect to host");
+      logDebug("Attempting to reconnect to host");
       attemptReconnectToHost(previousRoomCode, secretKey);
     }
   }, [gameStatus]);

@@ -15,8 +15,6 @@ export const runTicks = (numTicks: number) => (s: TStore) => {
   s.tick = initialTick + numTicks;
 };
 
-let flop = 0;
-
 const runSingleTick = (tick: number) => (s: TStore) => {
   // Updates that run every tick
   expireModifiers(s.stockVolatilityModifierMap, tick);
@@ -68,8 +66,6 @@ const runSingleTick = (tick: number) => (s: TStore) => {
   } else {
     if (tick - s.flopSetAt > 10 && Math.random() < FLOP_SHIFT_CHANCE) {
       // 50% chance per week of extra flop shift
-      flop++;
-      console.log(`Flipping flop #${flop}`);
       StoreAction.shiftFlop(s);
     }
   }

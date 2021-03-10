@@ -1,4 +1,5 @@
 import { Alert, Spinner, Text } from "@chakra-ui/react";
+import LogRocket from "logrocket";
 import React, { useEffect } from "react";
 import { Redirect } from "wouter";
 import { NAMESPACE } from "../../config";
@@ -17,6 +18,9 @@ function Host() {
     const newRoomCode = generateRoomCode();
     PeerConnectionManager.register(`${NAMESPACE} ${newRoomCode}`)
       .then(() => {
+        if (process.env.REACT_APP_LOG_ROCKET_ENABLED === "true") {
+          LogRocket.identify("host", { name: "host" });
+        }
         setStore(StoreAction.hostGame(newRoomCode));
       })
       .catch(err => console.error(err));

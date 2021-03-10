@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
+import { logDebug } from "../../util/log";
 import FlopDisplay from "../render/FlopDisplay";
 import StockBox from "../render/StockBox";
 import CommandBar from "../smart/CommandBar";
@@ -24,7 +25,7 @@ function Spectate() {
       setStore(StoreAction.setupGame);
     }
 
-    console.log("[DEBUG] Starting new game interval");
+    logDebug("Starting new game interval");
     id = setInterval(() => {
       const { tick } = getStore();
       if (
@@ -36,7 +37,7 @@ function Spectate() {
     }, TICK_SPEED);
 
     return () => {
-      console.log("[DEBUG] Clearing interval!");
+      logDebug("Clearing interval");
       if (id) clearInterval(id);
     };
   }, []);

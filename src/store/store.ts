@@ -15,6 +15,7 @@ import { RollModifier } from "../core/stock/RollModifier";
 import { Stock } from "../core/stock/Stock";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 import { PeerAction } from "../peer/PeerAction";
+import { logDebug } from "../util/log";
 import { StoreSelector } from "./StoreSelector";
 import { devtools } from "./middleware/devtools";
 import { stocks } from "./mockData/stocks";
@@ -158,7 +159,7 @@ export const resetStore = () => setStore(initialState);
 
 // Initialize state from local storage
 const setStoreFromStorage = () => {
-  console.log("[DEBUG] Loading from local storage!");
+  logDebug("Loading store state from local storage");
   const initialStorageState: any = {};
   for (const key in initialState) {
     const val = storageGet(key);

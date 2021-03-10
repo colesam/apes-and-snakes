@@ -1,13 +1,23 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { enableMapSet, setAutoFreeze } from "immer";
+import LogRocket from "logrocket";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { logDebug } from "./util/log";
+
+const { REACT_APP_LOG_ROCKET_ENABLED, REACT_APP_LOG_ROCKET_KEY } = process.env;
 
 enableMapSet();
 setAutoFreeze(false);
+
+if (REACT_APP_LOG_ROCKET_ENABLED === "true") {
+  logDebug("Enabled LogRocket logging.");
+  // @ts-ignore
+  LogRocket.init(REACT_APP_LOG_ROCKET_KEY);
+}
 
 ReactDOM.render(
   <ChakraProvider>

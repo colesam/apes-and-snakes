@@ -1,3 +1,4 @@
+import LogRocket from "logrocket";
 import React, { useState } from "react";
 import { useLocation } from "wouter";
 import shallow from "zustand/shallow";
@@ -37,6 +38,9 @@ function Join() {
         errorLog(e);
       }
 
+      if (process.env.REACT_APP_LOG_ROCKET_ENABLED === "true") {
+        LogRocket.identify(name, { name });
+      }
       setStore(s => {
         s.hostPeerId = hostPID;
       });

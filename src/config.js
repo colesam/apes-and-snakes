@@ -1,11 +1,11 @@
 export const NAMESPACE = "sfqxWNtbOKrs45NDDZRvOaP4vAApMTc1";
 export const DEBUG = true;
 export const AUTO_RECONNECT = true;
-export const USE_PEER_DEV_SERVER = false;
+export const USE_PEER_DEV_SERVER = true;
 export const PEER_DEV_SERVER = {
-  host: "localhost",
-  port: 9000,
-  path: "/",
+  host: "peerjs-server.herokuapp.com",
+  port: 443,
+  secure: true,
 };
 export const HMR_ENABLED = true;
 

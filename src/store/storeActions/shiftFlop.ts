@@ -1,3 +1,4 @@
+import { logDebug } from "../../util/log";
 import { StoreAction } from "../StoreAction";
 import { TStore } from "../store";
 
@@ -10,7 +11,7 @@ export const shiftFlop = (s: TStore) => {
   }
 
   // Update flop
-  console.log("[DEBUG] Updating flop");
+  logDebug("Updating the flop");
   s.deck.push([s.retiredCard]);
   s.retiredCard = s.flop.push(s.deck.shuffle().drawOne());
   s.flopSetAt = s.tick;

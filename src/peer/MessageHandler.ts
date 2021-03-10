@@ -1,6 +1,8 @@
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
+import { lengthInUtf8Bytes } from "../core/helpers";
 import { serialize, deserialize, classMap } from "../core/serialize";
+import { logDebug, logError } from "../util/log";
 import TimeoutError from "./error/TimeoutError";
 
 export default class MessageHandler {
@@ -15,11 +17,9 @@ export default class MessageHandler {
       try {
         conn.send(serialize({ messageId: messageId, ...payload }));
       } catch (e) {
-        console.log(`[DEBUG] Message failed to send!`);
-        console.log("-- payload --");
-        console.log(payload);
-        console.log("-- conn.peer --");
-        console.log(conn.peer);
+        logError("Message failed to send.");
+        logDebug("-- payload --", payload);
+        logDebug("-- conn.peer --", conn.peer);
         throw e;
       }
 
@@ -34,6 +34,7 @@ export default class MessageHandler {
   }
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
+    logDebug(`Received message of size ${lengthInUtf8Bytes(data) / 1000}kb`);
     const message = deserialize(data, classMap);
 
     if (message.messageId) {
