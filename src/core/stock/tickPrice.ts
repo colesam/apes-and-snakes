@@ -23,7 +23,9 @@ const nextPrice = (
 
   const percentChange = random(0, volatility, true) * mult;
 
-  return currentPrice + currentPrice * percentChange;
+  const nextPrice = currentPrice + currentPrice * percentChange;
+
+  return Math.round(nextPrice * 1000) / 1000;
 };
 
 export const tickPrice = (
