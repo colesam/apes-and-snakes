@@ -1,4 +1,5 @@
-import { broadcastShared } from "./peerActions/broadcastShared";
+import { broadcastPatches } from "./peerActions/broadcastPatches";
+import { broadcastState } from "./peerActions/broadcastState";
 import { closePosition } from "./peerActions/closePosition";
 import { endGame } from "./peerActions/endGame";
 import { join } from "./peerActions/join";
@@ -10,7 +11,8 @@ import { reconnect } from "./peerActions/reconnect";
 import { startGame } from "./peerActions/startGame";
 
 export const PeerAction = {
-  broadcastShared,
+  broadcastPatches,
+  broadcastState,
   closePosition,
   startGame,
   endGame,

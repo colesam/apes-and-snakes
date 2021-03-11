@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import { applyPatches, Patch, produce } from "immer";
 import { cloneDeep, isFunction } from "lodash";
 import create, { State } from "zustand";
 import { NUM_STOCKS } from "../config";
@@ -150,12 +150,42 @@ export const getStateConfig = (key: TStoreKey): TStateConfig => ({
 export const getStore = useStore.getState;
 export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
   if (isFunction(update)) {
-    useStore.setState(s => produce(s, update));
+    useStore.setState(s => {
+      if (s.isHost) {
+        return produce(s, update, patches => {
+          peerSyncPatches(patches);
+        });
+      } else {
+        return produce(s, update);
+      }
+    });
   } else {
+    const { isHost } = getStore();
     useStore.setState(update);
+    if (isHost) {
+      peerSyncState(update);
+    }
   }
 };
 export const resetStore = () => setStore(initialState);
+
+export const applyPatchesToStore = (patches: Patch[]) => {
+  setStore(applyPatches(getStore(), patches));
+};
+
+const peerSyncState = (stateChanges: Partial<TStore>) => {
+  const peerSyncedChanges = StoreSelector.syncedState(stateChanges);
+  if (Object.keys(peerSyncedChanges).length) {
+    PeerAction.broadcastState(peerSyncedChanges);
+  }
+};
+
+const peerSyncPatches = (patches: Patch[]) => {
+  const peerSyncedPatches = patches.filter(
+    patch => getStateConfig(patch.path[0]).peerSync
+  );
+  PeerAction.broadcastPatches(peerSyncedPatches);
+};
 
 // Initialize state from local storage
 const setStoreFromStorage = () => {
@@ -180,17 +210,6 @@ useStore.subscribe((newState, oldState) => {
     const { storeLocally, storeLocallyIfHost } = getStateConfig(key);
     if (storeLocally || (oldState.isHost && storeLocallyIfHost)) {
       storageSet(key, value);
-    }
-  }
-});
-
-// Automatically emit changes to all peers, if hosting
-useStore.subscribe((newState, oldState) => {
-  if (oldState.isHost) {
-    const stateChanges = diff(newState, oldState);
-    const peerSyncedChanges = StoreSelector.syncedState(stateChanges);
-    if (Object.keys(peerSyncedChanges).length) {
-      PeerAction.broadcastShared(peerSyncedChanges);
     }
   }
 });

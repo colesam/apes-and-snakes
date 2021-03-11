@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
 import Peer from "peerjs";
-import { lengthInUtf8Bytes } from "../core/helpers";
+import { lengthInKb } from "../core/helpers";
 import { serialize, deserialize, classMap } from "../core/serialize";
-import { logDebug, logError } from "../util/log";
+import { logDebug, logError, logWarning } from "../util/log";
 import TimeoutError from "./error/TimeoutError";
 
 export default class MessageHandler {
@@ -34,7 +34,12 @@ export default class MessageHandler {
   }
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
-    logDebug(`Received message of size ${lengthInUtf8Bytes(data) / 1000}kb`);
+    const len = lengthInKb(data);
+    logDebug(`Received message of size ${len}kb`);
+    if (len > 5) {
+      logWarning(`Message was > 5kb`, data);
+    }
+
     const message = deserialize(data, classMap);
 
     if (message.messageId) {

@@ -1,9 +1,9 @@
-import { TStore } from "../../store/store";
+import { Patch } from "immer";
 import PeerConnectionManager from "../PeerConnectionManager";
 import { TPeerAction } from "../types/TPeerAction";
 
-export const broadcastShared = (data: Partial<TStore>) =>
+export const broadcastPatches = (data: Patch[]) =>
   PeerConnectionManager.broadcast({
-    action: TPeerAction.PUSH_DATA,
+    action: TPeerAction.PUSH_PATCH,
     payload: data,
   });

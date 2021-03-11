@@ -4,5 +4,7 @@ import { PeerAction } from "../PeerAction";
 
 export const startGame = () => {
   PeerAction.startGame();
-  setStore({ gameStatus: GameStatus.IN_GAME });
+  setStore(s => {
+    s.gameStatus = GameStatus.IN_GAME;
+  });
 };

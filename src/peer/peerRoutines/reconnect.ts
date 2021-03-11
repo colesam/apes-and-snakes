@@ -4,7 +4,11 @@ import { PeerRoutine } from "../PeerRoutine";
 
 export const reconnect = async (hostPeerId: string, secretKey: string) => {
   const { playerId } = await PeerAction.reconnect(hostPeerId, secretKey);
-  setStore({ playerId, hostPeerId });
+
+  setStore(s => {
+    s.playerId = playerId;
+    s.hostPeerId = hostPeerId;
+  });
 
   PeerRoutine.establishPing(hostPeerId);
   await PeerRoutine.pullData(hostPeerId);

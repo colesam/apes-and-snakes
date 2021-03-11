@@ -1,5 +1,5 @@
 import { StoreSelector } from "../store/StoreSelector";
-import { getStore, setStore } from "../store/store";
+import { applyPatchesToStore, getStore, setStore } from "../store/store";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -39,6 +39,13 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
 
   [TPeerAction.PUSH_DATA]: ({ payload, respond }) => {
     setStore(payload);
+    respond();
+  },
+
+  [TPeerAction.PUSH_PATCH]: ({ payload, respond }) => {
+    console.log("[DEBUG] Received patches");
+    console.log(payload);
+    applyPatchesToStore(payload);
     respond();
   },
 };
