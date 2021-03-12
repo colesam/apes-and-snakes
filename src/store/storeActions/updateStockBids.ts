@@ -5,11 +5,9 @@ import { PositionBidType } from "../../core/stock/PositionBid";
 import { Stock } from "../../core/stock/Stock";
 import { TStore } from "../store";
 
-export const updateStockBids = (s: TStore) => {
-  for (const stock of s.stocks) {
-    updateBuys(stock)(s);
-    updateSells(stock)(s);
-  }
+export const updateStockBids = (stock: Stock) => (s: TStore) => {
+  updateBuys(stock)(s);
+  updateSells(stock)(s);
 };
 
 const updateSells = (stock: Stock) => (s: TStore) => {

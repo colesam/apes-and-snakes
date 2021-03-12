@@ -59,4 +59,7 @@ export const NUM_STOCKS = 6;
 export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];
 
 export const DRAW_PAIR_CHANCE = 0.15;
-export const FLOP_SHIFT_CHANCE = 2 / TICKS_PER_WEEK;
+export const FLOP_SHIFT_CHANCE = 2.5 / TICKS_PER_WEEK;
+export const FLOP_SHIFT_COOLDOWN = TICKS_PER_WEEK / 2;
+
+export const PLAYER_CASH_GROWTH_RATE = 0.05; // 5%
