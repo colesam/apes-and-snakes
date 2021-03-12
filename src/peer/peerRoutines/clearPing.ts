@@ -4,6 +4,8 @@ export const clearPing = () => {
   const { pingIntervalId } = getStore();
   if (pingIntervalId) {
     clearInterval(pingIntervalId);
-    setStore({ pingIntervalId: null });
+    setStore(s => {
+      s.pingIntervalId = null;
+    });
   }
 };

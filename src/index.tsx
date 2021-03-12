@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { enableMapSet, setAutoFreeze } from "immer";
+import { enableMapSet, enablePatches, setAutoFreeze } from "immer";
 import LogRocket from "logrocket";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -10,6 +10,7 @@ import { logDebug } from "./util/log";
 
 const { REACT_APP_LOG_ROCKET_ENABLED, REACT_APP_LOG_ROCKET_KEY } = process.env;
 
+enablePatches();
 enableMapSet();
 setAutoFreeze(false);
 

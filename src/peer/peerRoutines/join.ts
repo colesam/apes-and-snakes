@@ -9,7 +9,12 @@ export const join = async (
   name: string
 ) => {
   const { playerId } = await PeerAction.join(hostPeerId, secretKey, name);
-  setStore({ playerId, hostPeerId, previousRoomCode: roomCode });
+
+  setStore(s => {
+    s.playerId = playerId;
+    s.hostPeerId = hostPeerId;
+    s.previousRoomCode = roomCode;
+  });
 
   PeerRoutine.establishPing(hostPeerId);
   await PeerRoutine.pullData(hostPeerId);

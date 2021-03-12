@@ -11,9 +11,13 @@ export const establishPing = (hostPeerId: string) => {
     PeerAction.ping(hostPeerId, secretKey, playerId).then(() => {
       const ping = new Date().getTime() - start;
       logDebug(`Ping is ${ping}ms`);
-      setStore({ ping });
+      setStore(s => {
+        s.ping = ping;
+      });
     });
   }, PING_INTERVAL);
 
-  setStore({ pingIntervalId });
+  setStore(s => {
+    s.pingIntervalId = pingIntervalId;
+  });
 };

@@ -1,4 +1,9 @@
-import { DRAW_PAIR_CHANCE, FLOP_SHIFT_CHANCE } from "../../config";
+import {
+  DRAW_PAIR_CHANCE,
+  FLOP_SHIFT_CHANCE,
+  FLOP_SHIFT_COOLDOWN,
+  PLAYER_CASH_GROWTH_RATE,
+} from "../../config";
 import { isStartOfWeek } from "../../core/helpers";
 import { tickPrice } from "../../core/stock/tickPrice";
 import { StoreAction } from "../StoreAction";
@@ -41,14 +46,14 @@ const runSingleTick = (tick: number) => (s: TStore) => {
     ) {
       stock.sellVolume += 1_000;
     }
-  }
 
-  StoreAction.updateStockBids(s);
+    StoreAction.updateStockBids(stock)(s);
+  }
 
   // Updates at specific points of the week
   if (isStartOfWeek(tick)) {
     for (const stock of s.stocks) {
-      // Each card has 10% chance of getting new cards
+      // NOTE: Keep this loop separate so it doesn't affect prices mid tick
       if (Math.random() < DRAW_PAIR_CHANCE) {
         s.deck.push(stock.pair.cards).shuffle();
         stock.pair = s.deck.drawPair();
@@ -60,14 +65,16 @@ const runSingleTick = (tick: number) => (s: TStore) => {
     StoreAction.rankStocks(s);
     if (tick > 0) {
       for (const player of s.players) {
-        player.cash += player.cash * 0.03;
+        player.cash += player.cash * PLAYER_CASH_GROWTH_RATE;
       }
     }
-  } else {
-    if (tick - s.flopSetAt > 10 && Math.random() < FLOP_SHIFT_CHANCE) {
-      // 50% chance per week of extra flop shift
-      StoreAction.shiftFlop(s);
-    }
+  }
+
+  if (
+    tick - s.flopSetAt > FLOP_SHIFT_COOLDOWN &&
+    Math.random() < FLOP_SHIFT_CHANCE
+  ) {
+    StoreAction.shiftFlop(s);
   }
 };
 

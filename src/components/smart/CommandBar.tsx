@@ -42,7 +42,11 @@ function CommandBar() {
     >
       <Button
         size="sm"
-        onClick={() => setStore({ viewFullHistory: !viewFullHistory })}
+        onClick={() =>
+          setStore(s => {
+            s.viewFullHistory = !viewFullHistory;
+          })
+        }
       >
         {viewFullHistory ? "Viewing Full History" : "Viewing This Week"}
       </Button>
