@@ -4,7 +4,7 @@ import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
-import { logDebug } from "../../util/log";
+import { logDebug, logWarning } from "../../util/log";
 import CommandBar from "../smart/CommandBar";
 import FlopDisplay from "../smart/FlopDisplay";
 import StockBox from "../smart/StockBox";
@@ -32,7 +32,14 @@ function Spectate() {
         (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
         tick <= NUM_WEEKS * TICKS_PER_WEEK
       ) {
+        const start = new Date().getTime();
+
         setStore(StoreAction.runTicks(1));
+
+        const tickTime = new Date().getTime() - start;
+        if (tickTime > 100) {
+          logWarning(`Tick took ${tickTime}ms.`);
+        }
       }
     }, TICK_SPEED);
 

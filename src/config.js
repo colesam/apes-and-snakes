@@ -48,7 +48,7 @@ export const SIM_WEEKS = WEEK_MIDDLE;
 
 export const NUM_STOCKS = 6;
 
-export const PURCHASE_QUANTITIES = [1_000, 5_000, 10_000];
+export const PURCHASE_QUANTITIES = [5_000, 10_000, 20_000];
 
 export const DRAW_PAIR_CHANCE = 0.15;
 export const FLOP_SHIFT_CHANCE = 2.5 / TICKS_PER_WEEK;

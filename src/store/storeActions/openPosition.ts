@@ -11,20 +11,38 @@ export const openPosition = (
   const player = StoreSelector.getPlayer(playerId)(s);
 
   if (player) {
-    const positionBundle = new PositionBundle({
-      openedAtTick: s.tick,
-      stockTicker,
-    });
+    // See if existing bid for stock exists
+    const existingBid = player.positionBids.find(
+      bid => bid.stockTicker === stockTicker
+    );
 
-    const positionBid = new PositionBid({
-      stockTicker,
-      type: PositionBidType.BUY,
-      quantity,
-      playerId: player.id,
-      positionBundleId: positionBundle.id,
-    });
+    let existingBundle;
+    if (existingBid) {
+      existingBundle = player.positionBundleList.find(
+        bundle =>
+          bundle.id === existingBid.positionBundleId && !bundle.isSecured
+      );
+    }
 
-    player.pushBundle(positionBundle);
-    player.pushBid(positionBid);
+    if (existingBid && existingBundle) {
+      // Merge order with existing bid
+      existingBid.quantity += quantity;
+    } else {
+      const positionBundle = new PositionBundle({
+        openedAtTick: s.tick,
+        stockTicker,
+      });
+
+      const positionBid = new PositionBid({
+        stockTicker,
+        type: PositionBidType.BUY,
+        quantity,
+        playerId: player.id,
+        positionBundleId: positionBundle.id,
+      });
+
+      player.pushBundle(positionBundle);
+      player.pushBid(positionBid);
+    }
   }
 };
