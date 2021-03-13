@@ -35,10 +35,7 @@ export default class MessageHandler {
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
     const len = lengthInKb(data);
-    logDebug(`Received message of size ${len}kb`);
-    if (len > 5) {
-      logWarning(`Message was > 5kb`, data);
-    }
+    if (len > 5) logWarning(`Received message of size ${len}`, data);
 
     const message = deserialize(data, classMap);
 
@@ -48,9 +45,7 @@ export default class MessageHandler {
       if (resolve) {
         // Original sender of message receiving response
         resolve(message);
-
         delete this._messageResolvers[message.messageId];
-
         return null;
       } else {
         // Recipient of message

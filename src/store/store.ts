@@ -197,7 +197,7 @@ const peerSyncPatches = (patches: Patch[]) => {
 const setStoreFromStorage = () => {
   logDebug("Loading store state from local storage");
   const initialStorageState: any = {};
-  for (const key in initialState) {
+  for (const key in initialState()) {
     const val = storageGet(key);
     if (val != null) {
       initialStorageState[key] = val;

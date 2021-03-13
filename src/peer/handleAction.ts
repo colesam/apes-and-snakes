@@ -43,8 +43,6 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
   },
 
   [TPeerAction.PUSH_PATCH]: ({ payload, respond }) => {
-    console.log("[DEBUG] Received patches");
-    console.log(payload);
     applyPatchesToStore(payload);
     respond();
   },

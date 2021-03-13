@@ -36,14 +36,11 @@ const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
 function Play() {
   // Shared store
   const tick = useStore(s => s.tick);
-  const flopSetAt = useStore(s => s.flopSetAt);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
-  const flop = useStore(s => s.flop);
   const gameStatus = useStore(s => s.gameStatus);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
-  const retiredCard = useStore(s => s.retiredCard);
   const stockPriceMap = useStore(StoreSelector.stockPriceMap);
 
   // Private store
