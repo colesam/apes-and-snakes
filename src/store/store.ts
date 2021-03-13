@@ -15,7 +15,7 @@ import { RollModifier } from "../core/stock/RollModifier";
 import { Stock } from "../core/stock/Stock";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 import { PeerAction } from "../peer/PeerAction";
-import { logDebug } from "../util/log";
+import { logDebug, logTime } from "../util/log";
 import { StoreSelector } from "./StoreSelector";
 import { devtools } from "./middleware/devtools";
 import { stocks } from "./mockData/stocks";
@@ -164,25 +164,33 @@ export const getStateConfig = (key: TStoreKey): TStateConfig => ({
 
 // Helper exports
 export const getStore = useStore.getState;
+
 export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
-  if (isFunction(update)) {
-    useStore.setState(s => {
-      if (s.isHost) {
-        return produce(s, update, patches => {
-          peerSyncPatches(s.tick, patches);
+  logTime(
+    "setStore()",
+    () => {
+      if (isFunction(update)) {
+        useStore.setState(s => {
+          if (s.isHost) {
+            return produce(s, update, patches => {
+              peerSyncPatches(s.tick, patches);
+            });
+          } else {
+            return produce(s, update);
+          }
         });
       } else {
-        return produce(s, update);
+        const { isHost } = getStore();
+        useStore.setState(update);
+        if (isHost) {
+          peerSyncState(update);
+        }
       }
-    });
-  } else {
-    const { isHost } = getStore();
-    useStore.setState(update);
-    if (isHost) {
-      peerSyncState(update);
-    }
-  }
+    },
+    150
+  );
 };
+
 export const resetStore = (clearStorage = false) => {
   if (clearStorage) {
     storageClear();

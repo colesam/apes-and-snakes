@@ -1,6 +1,6 @@
 enum LogLevel {
   ERROR = "ERROR",
-  WARNING = "WARN",
+  WARNING = "WARNING",
   DEBUG = "DEBUG",
   PING = "PING",
   TIME = "TIME",
@@ -41,8 +41,17 @@ export const logDebug = (msg: string, object?: any) =>
 export const logPing = (msg: string, object?: any) =>
   log(LogLevel.PING, msg, object);
 
-export const logTime = (msg: string, fn: () => any) => {
+export const logTime = (msg: string, fn: () => any, warnThreshold?: number) => {
   const start = new Date().getTime();
+
   fn();
-  log(LogLevel.TIME, msg, `Took ${new Date().getTime() - start} ms.`);
+
+  const duration = new Date().getTime() - start;
+
+  const level =
+    warnThreshold && duration > warnThreshold
+      ? LogLevel.WARNING
+      : LogLevel.TIME;
+
+  log(level, msg, `Took ${duration}ms`);
 };
