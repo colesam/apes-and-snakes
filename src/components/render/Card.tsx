@@ -18,14 +18,17 @@ interface PropTypes extends HTMLChakraProps<"div"> {
 }
 
 function Card({ card, scale, highlight = false, ...props }: PropTypes) {
+  const transformStyling = `
+    ${scale ? `scale(${scale})` : ""}
+    ${highlight ? "translateY(-3px)" : ""}
+  `;
+
   return (
     <Box
       width="42px"
       height="60px"
       overflow="hidden"
-      transform={`${scale ? `scale(${scale})` : ""} ${
-        highlight ? "translateY(-3px)" : ""
-      }`}
+      transform={transformStyling}
       sx={{
         transition: "all 0.1s ease-in",
         borderRadius: "2px",
