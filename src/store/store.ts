@@ -20,7 +20,10 @@ import { StoreSelector } from "./StoreSelector";
 import { devtools } from "./middleware/devtools";
 import { stocks } from "./mockData/stocks";
 
-const [storageGet, storageSet] = initStorage("sessionStorage", "store");
+const [storageGet, storageSet, storageClear] = initStorage(
+  "sessionStorage",
+  "store"
+);
 
 export interface TStore extends State {
   // Shared state
@@ -174,7 +177,12 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
     }
   }
 };
-export const resetStore = () => setStore(initialState);
+export const resetStore = (clearStorage = false) => {
+  setStore(initialState);
+  if (clearStorage) {
+    storageClear();
+  }
+};
 
 export const applyPatchesToStore = (patches: Patch[]) => {
   setStore(applyPatches(getStore(), patches));
