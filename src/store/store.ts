@@ -101,8 +101,15 @@ export const initialState = () =>
     test: "",
   } as TStore);
 
-// Create store
-export const useStore = create<TStore>(devtools(initialState, "Zustand Store"));
+// Create store if it doesn't exist
+if (!window.__ZustandStore__) {
+  logDebug("Creating new store.");
+  window.__ZustandStore__ = create<TStore>(
+    devtools(initialState, "Zustand Store")
+  );
+}
+
+export const useStore = window.__ZustandStore__;
 
 // State configuration
 interface TStateConfig {
@@ -178,10 +185,10 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
   }
 };
 export const resetStore = (clearStorage = false) => {
-  setStore(initialState);
   if (clearStorage) {
     storageClear();
   }
+  setStore(initialState);
 };
 
 export const applyPatchesToStore = (patches: Patch[]) => {
@@ -199,23 +206,11 @@ const peerSyncPatches = (tick: number, patches: Patch[]) => {
   const peerSyncedPatches = patches.filter(
     patch => getStateConfig(patch.path[0]).peerSync
   );
-  PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
-};
-
-// Initialize state from local storage
-const setStoreFromStorage = () => {
-  logDebug("Loading store state from local storage");
-  const initialStorageState: any = {};
-  for (const key in initialState()) {
-    const val = storageGet(key);
-    if (val != null) {
-      initialStorageState[key] = val;
-    }
+  if (peerSyncedPatches.length) {
+    logDebug(`Sending patches for tick #${tick}`);
+    PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
   }
-  setStore(initialStorageState);
 };
-
-setStoreFromStorage();
 
 // Set up local storage persistance
 useStore.subscribe((newState, oldState) => {

@@ -3,6 +3,7 @@ import { Player } from "../../core/player/Player";
 import { Position } from "../../core/stock/Position";
 import { PositionBidType } from "../../core/stock/PositionBid";
 import { Stock } from "../../core/stock/Stock";
+import { logDebug } from "../../util/log";
 import { TStore } from "../store";
 
 export const updateStockBids = (stock: Stock) => (s: TStore) => {
@@ -21,6 +22,8 @@ const updateSells = (stock: Stock) => (s: TStore) => {
       .filter(bid => bid.type === PositionBidType.SELL);
 
     if (bids.length < 1) continue;
+
+    logDebug("Updating sell bids");
 
     const bid = bids[0];
     const bundle = player.positionBundles.get(bid.positionBundleId);
@@ -65,6 +68,7 @@ const updateBuys = (stock: Stock) => (s: TStore) => {
     const bids = player
       .getBids(stock.ticker)
       .filter(bid => bid.type === PositionBidType.BUY);
+
     if (bids.length < 1) continue;
 
     const purchasePrice = stock.price * 1_000;

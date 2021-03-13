@@ -5,7 +5,7 @@ import { serialize, deserialize, classMap } from "../core/serialize";
 import { logDebug, logError, logWarning } from "../util/log";
 import TimeoutError from "./error/TimeoutError";
 
-export default class MessageHandler {
+export class MessageHandler {
   constructor(public timeout: number = 10000) {}
 
   private _messageResolvers: { [key: string]: (data: any) => void } = {};

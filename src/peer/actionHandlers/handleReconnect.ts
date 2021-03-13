@@ -3,7 +3,7 @@ import { PlayerConnection } from "../../core/player/PlayerConnection";
 import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
-import PeerConnectionManager from "../PeerConnectionManager";
+import { PeerConnectionManager } from "../PeerConnectionManager";
 import NotAuthorizedError from "../error/NotAuthorizedError";
 import { TActionHandlerProps } from "../handleAction";
 

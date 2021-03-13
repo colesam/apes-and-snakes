@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Redirect } from "wouter";
 import { NAMESPACE } from "../../config";
 import { generateRoomCode } from "../../core/generateId";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
 import { setStore, useStore } from "../../store/store";
 import FloatingContainer from "../render/FloatingContainer";

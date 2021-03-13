@@ -13,7 +13,7 @@ import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
 import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
@@ -53,6 +53,10 @@ function Play() {
 
   useEffect(() => {
     logDebug(`Play.tsx initial load.`);
+  }, []);
+
+  useEffect(() => {
+    console.log(PeerConnectionManager.peerId);
   }, []);
 
   useEffect(() => {

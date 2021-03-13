@@ -1,6 +1,7 @@
 import { Box, Flex, VStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import { logDebug } from "../../util/log";
@@ -14,6 +15,9 @@ function Spectate() {
   const viewFullHistory = useStore(s => s.viewFullHistory);
 
   // Effects
+  useEffect(() => {
+    console.log(PeerConnectionManager.peerId);
+  }, []);
   useEffect(() => {
     const { tick } = getStore();
     let id: NodeJS.Timeout | null = null;

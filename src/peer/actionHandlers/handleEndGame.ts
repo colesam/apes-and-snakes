@@ -1,5 +1,5 @@
 import { resetStore } from "../../store/store";
-import PeerConnectionManager from "../PeerConnectionManager";
+import { PeerConnectionManager } from "../PeerConnectionManager";
 import { PeerRoutine } from "../PeerRoutine";
 
 const handleEndGame = () => {

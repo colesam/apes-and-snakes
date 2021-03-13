@@ -1,6 +1,7 @@
 import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
+import { logDebug } from "../../util/log";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
@@ -16,6 +17,8 @@ export const makeHandleOpenPosition = (
   if (!player) {
     return error(new PeerError("Could not find player."));
   }
+
+  logDebug("Opening position.");
 
   // Validate price
   const transactionPrice = payload.price * payload.quantity;
