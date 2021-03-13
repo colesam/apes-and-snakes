@@ -95,6 +95,7 @@ export const initialState = () =>
 
     // Misc
     viewFullHistory: false,
+    test: "",
   } as TStore);
 
 // Create store
@@ -159,7 +160,7 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
     useStore.setState(s => {
       if (s.isHost) {
         return produce(s, update, patches => {
-          peerSyncPatches(patches);
+          peerSyncPatches(s.tick, patches);
         });
       } else {
         return produce(s, update);
@@ -186,11 +187,11 @@ const peerSyncState = (stateChanges: Partial<TStore>) => {
   }
 };
 
-const peerSyncPatches = (patches: Patch[]) => {
+const peerSyncPatches = (tick: number, patches: Patch[]) => {
   const peerSyncedPatches = patches.filter(
     patch => getStateConfig(patch.path[0]).peerSync
   );
-  PeerAction.broadcastPatches(peerSyncedPatches);
+  PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
 };
 
 // Initialize state from local storage

@@ -10,11 +10,7 @@ import StockBox from "../smart/StockBox";
 
 function Spectate() {
   // Shared store
-  const tick = useStore(s => s.tick);
-  const flopSetAt = useStore(s => s.flopSetAt);
   const stocks = useStore(s => s.stocks);
-  const flop = useStore(s => s.flop);
-  const retiredCard = useStore(s => s.retiredCard);
   const viewFullHistory = useStore(s => s.viewFullHistory);
 
   // Effects

@@ -1,5 +1,7 @@
 import { StoreSelector } from "../store/StoreSelector";
 import { applyPatchesToStore, getStore, setStore } from "../store/store";
+import { logWarning } from "../util/log";
+import { PeerAction } from "./PeerAction";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -43,7 +45,18 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
   },
 
   [TPeerAction.PUSH_PATCH]: ({ payload, respond }) => {
-    applyPatchesToStore(payload);
+    const { tick, hostPeerId } = getStore();
+
+    if (parseInt(payload.tick) !== tick + 1) {
+      applyPatchesToStore(payload.patches);
+    } else {
+      logWarning(
+        "Patch is more than one tick ahead of client's data. Requesting full data reset.",
+        `Local tick: ${tick}, patch tick: ${payload.tick}`
+      );
+      PeerAction.pullData(hostPeerId);
+    }
+
     respond();
   },
 };

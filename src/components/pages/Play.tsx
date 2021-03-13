@@ -25,7 +25,6 @@ import FlopDisplay from "../smart/FlopDisplay";
 import StockBox from "../smart/StockBox";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
-  logDebug(`Attempting to reconnect to room ${roomCode}`);
   const hostId = `${NAMESPACE} ${roomCode}`;
   const peerId = `${hostId} ${generateId()}`;
   await PeerConnectionManager.register(peerId);
@@ -53,12 +52,12 @@ function Play() {
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
 
   useEffect(() => {
-    logDebug(`Play.tsx initial load`);
+    logDebug(`Play.tsx initial load.`);
   }, []);
 
   useEffect(() => {
     if (!PeerConnectionManager.peerId) {
-      logDebug("Attempting to reconnect to host");
+      logDebug("Attempting to reconnect to host.");
       attemptReconnectToHost(previousRoomCode, secretKey);
     }
   }, [gameStatus]);
