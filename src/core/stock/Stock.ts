@@ -79,7 +79,7 @@ export class Stock extends ImmerClass {
       : [];
   }
 
-  get relevantCards(): Card[] {
+  get relevantFlopCards(): Card[] {
     const pairCardStrings = this.pair.cardStrings;
     return this.solvedHand
       ? this.solvedHand.cardStrings

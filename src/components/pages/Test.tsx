@@ -1,6 +1,6 @@
 import React from "react";
 import { stocks } from "../../store/mockData/stocks";
-import StockBox from "../render/StockBox";
+import StockBox from "../smart/StockBox";
 
 function Test() {
   const stock = stocks[0];

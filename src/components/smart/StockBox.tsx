@@ -14,11 +14,11 @@ import React from "react";
 import { TICKS_PER_WEEK } from "../../config";
 import { formatCurrency } from "../../core/helpers";
 import { Stock } from "../../core/stock/Stock";
-import { useStore } from "../../store/store";
-import CardStack from "./CardStack";
-import PercentChange from "./PercentChange";
-import StockGraph from "./StockGraph";
-import Volume from "./stock/Volume";
+import { setStore, useStore } from "../../store/store";
+import CardStack from "../render/CardStack";
+import PercentChange from "../render/PercentChange";
+import StockGraph from "../render/StockGraph";
+import Volume from "../render/stock/Volume";
 
 interface PropTypes {
   stock: Stock;
@@ -98,7 +98,10 @@ function StockBox({
           >
             <Text fontSize="xl">{formatCurrency(currentPrice)}</Text>
             <PercentChange start={startPrice} end={currentPrice} />
-            <Tooltip label={stock.handDescr} aria-label="Hand ranking">
+            <Tooltip
+              label={stock.solvedHand?.descr || " - "}
+              aria-label="Hand ranking"
+            >
               <Text
                 position="relative"
                 color={`${rankColor}.600`}
@@ -109,6 +112,16 @@ function StockBox({
                 textAlign={"center"}
                 w={8}
                 _hover={{ cursor: "default" }}
+                onMouseEnter={() =>
+                  setStore(s => {
+                    s.highlightFlopCards = stock.relevantFlopCards;
+                  })
+                }
+                onMouseLeave={() =>
+                  setStore(s => {
+                    s.highlightFlopCards = [];
+                  })
+                }
               >
                 {stock.handBonus.length > 0 && (
                   <StarIcon

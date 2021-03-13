@@ -4,9 +4,9 @@ import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import { logDebug } from "../../util/log";
-import FlopDisplay from "../render/FlopDisplay";
-import StockBox from "../render/StockBox";
 import CommandBar from "../smart/CommandBar";
+import FlopDisplay from "../smart/FlopDisplay";
+import StockBox from "../smart/StockBox";
 
 function Spectate() {
   // Shared store
@@ -56,13 +56,7 @@ function Spectate() {
       <Flex justify={"space-between"}>
         <Box w={"60%"} p={4}>
           <Flex justify={"center"} mb={10}>
-            <FlopDisplay
-              cards={flop.cards}
-              retiredCard={retiredCard}
-              flopAge={tick - flopSetAt}
-              spacing={8}
-              cardScale={1.4}
-            />
+            <FlopDisplay spacing={8} />
           </Flex>
           <Flex justify={"space-between"} flexWrap={"wrap"}>
             {stocks.map(stock => (

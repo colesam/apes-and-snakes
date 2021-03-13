@@ -18,11 +18,11 @@ import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import { logDebug } from "../../util/log";
-import FlopDisplay from "../render/FlopDisplay";
-import StockBox from "../render/StockBox";
 import BidsTable from "../render/tables/BidsTable";
 import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
+import FlopDisplay from "../smart/FlopDisplay";
+import StockBox from "../smart/StockBox";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
   logDebug(`Attempting to reconnect to room ${roomCode}`);
@@ -99,13 +99,7 @@ function Play() {
       <Flex justify="space-between">
         <Box p={4} w={"60%"}>
           <Flex justify={"center"} mb={10}>
-            <FlopDisplay
-              cards={flop.cards}
-              retiredCard={retiredCard}
-              flopAge={tick - flopSetAt}
-              spacing={8}
-              cardScale={1.4}
-            />
+            <FlopDisplay spacing={8} />
           </Flex>
           <Flex justify={"space-around"} flexWrap={"wrap"}>
             {stocks.map(stock => (

@@ -36,6 +36,7 @@ export interface TStore extends State {
 
   // Flop state
   flop: Flop;
+  highlightFlopCards: Card[];
   flopSetAt: number;
   retiredCard: Card;
 
@@ -74,6 +75,7 @@ export const initialState = () =>
 
     // Flop state
     flop: new Flop(),
+    highlightFlopCards: [],
     flopSetAt: 0,
     retiredCard: new Card(),
 
@@ -119,11 +121,12 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Flop state
   flop: { peerSync: true },
+  highlightFlopCards: { storeLocally: false, storeLocallyIfHost: false },
   flopSetAt: { peerSync: true },
   retiredCard: { peerSync: true },
 
   // Host state
-  isHost: { storeLocally: true },
+  isHost: {},
   secretKeyPlayerIdMap: {},
   playerConnectionMap: {},
   deck: {},
@@ -132,11 +135,14 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Player state
   ping: {},
-  hostPeerId: { storeLocally: true },
-  previousRoomCode: { storeLocally: true },
-  playerId: { storeLocally: true },
+  hostPeerId: {},
+  previousRoomCode: {},
+  playerId: {},
   pingIntervalId: {},
-  secretKey: { storeLocally: true },
+  secretKey: {},
+
+  // Hover state
+  stockRelevantCards: { storeLocally: false, storeLocallyIfHost: false },
 
   // Misc
   viewFullHistory: {},
