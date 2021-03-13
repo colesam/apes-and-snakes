@@ -36,6 +36,7 @@ export interface TStore extends State {
 
   // Flop state
   flop: Flop;
+  highlightFlopCards: Card[];
   flopSetAt: number;
   retiredCard: Card;
 
@@ -74,6 +75,7 @@ export const initialState = () =>
 
     // Flop state
     flop: new Flop(),
+    highlightFlopCards: [],
     flopSetAt: 0,
     retiredCard: new Card(),
 
@@ -93,6 +95,7 @@ export const initialState = () =>
 
     // Misc
     viewFullHistory: false,
+    test: "",
   } as TStore);
 
 // Create store
@@ -119,11 +122,12 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Flop state
   flop: { peerSync: true },
+  highlightFlopCards: { storeLocally: false, storeLocallyIfHost: false },
   flopSetAt: { peerSync: true },
   retiredCard: { peerSync: true },
 
   // Host state
-  isHost: { storeLocally: true },
+  isHost: {},
   secretKeyPlayerIdMap: {},
   playerConnectionMap: {},
   deck: {},
@@ -132,11 +136,14 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
 
   // Player state
   ping: {},
-  hostPeerId: { storeLocally: true },
-  previousRoomCode: { storeLocally: true },
-  playerId: { storeLocally: true },
+  hostPeerId: {},
+  previousRoomCode: {},
+  playerId: {},
   pingIntervalId: {},
-  secretKey: { storeLocally: true },
+  secretKey: {},
+
+  // Hover state
+  stockRelevantCards: { storeLocally: false, storeLocallyIfHost: false },
 
   // Misc
   viewFullHistory: {},
@@ -153,7 +160,7 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
     useStore.setState(s => {
       if (s.isHost) {
         return produce(s, update, patches => {
-          peerSyncPatches(patches);
+          peerSyncPatches(s.tick, patches);
         });
       } else {
         return produce(s, update);
@@ -180,18 +187,18 @@ const peerSyncState = (stateChanges: Partial<TStore>) => {
   }
 };
 
-const peerSyncPatches = (patches: Patch[]) => {
+const peerSyncPatches = (tick: number, patches: Patch[]) => {
   const peerSyncedPatches = patches.filter(
     patch => getStateConfig(patch.path[0]).peerSync
   );
-  PeerAction.broadcastPatches(peerSyncedPatches);
+  PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
 };
 
 // Initialize state from local storage
 const setStoreFromStorage = () => {
   logDebug("Loading store state from local storage");
   const initialStorageState: any = {};
-  for (const key in initialState) {
+  for (const key in initialState()) {
     const val = storageGet(key);
     if (val != null) {
       initialStorageState[key] = val;

@@ -1,4 +1,5 @@
 import { SIM_WEEKS, TICKS_PER_WEEK } from "../../config";
+import { Deck } from "../../core/card/Deck";
 import { StoreAction } from "../StoreAction";
 import { initialState, TStore } from "../store";
 
@@ -16,8 +17,11 @@ export const setupGame = (s: TStore) => {
     player.cash = 5_000_000;
   }
 
-  StoreAction.assignPairsToStocks(s);
+  s.deck = new Deck().shuffle();
+
   s.flop = s.deck.drawFlop();
+
+  StoreAction.assignPairsToStocks(s);
 
   StoreAction.runTicks(SIM_WEEKS * TICKS_PER_WEEK)(s);
 };

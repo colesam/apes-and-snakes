@@ -18,14 +18,13 @@ import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
 import { logDebug } from "../../util/log";
-import FlopDisplay from "../render/FlopDisplay";
-import StockBox from "../render/StockBox";
 import BidsTable from "../render/tables/BidsTable";
 import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
+import FlopDisplay from "../smart/FlopDisplay";
+import StockBox from "../smart/StockBox";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
-  logDebug(`Attempting to reconnect to room ${roomCode}`);
   const hostId = `${NAMESPACE} ${roomCode}`;
   const peerId = `${hostId} ${generateId()}`;
   await PeerConnectionManager.register(peerId);
@@ -36,14 +35,11 @@ const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
 function Play() {
   // Shared store
   const tick = useStore(s => s.tick);
-  const flopSetAt = useStore(s => s.flopSetAt);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
-  const flop = useStore(s => s.flop);
   const gameStatus = useStore(s => s.gameStatus);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
-  const retiredCard = useStore(s => s.retiredCard);
   const stockPriceMap = useStore(StoreSelector.stockPriceMap);
 
   // Private store
@@ -56,12 +52,12 @@ function Play() {
   const [viewPlayerId, setViewPlayerId] = useState(playerId);
 
   useEffect(() => {
-    logDebug(`Play.tsx initial load`);
+    logDebug(`Play.tsx initial load.`);
   }, []);
 
   useEffect(() => {
     if (!PeerConnectionManager.peerId) {
-      logDebug("Attempting to reconnect to host");
+      logDebug("Attempting to reconnect to host.");
       attemptReconnectToHost(previousRoomCode, secretKey);
     }
   }, [gameStatus]);
@@ -99,13 +95,7 @@ function Play() {
       <Flex justify="space-between">
         <Box p={4} w={"60%"}>
           <Flex justify={"center"} mb={10}>
-            <FlopDisplay
-              cards={flop.cards}
-              retiredCard={retiredCard}
-              flopAge={tick - flopSetAt}
-              spacing={8}
-              cardScale={1.4}
-            />
+            <FlopDisplay spacing={8} />
           </Flex>
           <Flex justify={"space-around"} flexWrap={"wrap"}>
             {stocks.map(stock => (

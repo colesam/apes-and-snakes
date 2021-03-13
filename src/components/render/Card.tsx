@@ -14,16 +14,28 @@ const StyledImg = styled.img`
 interface PropTypes extends HTMLChakraProps<"div"> {
   card: TCard;
   scale?: number;
+  highlight?: boolean;
 }
 
-function Card({ card, scale, ...props }: PropTypes) {
+function Card({ card, scale, highlight = false, ...props }: PropTypes) {
+  const transformStyling = `
+    ${scale ? `scale(${scale})` : ""}
+    ${highlight ? "translateY(-3px)" : ""}
+  `;
+
   return (
     <Box
       width="42px"
       height="60px"
       overflow="hidden"
-      transform={scale ? `scale(${scale})` : undefined}
-      boxShadow="md"
+      transform={transformStyling}
+      sx={{
+        transition: "all 0.1s ease-in",
+        borderRadius: "2px",
+        boxShadow: highlight
+          ? "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+          : "none",
+      }}
       {...props}
     >
       <StyledImg src={cardAssets[card.toString()]} alt={card.toString()} />
@@ -32,3 +44,5 @@ function Card({ card, scale, ...props }: PropTypes) {
 }
 
 export default Card;
+
+// TODO: Clean up styling, too complicated/messy
