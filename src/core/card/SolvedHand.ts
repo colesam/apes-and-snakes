@@ -1,3 +1,4 @@
+import { RawSolvedHand } from "../poker";
 import { Card } from "./Card";
 import { CardCombination } from "./CardCombination";
 
@@ -26,3 +27,11 @@ export class SolvedHand extends CardCombination {
     this.name = name;
   }
 }
+
+export const solvedHandFromRawData = (raw: RawSolvedHand) =>
+  new SolvedHand({
+    cards: raw.cards.map(({ value, suit }) => new Card({ rank: value, suit })),
+    rank: raw.rank,
+    descr: raw.descr,
+    name: raw.name,
+  });

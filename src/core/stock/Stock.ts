@@ -5,7 +5,7 @@ import { Card, cardFromString } from "../card/Card";
 import { Flop } from "../card/Flop";
 import { Hand } from "../card/Hand";
 import { Pair } from "../card/Pair";
-import { SolvedHand } from "../card/SolvedHand";
+import { SolvedHand, solvedHandFromRawData } from "../card/SolvedHand";
 import { RoundRank, solveHand } from "../poker";
 
 interface TParams {
@@ -65,11 +65,13 @@ export class Stock extends ImmerClass {
   }
 
   updateSolvedHand(flop: Flop) {
-    this.solvedHand = solveHand(
-      new Hand({
-        pair: this.pair,
-        flop,
-      })
+    this.solvedHand = solvedHandFromRawData(
+      solveHand(
+        new Hand({
+          pair: this.pair,
+          flop,
+        })
+      )
     );
   }
 

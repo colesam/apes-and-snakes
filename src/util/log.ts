@@ -13,6 +13,8 @@ const logLevelColors = {
 };
 
 export const log = (level: LogLevel, msg: string, object?: any) => {
+  if (process.env.NODE_ENV === "test") return;
+
   if (process.env.REACT_APP_LOG_LEVELS?.split(",").includes(level)) {
     console.log(
       "%c" + level + "%c\n" + msg,

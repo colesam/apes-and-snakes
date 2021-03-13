@@ -25,14 +25,18 @@ beforeEach(() => {
 
 test("pushes 1_000 shares per tick if the stock is not squeezed", () => {
   const tick1 = produce(mockStore, (s: TStore) => {
-    StoreAction.updateStockBids(s);
+    for (const stock of s.stocks) {
+      StoreAction.updateStockBids(stock)(s);
+    }
   });
 
   expect(tick1.players[0].positions.length).toBe(1);
   expect(tick1.players[0].positions[0].quantity).toBe(1_000);
 
   const tick2 = produce(tick1, (s: TStore) => {
-    StoreAction.updateStockBids(s);
+    for (const stock of s.stocks) {
+      StoreAction.updateStockBids(stock)(s);
+    }
   });
 
   expect(tick2.players[0].positions.length).toBe(2);
@@ -42,7 +46,9 @@ test("pushes 1_000 shares per tick if the stock is not squeezed", () => {
 test("removes the bid if player doesn't have enough cash", () => {
   const tick1 = produce(mockStore, (s: TStore) => {
     s.players[0].cash = 0;
-    StoreAction.updateStockBids(s);
+    for (const stock of s.stocks) {
+      StoreAction.updateStockBids(stock)(s);
+    }
   });
   expect(tick1.players[0].getBids("INTC").length).toBe(0);
 });
@@ -51,7 +57,9 @@ test("removes the bid if the target quantity is reached", () => {
   let update: TStore = mockStore;
   for (let i = 0; i < 5; i++) {
     update = produce(update, (s: TStore) => {
-      StoreAction.updateStockBids(s);
+      for (const stock of s.stocks) {
+        StoreAction.updateStockBids(stock)(s);
+      }
     });
   }
   expect(update.players[0].getBids("INTC").length).toBe(0);
