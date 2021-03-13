@@ -35,7 +35,7 @@ export class MessageHandler {
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
     const len = lengthInKb(data);
-    if (len > 5) logWarning(`Received message of size ${len}`, data);
+    if (len > 10) logWarning(`Received message of size ${len}`, data);
 
     const message = deserialize(data, classMap);
 

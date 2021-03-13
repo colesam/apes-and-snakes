@@ -98,7 +98,6 @@ export const initialState = () =>
 
     // Misc
     viewFullHistory: false,
-    test: "",
   } as TStore);
 
 // Create store if it doesn't exist
@@ -207,7 +206,6 @@ const peerSyncPatches = (tick: number, patches: Patch[]) => {
     patch => getStateConfig(patch.path[0]).peerSync
   );
   if (peerSyncedPatches.length) {
-    logDebug(`Sending patches for tick #${tick}`);
     PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
   }
 };

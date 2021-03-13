@@ -9,6 +9,7 @@ import handleAction from "./handleAction";
 export interface TPeerConnectionManager {
   conn?: Peer;
   peers: { [key: string]: DataConnection };
+  reconnectToPeerIds: string[];
   _connectionHandlers: ((conn: DataConnection) => void)[];
   _messageHandler: MessageHandler;
   peerId?: string;
@@ -24,6 +25,7 @@ export interface TPeerConnectionManager {
   ) => void;
   _handleReceiveData: (conn: Peer.DataConnection, data: any) => void;
   _handleReceiveConnection: (conn: DataConnection) => void;
+  destroy: () => void;
 }
 
 const __PeerConnectionManager__: TPeerConnectionManager = {
@@ -36,6 +38,8 @@ const __PeerConnectionManager__: TPeerConnectionManager = {
    * Map of peer connections. Key is peer id, connection object is value.
    */
   peers: {},
+
+  reconnectToPeerIds: [],
 
   /**
    * List of functions that are called when new peer connection is received.
@@ -78,6 +82,7 @@ const __PeerConnectionManager__: TPeerConnectionManager = {
 
       try {
         await __PeerConnectionManager__._establishConnection(peerId);
+        __PeerConnectionManager__.reconnectToPeerIds.push(peerId);
         break;
       } catch (e) {
         if (e.name === TIMEOUT_ERROR && attempt <= 3) {
@@ -225,11 +230,27 @@ const __PeerConnectionManager__: TPeerConnectionManager = {
       fn(conn);
     });
   },
+
+  destroy() {
+    __PeerConnectionManager__.conn?.destroy();
+  },
 };
 
 if (!window.__PeerConnectionManager__) {
+  logDebug("Creating new PeerConnectionManager");
   // Persists across fast reloads
   window.__PeerConnectionManager__ = __PeerConnectionManager__;
+} else {
+  logDebug("Replacing existing PeerConnectionManager");
+  // Reload with current updates, reconnect to any peers
+  const { peerId, reconnectToPeerIds } = window.__PeerConnectionManager__;
+  window.__PeerConnectionManager__.destroy();
+
+  window.__PeerConnectionManager__ = __PeerConnectionManager__;
+  window.__PeerConnectionManager__.register(peerId);
+  for (const connPeerId of reconnectToPeerIds) {
+    window.__PeerConnectionManager__.connect(connPeerId);
+  }
 }
 
 export const PeerConnectionManager = window.__PeerConnectionManager__;

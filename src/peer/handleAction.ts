@@ -1,7 +1,7 @@
 import { StoreSelector } from "../store/StoreSelector";
 import { applyPatchesToStore, getStore, setStore } from "../store/store";
-import { logDebug, logWarning } from "../util/log";
-import { PeerAction } from "./PeerAction";
+import { logWarning } from "../util/log";
+import { PeerRoutine } from "./PeerRoutine";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -50,17 +50,13 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
     const patchTick = parseInt(payload.tick);
 
     if (patchTick === tick) {
-      logDebug("Applying patches to the store.", {
-        tick: patchTick,
-        patches: payload.patches,
-      });
       applyPatchesToStore(payload.patches);
     } else {
       logWarning(
         "Patch is out of sync with client data. Requesting full data reset.",
         `Local tick: ${tick}, patch tick: ${payload.tick}`
       );
-      PeerAction.pullData(hostPeerId);
+      PeerRoutine.pullData(hostPeerId);
     }
 
     respond();
