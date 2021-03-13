@@ -1,25 +1,19 @@
-import { Hand } from "../../core/card/Hand";
-import { Pair } from "../../core/card/Pair";
-import { mapPairsToRank, solve } from "../../core/poker";
 import { TStore } from "../store";
 
 export const rankStocks = (s: TStore) => {
-  const stockPairMap = s.stocks.reduce<{ [key: string]: Pair }>(
-    (acc, stock) => {
-      acc[stock.ticker] = stock.pair;
-      return acc;
-    },
-    {}
+  // Sort by rank
+  const stocksSortedByRank = [...s.stocks].sort(
+    (a, b) => b.solvedHandRank - a.solvedHandRank
   );
 
-  const stockRankMap = mapPairsToRank(stockPairMap, s.flop);
-
-  for (const stock of s.stocks) {
-    stock.rankHistory.push(stockRankMap[stock.ticker]);
-
-    // Check for special hands
-    const hand = new Hand({ pair: stock.pair, flop: s.flop });
-    const [solvedHand] = solve([hand]);
-    stock.handDescr = solvedHand.descr;
+  let currentStockRank = 1;
+  let currentHandRank = stocksSortedByRank[0].solvedHandRank;
+  for (const stock of stocksSortedByRank) {
+    if (stock.solvedHandRank !== currentHandRank) {
+      currentStockRank++;
+      currentHandRank = stock.solvedHandRank;
+    }
+    // @ts-ignore - Guaranteed to be within RoundRank range
+    stock.rankHistory.push(currentStockRank);
   }
 };

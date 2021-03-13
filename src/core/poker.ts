@@ -1,94 +1,30 @@
 import { uniq } from "lodash";
 // @ts-ignore
 import { Hand as PokerSolver } from "pokersolver";
-import { Flop } from "./card/Flop";
+import { cardFromString } from "./card/Card";
 import { Hand } from "./card/Hand";
-import { Pair } from "./card/Pair";
-
-export type SolvedHand = {
-  cardPool: { value: string; suit: string }[];
-  cards: { value: string; suit: string }[];
-  rank: number;
-  descr: string;
-  name: string;
-};
-
-const getKey = (hand: SolvedHand) => {
-  return hand.cardPool
-    .map(({ value, suit }) => value + suit)
-    .sort()
-    .join("_");
-};
+import { SolvedHand } from "./card/SolvedHand";
 
 export const solve = (hands: Hand[]): SolvedHand[] => {
-  return hands.map(hand => {
-    if (uniq(hand.cards).length < hand.cards.length) {
-      console.log(`[DEBUG] Duplicate cards!`);
-      console.log("-- hand.cards --");
-      console.log(hand.cards.map(c => c.toString()));
-      throw new Error("Duplicate cards detected!");
-    }
-    return PokerSolver.solve(hand.cardStrings);
+  return hands.map(solveHand);
+};
+
+export const solveHand = (hand: Hand): SolvedHand => {
+  if (uniq(hand.cards).length < hand.cards.length) {
+    console.log(`[DEBUG] Duplicate cards!`);
+    console.log("-- hand.cards --");
+    console.log(hand.cards.map(c => c.toString()));
+    throw new Error("Duplicate cards detected!");
+  }
+  const { cards, rank, descr, name } = PokerSolver.solve(hand.cardStrings);
+  return new SolvedHand({
+    cards: cards.map(({ value, suit }: { value: string; suit: string }) =>
+      cardFromString(value + suit)
+    ),
+    rank,
+    descr,
+    name,
   });
 };
-
-export const getWinners = (hands: SolvedHand[]) => {
-  return PokerSolver.winners(hands);
-};
-
-export const tiebreakerOrdering = (hands: SolvedHand[]) => {
-  // TODO
-  return hands;
-};
-
-const rankHandsRecursive = (
-  hands: SolvedHand[],
-  rankedHands: SolvedHand[][]
-): SolvedHand[][] => {
-  if (hands.length < 1) return rankedHands;
-
-  const winners = PokerSolver.winners(hands);
-
-  // TODO: Add handling for ties
-  return rankHandsRecursive(
-    hands.filter(hand => !winners.includes(hand)),
-    [...rankedHands, tiebreakerOrdering(winners)]
-  );
-};
-
-export const rankHands = (hands: SolvedHand[]): [SolvedHand, number][] => {
-  const sortedByRank = rankHandsRecursive(hands, []);
-  return hands.map(hand => {
-    const rankIndex = sortedByRank.findIndex(
-      rank => rank.findIndex(rHand => getKey(rHand) === getKey(hand)) > -1
-    );
-    return [hand, rankIndex + 1];
-  });
-};
-
-// export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6;
-
-export const mapPairsToRank = (
-  pairMap: {
-    [key: string]: Pair;
-  },
-  flop: Flop
-): { [key: string]: RoundRank } => {
-  const hands = [];
-  const handKeyMap: { [key: string]: keyof typeof pairMap } = {};
-  for (const key in pairMap) {
-    const hand = new Hand({ pair: pairMap[key], flop });
-    hands.push(hand);
-    handKeyMap[hand.key] = key;
-  }
-
-  const rankedHands = rankHands(solve(hands));
-  return rankedHands.reduce((acc, [solvedHand, rank]) => {
-    const key = handKeyMap[getKey(solvedHand)];
-    // @ts-ignore
-    acc[key] = rank;
-    return acc;
-  }, {});
-};

@@ -56,8 +56,7 @@ const runSingleTick = (tick: number) => (s: TStore) => {
       // NOTE: Keep this loop separate so it doesn't affect prices mid tick
       if (Math.random() < DRAW_PAIR_CHANCE) {
         s.deck.push(stock.pair.cards).shuffle();
-        stock.pair = s.deck.drawPair();
-        stock.pairIsNew = true;
+        stock.setPair(s.deck.drawPair(), s.flop);
       } else {
         stock.pairIsNew = false;
       }

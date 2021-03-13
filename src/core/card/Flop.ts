@@ -23,7 +23,7 @@ export class Flop extends CardCombination {
   /**
    * Push a card onto the end of the flop, forcing the first one out.
    */
-  push(card: Card): Card {
+  pushShift(card: Card): Card {
     this.cards.push(card);
     return this.cards.shift()!;
   }

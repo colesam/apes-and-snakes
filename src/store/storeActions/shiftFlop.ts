@@ -13,8 +13,14 @@ export const shiftFlop = (s: TStore) => {
   // Update flop
   logDebug("Updating the flop");
   s.deck.push([s.retiredCard]);
-  s.retiredCard = s.flop.push(s.deck.shuffle().drawOne());
+  s.retiredCard = s.flop.pushShift(s.deck.shuffle().drawOne());
   s.flopSetAt = s.tick;
 
+  // Update solved hands
+  for (const stock of s.stocks) {
+    stock.updateSolvedHand(s.flop);
+  }
+
+  // Recalculate ranks
   StoreAction.rankStocks(s);
 };

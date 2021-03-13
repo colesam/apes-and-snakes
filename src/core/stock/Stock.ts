@@ -1,8 +1,12 @@
 import { last } from "lodash";
 import { ImmerClass } from "../ImmerClass";
 import { getHandBonus } from "../card/BonusHand";
+import { Card, cardFromString } from "../card/Card";
+import { Flop } from "../card/Flop";
+import { Hand } from "../card/Hand";
 import { Pair } from "../card/Pair";
-import { RoundRank } from "../poker";
+import { SolvedHand } from "../card/SolvedHand";
+import { RoundRank, solveHand } from "../poker";
 
 interface TParams {
   name: string;
@@ -11,7 +15,7 @@ interface TParams {
   rankHistory: RoundRank[];
   pair: Pair;
   pairIsNew: boolean;
-  handDescr: string;
+  solvedHand: SolvedHand | null;
   buyVolume: number;
   sellVolume: number;
 }
@@ -25,7 +29,7 @@ export class Stock extends ImmerClass {
   public rankHistory;
   public pair;
   public pairIsNew;
-  public handDescr;
+  public solvedHand;
   public buyVolume;
   public sellVolume;
 
@@ -37,7 +41,7 @@ export class Stock extends ImmerClass {
       rankHistory = [],
       pair = new Pair(),
       pairIsNew = false,
-      handDescr = "",
+      solvedHand = null,
       buyVolume = 10_000,
       sellVolume = 10_000,
     } = {} as Partial<TParams>
@@ -49,13 +53,43 @@ export class Stock extends ImmerClass {
     this.rankHistory = rankHistory;
     this.pair = pair;
     this.pairIsNew = pairIsNew;
-    this.handDescr = handDescr;
+    this.solvedHand = solvedHand;
     this.buyVolume = buyVolume;
     this.sellVolume = sellVolume;
   }
 
+  setPair(pair: Pair, flop: Flop) {
+    this.pair = pair;
+    this.pairIsNew = true;
+    this.updateSolvedHand(flop);
+  }
+
+  updateSolvedHand(flop: Flop) {
+    this.solvedHand = solveHand(
+      new Hand({
+        pair: this.pair,
+        flop,
+      })
+    );
+  }
+
   get handBonus() {
-    return this.rank < 4 ? getHandBonus(this.handDescr.split(",")[0]) : [];
+    return this.rank < 4 && this.solvedHand
+      ? getHandBonus(this.solvedHand.name)
+      : [];
+  }
+
+  get relevantCards(): Card[] {
+    const pairCardStrings = this.pair.cardStrings;
+    return this.solvedHand
+      ? this.solvedHand.cardStrings
+          .filter(card => !pairCardStrings.includes(card))
+          .map(card => cardFromString(card))
+      : [];
+  }
+
+  get solvedHandRank(): number {
+    return this.solvedHand?.rank || -1;
   }
 
   get price() {
