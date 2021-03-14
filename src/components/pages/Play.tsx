@@ -74,7 +74,7 @@ function Play() {
 
   const playerAssetValue = sum(
     player.positionBundleList.flatMap(bundle =>
-      bundle.openPositionList.map(([, pos]) =>
+      bundle.openPositionList.map(pos =>
         pos.currentValue(stockPriceMap[bundle.stockTicker])
       )
     )

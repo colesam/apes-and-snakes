@@ -51,29 +51,29 @@ export class PositionBundle extends ImmerClass {
     this.positions.set(position.id, position);
   }
 
-  get positionList() {
-    return Array.from(this.positions);
+  get positionList(): Position[] {
+    return Array.from(this.positions).map(([, pos]) => pos);
   }
 
-  get openPositionList() {
-    return this.positionList.filter(([, pos]) => !pos.isClosed);
+  get openPositionList(): Position[] {
+    return this.positionList.filter(pos => !pos.isClosed);
   }
 
-  get quantity() {
-    return sum(this.openPositionList.map(([, pos]) => pos.quantity));
+  get quantity(): number {
+    return sum(this.openPositionList.map(pos => pos.quantity));
   }
 
-  get initialValue() {
-    return sum(this.openPositionList.map(([, pos]) => pos.initialValue));
+  get initialValue(): number {
+    return sum(this.openPositionList.map(pos => pos.initialValue));
   }
 
-  currentValue(currentPrice: number) {
+  currentValue(currentPrice: number): number {
     return sum(
-      this.openPositionList.map(([, pos]) => pos.currentValue(currentPrice))
+      this.openPositionList.map(pos => pos.currentValue(currentPrice))
     );
   }
 
-  capitalGainsTax(tick: number) {
+  capitalGainsTax(tick: number): number {
     const TICKS_PER_DAY = TICKS_PER_WEEK / 7;
     const daysSinceOpening = Math.floor(
       (tick - this.openedAtTick) / TICKS_PER_DAY
@@ -81,3 +81,5 @@ export class PositionBundle extends ImmerClass {
     return Math.max(1 - daysSinceOpening * 0.05, 0);
   }
 }
+
+// TODO: Memoize the getters in this class
