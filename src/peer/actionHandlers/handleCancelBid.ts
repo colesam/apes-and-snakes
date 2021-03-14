@@ -1,10 +1,9 @@
-import { StoreAction } from "../../store/StoreAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { getStore, setStore } from "../../store/store";
 import PeerError from "../error/PeerError";
 import { TActionHandlerProps } from "../handleAction";
 
-export const makeHandleClosePosition = (
+export const makeHandleCancelBid = (
   _getStore: typeof getStore,
   _setStore: typeof setStore
 ) => ({ payload, respond, error }: TActionHandlerProps) => {
@@ -16,21 +15,24 @@ export const makeHandleClosePosition = (
     return error(new PeerError("Could not find player."));
   }
 
-  // Validate position
-  const bundle = player.positionBundles.get(payload.bundleId);
-  if (!bundle || !bundle.isSecured) {
+  // Validate bid
+  const positionBid = player.positionBids.find(bid => bid.id === payload.bidId);
+  if (!positionBid) {
     return error(
       new PeerError(
-        `Could not find bundle #${payload.bundleId}. Failed to close position.`
+        `Could not find position bid #${payload.bidId}. Failed to cancel bid.`
       )
     );
   }
 
-  setStore(StoreAction.closePosition(player.id, payload.bundleId));
+  _setStore(s => {
+    const player = StoreSelector.getAuthorizedPlayer(payload.secretKey)(s)!;
+    player.closeBid(payload.bidId);
+  });
 
   respond();
 };
 
-const handleClosePosition = makeHandleClosePosition(getStore, setStore);
+const handleCancelBid = makeHandleCancelBid(getStore, setStore);
 
-export default handleClosePosition;
+export default handleCancelBid;

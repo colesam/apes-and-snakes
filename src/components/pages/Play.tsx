@@ -168,7 +168,12 @@ function Play() {
           />
 
           {viewPlayerId === playerId && (
-            <BidsTable player={player} stockPriceMap={stockPriceMap} />
+            <BidsTable
+              player={player}
+              onCancelBid={bidId =>
+                PeerAction.cancelBid(hostPeerId, secretKey, bidId)
+              }
+            />
           )}
         </VStack>
         <Box

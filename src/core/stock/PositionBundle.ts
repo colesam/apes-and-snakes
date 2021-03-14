@@ -11,7 +11,6 @@ interface TParams {
   positions: Map<string, Position>;
   isSecured: boolean;
   isLiquidating: boolean;
-  isLiquidated: boolean;
 }
 
 export class PositionBundle extends ImmerClass {
@@ -23,7 +22,6 @@ export class PositionBundle extends ImmerClass {
   public positions;
   public isSecured;
   public isLiquidating;
-  public isLiquidated;
 
   constructor(
     {
@@ -33,7 +31,6 @@ export class PositionBundle extends ImmerClass {
       positions = new Map<string, Position>(),
       isSecured = false,
       isLiquidating = false,
-      isLiquidated = false,
     } = {} as Partial<TParams>
   ) {
     super();
@@ -43,7 +40,6 @@ export class PositionBundle extends ImmerClass {
     this.positions = positions;
     this.isSecured = isSecured;
     this.isLiquidating = isLiquidating;
-    this.isLiquidated = isLiquidated;
   }
 
   push(quantity: number, purchasePrice: number) {
@@ -65,6 +61,10 @@ export class PositionBundle extends ImmerClass {
 
   get initialValue(): number {
     return sum(this.openPositionList.map(pos => pos.initialValue));
+  }
+
+  get isLiquidated(): boolean {
+    return this.quantity === 0;
   }
 
   currentValue(currentPrice: number): number {

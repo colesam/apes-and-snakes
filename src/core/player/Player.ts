@@ -1,3 +1,4 @@
+import { logError } from "../../util/log";
 import { ImmerClass } from "../ImmerClass";
 import { Position } from "../stock/Position";
 import { PositionBid, PositionBidType } from "../stock/PositionBid";
@@ -70,14 +71,17 @@ export class Player extends ImmerClass {
   closeBid(bidId: string) {
     const index = this.positionBids.findIndex(bid => bidId === bid.id);
     const bid = this.positionBids[index];
-    const bundle = this.positionBundles.get(bid.id);
+    const bundle = this.positionBundles.get(bid.positionBundleId);
 
-    if (bid.type === PositionBidType.BUY && bundle) {
+    if (bundle) {
       bundle.isSecured = true;
-    } else if (bid.type === PositionBidType.SELL && bundle) {
-      bundle.isSecured = true;
-      bundle.isLiquidating = false;
-      bundle.isLiquidated = true;
+      if (bid.type === PositionBidType.SELL) {
+        bundle.isLiquidating = false;
+      }
+    } else {
+      logError(
+        `Could not find bundle #${bid.positionBundleId} when closing bid #${bid.id}.`
+      );
     }
 
     this.positionBids.splice(index, 1);

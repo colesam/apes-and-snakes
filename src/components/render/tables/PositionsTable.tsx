@@ -21,7 +21,8 @@ function PositionsTable({
   isWeekend,
   onSell,
 }: PropTypes) {
-  const [disableBundleIds, setDisableBundleIds] = useState<string[]>([]);
+  const [disabledBundleIds, setDisableBundleIds] = useState<string[]>([]);
+
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
@@ -32,7 +33,7 @@ function PositionsTable({
           <Th w={"20%"}>Current Value</Th>
           <Th>% Change</Th>
           <Th>CGT</Th>
-          {isOwnPlayer && <Th w={100}></Th>}
+          {isOwnPlayer && <Th w={100} />}
         </Tr>
       </Thead>
       <Tbody>
@@ -66,10 +67,10 @@ function PositionsTable({
                         isWeekend ||
                         bundle.isLiquidating ||
                         bundle.capitalGainsTax(tick) === 1 ||
-                        disableBundleIds.includes(bundle.id)
+                        disabledBundleIds.includes(bundle.id)
                       }
                       onClick={() => {
-                        setDisableBundleIds([...disableBundleIds, bundle.id]);
+                        setDisableBundleIds([...disabledBundleIds, bundle.id]);
                         onSell(bundle.id);
                       }}
                     >

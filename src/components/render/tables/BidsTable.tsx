@@ -7,27 +7,29 @@ import {
   Th,
   Progress,
   Flex,
+  Button,
 } from "@chakra-ui/react";
-import React from "react";
-import { formatCurrency } from "../../../core/helpers";
+import React, { useState } from "react";
 import { Player } from "../../../core/player/Player";
 import { PositionBidType } from "../../../core/stock/PositionBid";
 
 type PropTypes = {
   player: Player;
-  stockPriceMap: { [key: string]: number };
+  onCancelBid: (bidId: string) => void;
 };
 
-function BidsTable({ player, stockPriceMap }: PropTypes) {
+function BidsTable({ player, onCancelBid }: PropTypes) {
+  const [disabledBidIds, setDisabledBidIds] = useState<string[]>([]);
+
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
         <Tr>
           <Th w={100}>Stock</Th>
-          <Th w={150}>Current Price</Th>
           <Th w={150}>Initial Qty</Th>
           <Th w={150}>Target Qty</Th>
           <Th isNumeric>Progress</Th>
+          <Th />
         </Tr>
       </Thead>
       <Tbody>
@@ -42,7 +44,6 @@ function BidsTable({ player, stockPriceMap }: PropTypes) {
           return (
             <Tr key={bid.id} data-bid-id={bid.id}>
               <Td fontWeight={"bold"}>${bundle.stockTicker}</Td>
-              <Td>{formatCurrency(stockPriceMap[bundle.stockTicker])}</Td>
               <Td>{bundle.quantity / 1000}K</Td>
               <Td>{targetQty / 1000}K</Td>
               <Td>
@@ -54,6 +55,19 @@ function BidsTable({ player, stockPriceMap }: PropTypes) {
                     colorScheme="blackAlpha"
                   />
                 </Flex>
+              </Td>
+              <Td>
+                <Button
+                  size={"xs"}
+                  colorScheme={"red"}
+                  disabled={disabledBidIds.includes(bid.id)}
+                  onClick={() => {
+                    setDisabledBidIds([...disabledBidIds, bid.id]);
+                    onCancelBid(bid.id);
+                  }}
+                >
+                  CANCEL
+                </Button>
               </Td>
             </Tr>
           );

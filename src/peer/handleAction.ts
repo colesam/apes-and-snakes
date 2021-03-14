@@ -2,6 +2,7 @@ import { StoreSelector } from "../store/StoreSelector";
 import { applyPatchesToStore, getStore, setStore } from "../store/store";
 import { logWarning } from "../util/log";
 import { PeerRoutine } from "./PeerRoutine";
+import handleCancelBid from "./actionHandlers/handleCancelBid";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -35,6 +36,8 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
   [TPeerAction.OPEN_POSITION]: handleOpenPosition,
 
   [TPeerAction.CLOSE_POSITION]: handleClosePosition,
+
+  [TPeerAction.CANCEL_BID]: handleCancelBid,
 
   [TPeerAction.PULL_DATA]: ({ respond }) =>
     respond(StoreSelector.syncedState(getStore())),
