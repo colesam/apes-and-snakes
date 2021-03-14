@@ -63,48 +63,84 @@ export interface TStore extends State {
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
 
-export const initialState = () =>
-  cloneDeep({
-    // Shared state
-    tick: 0,
-    roomCode: "",
-    gameStatus: GameStatus.LOBBY,
-    players: [],
+const stateConfig = {
+  // Shared state
+  tick: { init: () => 0, peerSync: true },
+  roomCode: { init: () => "", peerSync: true },
+  gameStatus: { init: () => GameStatus.LOBBY, peerSync: true },
+  players: { init: () => [], peerSync: true },
 
-    // Stock state
-    stocks: stocks.slice(0, NUM_STOCKS),
-    stockRollModifierMap: new Map(),
-    stockVolatilityModifierMap: new Map(),
+  // Stock state
+  stocks: {
+    init: () => cloneDeep(stocks.slice(0, NUM_STOCKS)),
+    peerSync: true,
+  },
+  stockRollModifierMap: { init: () => new Map() },
+  stockVolatilityModifierMap: { init: () => new Map() },
 
-    // Flop state
-    flop: new Flop(),
-    highlightFlopCards: [],
-    flopSetAt: 0,
-    retiredCard: new Card(),
+  // Flop state
+  flop: { init: () => new Flop(), peerSync: true },
+  highlightFlopCards: {
+    init: () => [],
+    storeLocally: false,
+    storeLocallyIfHost: false,
+  },
+  flopSetAt: { init: () => 0, peerSync: true },
+  retiredCard: { init: () => new Card(), peerSync: true },
 
-    // Host state
-    isHost: false,
-    secretKeyPlayerIdMap: new Map(),
-    playerConnectionMap: new Map(),
-    deck: new Deck().shuffle(),
+  // Host state
+  isHost: { init: () => false },
+  secretKeyPlayerIdMap: { init: () => new Map() },
+  playerConnectionMap: { init: () => new Map() },
+  deck: { init: () => new Deck().shuffle() },
 
-    // Player state
-    ping: null,
-    hostPeerId: "",
-    previousRoomCode: "",
-    playerId: "",
-    pingIntervalId: null,
-    secretKey: storageGet("secretKey") || storageSet("secretKey", generateId()),
+  // Player state
+  ping: { init: () => null },
+  hostPeerId: { init: () => "" },
+  previousRoomCode: { init: () => "" },
+  playerId: { init: () => "" },
+  pingIntervalId: { init: () => null },
+  secretKey: {
+    init: () =>
+      storageGet("secretKey") || storageSet("secretKey", generateId()),
+  },
 
-    // Misc
-    viewFullHistory: false,
-  } as TStore);
+  // Misc
+  viewFullHistory: { init: () => false },
+} as { [key in TStoreKey]: TStateConfig };
+
+// State configuration
+export interface TStateConfig {
+  init: any;
+  peerSync?: boolean;
+  storeLocally?: boolean;
+  storeLocallyIfHost?: boolean;
+}
+
+const defaultConfig: Partial<TStateConfig> = {
+  peerSync: false,
+  storeLocally: true,
+  storeLocallyIfHost: true,
+};
+
+export const getStateConfig = (key: TStoreKey): TStateConfig => ({
+  ...defaultConfig,
+  ...(stateConfig[key] || {}),
+});
+
+export const initialState = () => {
+  const res = {} as TStore;
+  for (const key in stateConfig) {
+    res[key] = stateConfig[key].init();
+  }
+  return res;
+};
 
 // Initialize state from local storage
 const setStoreFromStorage = (store: UseStore<TStore>) => {
   logDebug("Loading store state from local storage.");
   const initialStorageState: any = {};
-  for (const key in initialState()) {
+  for (const key in stateConfig) {
     const val = storageGet(key);
     if (val != null) {
       initialStorageState[key] = val;
@@ -124,64 +160,9 @@ if (window.__ZustandStore__) {
   );
 }
 
+// Main exports
 export const useStore = window.__ZustandStore__;
 
-// State configuration
-interface TStateConfig {
-  peerSync: boolean;
-  storeLocally: boolean;
-  storeLocallyIfHost: boolean;
-}
-
-const defaultConfig: TStateConfig = {
-  peerSync: false,
-  storeLocally: true,
-  storeLocallyIfHost: true,
-};
-
-const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
-  // Shared state
-  tick: { peerSync: true },
-  roomCode: { peerSync: true },
-  gameStatus: { peerSync: true },
-  players: { peerSync: true },
-  stocks: { peerSync: true },
-
-  // Flop state
-  flop: { peerSync: true },
-  highlightFlopCards: { storeLocally: false, storeLocallyIfHost: false },
-  flopSetAt: { peerSync: true },
-  retiredCard: { peerSync: true },
-
-  // Host state
-  isHost: {},
-  secretKeyPlayerIdMap: {},
-  playerConnectionMap: {},
-  deck: {},
-  stockRollModifierMap: {},
-  stockVolatilityModifierMap: {},
-
-  // Player state
-  ping: {},
-  hostPeerId: {},
-  previousRoomCode: {},
-  playerId: {},
-  pingIntervalId: {},
-  secretKey: {},
-
-  // Hover state
-  stockRelevantCards: { storeLocally: false, storeLocallyIfHost: false },
-
-  // Misc
-  viewFullHistory: {},
-};
-
-export const getStateConfig = (key: TStoreKey): TStateConfig => ({
-  ...defaultConfig,
-  ...(stateConfig[key] || {}),
-});
-
-// Helper exports
 export const getStore = useStore.getState;
 
 export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
@@ -221,6 +202,7 @@ export const applyPatchesToStore = (patches: Patch[]) => {
   setStore(applyPatches(getStore(), patches));
 };
 
+// Helper methods
 const peerSyncState = (stateChanges: Partial<TStore>) => {
   const peerSyncedChanges = StoreSelector.syncedState(stateChanges);
   if (Object.keys(peerSyncedChanges).length) {
