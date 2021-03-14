@@ -12,13 +12,15 @@ import {
 import React, { useState } from "react";
 import { Player } from "../../../core/player/Player";
 import { PositionBidType } from "../../../core/stock/PositionBid";
+import { Stock } from "../../../core/stock/Stock";
 
 type PropTypes = {
   player: Player;
+  stocks: Stock[];
   onCancelBid: (bidId: string) => void;
 };
 
-function BidsTable({ player, onCancelBid }: PropTypes) {
+function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
   const [disabledBidIds, setDisabledBidIds] = useState<string[]>([]);
 
   return (
@@ -27,32 +29,43 @@ function BidsTable({ player, onCancelBid }: PropTypes) {
         <Tr>
           <Th w={100}>Stock</Th>
           <Th w={150}>Initial Qty</Th>
-          <Th w={150}>Target Qty</Th>
-          <Th isNumeric>Progress</Th>
-          <Th />
+          <Th>Target Qty</Th>
+          <Th w={150}>Progress</Th>
+          <Th w={100} isNumeric />
         </Tr>
       </Thead>
       <Tbody>
         {player.positionBids.map(bid => {
+          const stock = stocks.find(stock => stock.ticker === bid.stockTicker);
           const bundle = player.positionBundles.get(bid.positionBundleId);
           const targetQty = bid.type === PositionBidType.BUY ? bid.quantity : 0;
-          if (!bundle) return null;
+          if (!bundle || !stock) return null;
+          const isSqueezed =
+            bid.type === PositionBidType.BUY
+              ? stock.hasBuySqueeze
+              : stock.hasSellSqueeze;
           const progress =
             bid.type === PositionBidType.BUY
               ? bundle.quantity / bid.quantity
               : (bid.quantity - bundle.quantity) / bid.quantity;
+
           return (
-            <Tr key={bid.id} data-bid-id={bid.id}>
+            <Tr
+              bg={isSqueezed ? "red.50" : undefined}
+              key={bid.id}
+              data-bid-id={bid.id}
+            >
               <Td fontWeight={"bold"}>${bundle.stockTicker}</Td>
               <Td>{bundle.quantity / 1000}K</Td>
               <Td>{targetQty / 1000}K</Td>
               <Td>
-                <Flex justify="flex-end">
+                <Flex justify="flex-end" align={"center"}>
                   <Progress
                     value={progress * 100}
                     size="xs"
                     w={100}
-                    colorScheme="blackAlpha"
+                    colorScheme={isSqueezed ? "red" : "blackAlpha"}
+                    mr={4}
                   />
                 </Flex>
               </Td>
@@ -60,13 +73,14 @@ function BidsTable({ player, onCancelBid }: PropTypes) {
                 <Button
                   size={"xs"}
                   colorScheme={"red"}
+                  isFullWidth
                   disabled={disabledBidIds.includes(bid.id)}
                   onClick={() => {
                     setDisabledBidIds([...disabledBidIds, bid.id]);
                     onCancelBid(bid.id);
                   }}
                 >
-                  CANCEL
+                  STOP
                 </Button>
               </Td>
             </Tr>

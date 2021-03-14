@@ -163,6 +163,7 @@ function Play() {
           {viewPlayerId === playerId && (
             <BidsTable
               player={player}
+              stocks={stocks}
               onCancelBid={bidId =>
                 PeerAction.cancelBid(hostPeerId, secretKey, bidId)
               }

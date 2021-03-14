@@ -59,8 +59,7 @@ function PositionsTable({
                   <Td>
                     <Button
                       size={"xs"}
-                      colorScheme={"red"}
-                      w={"100%"}
+                      isFullWidth
                       disabled={
                         isWeekend ||
                         bundle.isLiquidating ||
