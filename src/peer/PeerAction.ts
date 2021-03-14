@@ -1,5 +1,6 @@
 import { broadcastPatches } from "./peerActions/broadcastPatches";
 import { broadcastState } from "./peerActions/broadcastState";
+import { cancelBid } from "./peerActions/cancelBid";
 import { closePosition } from "./peerActions/closePosition";
 import { endGame } from "./peerActions/endGame";
 import { join } from "./peerActions/join";
@@ -22,4 +23,5 @@ export const PeerAction = {
   pullData,
   pushData,
   reconnect,
+  cancelBid,
 };

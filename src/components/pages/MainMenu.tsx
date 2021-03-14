@@ -13,7 +13,7 @@ function MainMenu() {
   );
 
   useEffect(() => {
-    resetStore();
+    resetStore(true);
   }, []);
 
   return (

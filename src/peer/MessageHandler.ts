@@ -5,7 +5,7 @@ import { serialize, deserialize, classMap } from "../core/serialize";
 import { logDebug, logError, logWarning } from "../util/log";
 import TimeoutError from "./error/TimeoutError";
 
-export default class MessageHandler {
+export class MessageHandler {
   constructor(public timeout: number = 10000) {}
 
   private _messageResolvers: { [key: string]: (data: any) => void } = {};
@@ -35,7 +35,7 @@ export default class MessageHandler {
 
   handleMessage(conn: Peer.DataConnection, data: string): any | null {
     const len = lengthInKb(data);
-    if (len > 5) logWarning(`Received message of size ${len}`, data);
+    if (len > 10) logWarning(`Received message of size ${len}`, data);
 
     const message = deserialize(data, classMap);
 

@@ -56,13 +56,12 @@ function StockBox({
       <VStack w={"100%"} key={qty}>
         <Button
           size={"xs"}
-          colorScheme={"green"}
-          w={"100%"}
+          isFullWidth
           disabled={disableTransactions || currentPrice * qty > playerCash}
           onClick={() => onBuy && onBuy(qty, currentPrice)}
           key={`buy_${qty}`}
         >
-          Buy {qty / 1000}K
+          BUY {qty / 1000}K
         </Button>
         <Text fontSize={"sm"} color={"gray.500"}>
           {formatPriceEst(currentPrice * qty)}

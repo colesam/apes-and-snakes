@@ -5,7 +5,7 @@ import shallow from "zustand/shallow";
 import { NAMESPACE } from "../../config";
 import generateId from "../../core/generateId";
 import { errorLog } from "../../core/helpers";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { NAME_TAKEN_ERROR } from "../../peer/error/NameTakenError";
 import { setStore, useStore } from "../../store/store";

@@ -1,6 +1,7 @@
+import { logError } from "../../util/log";
 import { ImmerClass } from "../ImmerClass";
 import { Position } from "../stock/Position";
-import { PositionBid } from "../stock/PositionBid";
+import { PositionBid, PositionBidType } from "../stock/PositionBid";
 import { PositionBundle } from "../stock/PositionBundle";
 import { ConnectionStatus } from "./ConnectionStatus";
 
@@ -42,10 +43,9 @@ export class Player extends ImmerClass {
     this.cash = cash;
   }
 
+  // Bundle/position methods
   get positions(): Position[] {
-    return this.positionBundleList.flatMap(bundle =>
-      bundle.positionList.map(([, pos]) => pos)
-    );
+    return this.positionBundleList.flatMap(bundle => bundle.positionList);
   }
 
   get positionBundleList(): PositionBundle[] {
@@ -59,11 +59,31 @@ export class Player extends ImmerClass {
     this.positionBundles.set(bundle.id, bundle);
   }
 
+  // Bid methods
+  getBids(stockTicker: string) {
+    return this.positionBids.filter(p => p.stockTicker === stockTicker);
+  }
+
   pushBid(bid: PositionBid) {
     this.positionBids.push(bid);
   }
 
-  getBids(stockTicker: string) {
-    return this.positionBids.filter(p => p.stockTicker === stockTicker);
+  closeBid(bidId: string) {
+    const index = this.positionBids.findIndex(bid => bidId === bid.id);
+    const bid = this.positionBids[index];
+    const bundle = this.positionBundles.get(bid.positionBundleId);
+
+    if (bundle) {
+      bundle.isSecured = true;
+      if (bid.type === PositionBidType.SELL) {
+        bundle.isLiquidating = false;
+      }
+    } else {
+      logError(
+        `Could not find bundle #${bid.positionBundleId} when closing bid #${bid.id}.`
+      );
+    }
+
+    this.positionBids.splice(index, 1);
   }
 }

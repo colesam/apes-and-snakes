@@ -1,4 +1,4 @@
-import PeerConnectionManager from "../PeerConnectionManager";
+import { PeerConnectionManager } from "../PeerConnectionManager";
 import { TPeerAction } from "../types/TPeerAction";
 
 export const endGame = () =>

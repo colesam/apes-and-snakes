@@ -1,8 +1,9 @@
 enum LogLevel {
   ERROR = "ERROR",
-  WARNING = "WARN",
+  WARNING = "WARNING",
   DEBUG = "DEBUG",
   PING = "PING",
+  TIME = "TIME",
 }
 
 const logLevelColors = {
@@ -10,6 +11,7 @@ const logLevelColors = {
   [LogLevel.WARNING]: "orange",
   [LogLevel.DEBUG]: "green",
   [LogLevel.PING]: "green",
+  [LogLevel.TIME]: "green",
 };
 
 export const log = (level: LogLevel, msg: string, object?: any) => {
@@ -38,3 +40,18 @@ export const logDebug = (msg: string, object?: any) =>
 
 export const logPing = (msg: string, object?: any) =>
   log(LogLevel.PING, msg, object);
+
+export const logTime = (msg: string, fn: () => any, warnThreshold?: number) => {
+  const start = new Date().getTime();
+
+  fn();
+
+  const duration = new Date().getTime() - start;
+
+  const level =
+    warnThreshold && duration > warnThreshold
+      ? LogLevel.WARNING
+      : LogLevel.TIME;
+
+  log(level, msg, `Took ${duration}ms`);
+};

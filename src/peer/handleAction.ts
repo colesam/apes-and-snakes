@@ -1,7 +1,8 @@
 import { StoreSelector } from "../store/StoreSelector";
 import { applyPatchesToStore, getStore, setStore } from "../store/store";
 import { logWarning } from "../util/log";
-import { PeerAction } from "./PeerAction";
+import { PeerRoutine } from "./PeerRoutine";
+import handleCancelBid from "./actionHandlers/handleCancelBid";
 import handleClosePosition from "./actionHandlers/handleClosePosition";
 import handleEndGame from "./actionHandlers/handleEndGame";
 import handleJoin from "./actionHandlers/handleJoin";
@@ -36,6 +37,8 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
 
   [TPeerAction.CLOSE_POSITION]: handleClosePosition,
 
+  [TPeerAction.CANCEL_BID]: handleCancelBid,
+
   [TPeerAction.PULL_DATA]: ({ respond }) =>
     respond(StoreSelector.syncedState(getStore())),
 
@@ -47,14 +50,16 @@ const actionHandlerMap: { [key in TPeerAction]: TActionHandler } = {
   [TPeerAction.PUSH_PATCH]: ({ payload, respond }) => {
     const { tick, hostPeerId } = getStore();
 
-    if (parseInt(payload.tick) !== tick + 1) {
+    const patchTick = parseInt(payload.tick);
+
+    if (patchTick === tick) {
       applyPatchesToStore(payload.patches);
     } else {
       logWarning(
-        "Patch is more than one tick ahead of client's data. Requesting full data reset.",
+        "Patch is out of sync with client data. Requesting full data reset.",
         `Local tick: ${tick}, patch tick: ${payload.tick}`
       );
-      PeerAction.pullData(hostPeerId);
+      PeerRoutine.pullData(hostPeerId);
     }
 
     respond();

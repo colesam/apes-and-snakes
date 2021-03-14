@@ -1,9 +1,10 @@
 import { Box, Flex, VStack } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
-import { logDebug } from "../../util/log";
+import { logDebug, logTime } from "../../util/log";
 import CommandBar from "../smart/CommandBar";
 import FlopDisplay from "../smart/FlopDisplay";
 import StockBox from "../smart/StockBox";
@@ -14,6 +15,9 @@ function Spectate() {
   const viewFullHistory = useStore(s => s.viewFullHistory);
 
   // Effects
+  useEffect(() => {
+    console.log(PeerConnectionManager.peerId);
+  }, []);
   useEffect(() => {
     const { tick } = getStore();
     let id: NodeJS.Timeout | null = null;
@@ -28,7 +32,13 @@ function Spectate() {
         (!SIM_WEEKS || tick >= SIM_WEEKS * TICKS_PER_WEEK) &&
         tick <= NUM_WEEKS * TICKS_PER_WEEK
       ) {
-        setStore(StoreAction.runTicks(1));
+        logTime(
+          "setStore(StoreAction.runTicks(1)",
+          () => {
+            setStore(StoreAction.runTicks(1));
+          },
+          150
+        );
       }
     }, TICK_SPEED);
 

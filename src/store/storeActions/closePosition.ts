@@ -18,5 +18,7 @@ export const closePosition = (playerId: string, bundleId: string) => (
     });
 
     player.pushBid(positionBid);
+
+    bundle.isLiquidating = true;
   }
 };

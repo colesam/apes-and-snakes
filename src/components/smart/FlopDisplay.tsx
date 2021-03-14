@@ -16,11 +16,6 @@ function FlopDisplay(styleProps: PropTypes) {
   const retiredCard = useStore(s => s.retiredCard);
   const flopAge = useStore(s => s.tick - s.flopSetAt);
 
-  if (highlightFlopCards.length) {
-    console.log("-- highlightFlopCards --");
-    console.log(highlightFlopCards);
-  }
-
   const reversedCards = reverse([...flop.cards]);
   const blankCard = new Card();
 

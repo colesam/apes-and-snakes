@@ -13,7 +13,7 @@ import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
 import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
-import PeerConnectionManager from "../../peer/PeerConnectionManager";
+import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { PeerRoutine } from "../../peer/PeerRoutine";
 import { StoreSelector } from "../../store/StoreSelector";
 import { useStore } from "../../store/store";
@@ -37,7 +37,6 @@ function Play() {
   const tick = useStore(s => s.tick);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
-  const gameStatus = useStore(s => s.gameStatus);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const stockPriceMap = useStore(StoreSelector.stockPriceMap);
@@ -55,12 +54,10 @@ function Play() {
     logDebug(`Play.tsx initial load.`);
   }, []);
 
-  useEffect(() => {
-    if (!PeerConnectionManager.peerId) {
-      logDebug("Attempting to reconnect to host.");
-      attemptReconnectToHost(previousRoomCode, secretKey);
-    }
-  }, [gameStatus]);
+  if (!PeerConnectionManager.peerId) {
+    logDebug("Attempting to reconnect to host.");
+    attemptReconnectToHost(previousRoomCode, secretKey);
+  }
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);
@@ -70,7 +67,7 @@ function Play() {
 
   const playerAssetValue = sum(
     player.positionBundleList.flatMap(bundle =>
-      bundle.openPositionList.map(([, pos]) =>
+      bundle.openPositionList.map(pos =>
         pos.currentValue(stockPriceMap[bundle.stockTicker])
       )
     )
@@ -164,7 +161,13 @@ function Play() {
           />
 
           {viewPlayerId === playerId && (
-            <BidsTable player={player} stockPriceMap={stockPriceMap} />
+            <BidsTable
+              player={player}
+              stocks={stocks}
+              onCancelBid={bidId =>
+                PeerAction.cancelBid(hostPeerId, secretKey, bidId)
+              }
+            />
           )}
         </VStack>
         <Box

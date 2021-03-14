@@ -1,6 +1,6 @@
 import { resetStore } from "../../store/store";
 import { PeerAction } from "../PeerAction";
-import PeerConnectionManager from "../PeerConnectionManager";
+import { PeerConnectionManager } from "../PeerConnectionManager";
 
 // Host only
 export const endGame = () => {

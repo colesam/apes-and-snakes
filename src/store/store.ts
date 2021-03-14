@@ -1,6 +1,6 @@
 import { applyPatches, Patch, produce } from "immer";
 import { cloneDeep, isFunction } from "lodash";
-import create, { State } from "zustand";
+import create, { State, UseStore } from "zustand";
 import { NUM_STOCKS } from "../config";
 import { Card } from "../core/card/Card";
 import { Deck } from "../core/card/Deck";
@@ -15,12 +15,15 @@ import { RollModifier } from "../core/stock/RollModifier";
 import { Stock } from "../core/stock/Stock";
 import { VolatilityModifier } from "../core/stock/VolatilityModifier";
 import { PeerAction } from "../peer/PeerAction";
-import { logDebug } from "../util/log";
+import { logDebug, logTime } from "../util/log";
 import { StoreSelector } from "./StoreSelector";
 import { devtools } from "./middleware/devtools";
 import { stocks } from "./mockData/stocks";
 
-const [storageGet, storageSet] = initStorage("sessionStorage", "store");
+const [storageGet, storageSet, storageClear] = initStorage(
+  "sessionStorage",
+  "store"
+);
 
 export interface TStore extends State {
   // Shared state
@@ -95,11 +98,33 @@ export const initialState = () =>
 
     // Misc
     viewFullHistory: false,
-    test: "",
   } as TStore);
 
-// Create store
-export const useStore = create<TStore>(devtools(initialState, "Zustand Store"));
+// Initialize state from local storage
+const setStoreFromStorage = (store: UseStore<TStore>) => {
+  logDebug("Loading store state from local storage.");
+  const initialStorageState: any = {};
+  for (const key in initialState()) {
+    const val = storageGet(key);
+    if (val != null) {
+      initialStorageState[key] = val;
+    }
+  }
+  store.setState(initialStorageState);
+};
+
+// Create store if it doesn't exist
+if (window.__ZustandStore__) {
+  // This helps load any changes to classes that are stored in the store
+  setStoreFromStorage(window.__ZustandStore__);
+} else {
+  logDebug("Creating new store.");
+  window.__ZustandStore__ = create<TStore>(
+    devtools(initialState, "Zustand Store")
+  );
+}
+
+export const useStore = window.__ZustandStore__;
 
 // State configuration
 interface TStateConfig {
@@ -107,16 +132,18 @@ interface TStateConfig {
   storeLocally: boolean;
   storeLocallyIfHost: boolean;
 }
+
 const defaultConfig: TStateConfig = {
   peerSync: false,
   storeLocally: true,
   storeLocallyIfHost: true,
 };
+
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
-  gameStatus: { peerSync: true, storeLocally: false, storeLocallyIfHost: true },
+  gameStatus: { peerSync: true },
   players: { peerSync: true },
   stocks: { peerSync: true },
 
@@ -148,6 +175,7 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Misc
   viewFullHistory: {},
 };
+
 export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,
   ...(stateConfig[key] || {}),
@@ -155,26 +183,39 @@ export const getStateConfig = (key: TStoreKey): TStateConfig => ({
 
 // Helper exports
 export const getStore = useStore.getState;
+
 export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
-  if (isFunction(update)) {
-    useStore.setState(s => {
-      if (s.isHost) {
-        return produce(s, update, patches => {
-          peerSyncPatches(s.tick, patches);
+  logTime(
+    "setStore()",
+    () => {
+      if (isFunction(update)) {
+        useStore.setState(s => {
+          if (s.isHost) {
+            return produce(s, update, patches => {
+              peerSyncPatches(s.tick, patches);
+            });
+          } else {
+            return produce(s, update);
+          }
         });
       } else {
-        return produce(s, update);
+        const { isHost } = getStore();
+        useStore.setState(update);
+        if (isHost) {
+          peerSyncState(update);
+        }
       }
-    });
-  } else {
-    const { isHost } = getStore();
-    useStore.setState(update);
-    if (isHost) {
-      peerSyncState(update);
-    }
-  }
+    },
+    150
+  );
 };
-export const resetStore = () => setStore(initialState);
+
+export const resetStore = (clearStorage = false) => {
+  if (clearStorage) {
+    storageClear();
+  }
+  setStore(initialState);
+};
 
 export const applyPatchesToStore = (patches: Patch[]) => {
   setStore(applyPatches(getStore(), patches));
@@ -191,23 +232,10 @@ const peerSyncPatches = (tick: number, patches: Patch[]) => {
   const peerSyncedPatches = patches.filter(
     patch => getStateConfig(patch.path[0]).peerSync
   );
-  PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
-};
-
-// Initialize state from local storage
-const setStoreFromStorage = () => {
-  logDebug("Loading store state from local storage");
-  const initialStorageState: any = {};
-  for (const key in initialState()) {
-    const val = storageGet(key);
-    if (val != null) {
-      initialStorageState[key] = val;
-    }
+  if (peerSyncedPatches.length) {
+    PeerAction.broadcastPatches({ tick, patches: peerSyncedPatches });
   }
-  setStore(initialStorageState);
 };
-
-setStoreFromStorage();
 
 // Set up local storage persistance
 useStore.subscribe((newState, oldState) => {
