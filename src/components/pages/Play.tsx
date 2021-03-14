@@ -37,7 +37,6 @@ function Play() {
   const tick = useStore(s => s.tick);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
-  const gameStatus = useStore(s => s.gameStatus);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const stockPriceMap = useStore(StoreSelector.stockPriceMap);
@@ -55,16 +54,10 @@ function Play() {
     logDebug(`Play.tsx initial load.`);
   }, []);
 
-  useEffect(() => {
-    console.log(PeerConnectionManager.peerId);
-  }, []);
-
-  useEffect(() => {
-    if (!PeerConnectionManager.peerId) {
-      logDebug("Attempting to reconnect to host.");
-      attemptReconnectToHost(previousRoomCode, secretKey);
-    }
-  }, [gameStatus]);
+  if (!PeerConnectionManager.peerId) {
+    logDebug("Attempting to reconnect to host.");
+    attemptReconnectToHost(previousRoomCode, secretKey);
+  }
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);

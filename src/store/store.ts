@@ -1,6 +1,6 @@
 import { applyPatches, Patch, produce } from "immer";
 import { cloneDeep, isFunction } from "lodash";
-import create, { State } from "zustand";
+import create, { State, UseStore } from "zustand";
 import { NUM_STOCKS } from "../config";
 import { Card } from "../core/card/Card";
 import { Deck } from "../core/card/Deck";
@@ -100,8 +100,24 @@ export const initialState = () =>
     viewFullHistory: false,
   } as TStore);
 
+// Initialize state from local storage
+const setStoreFromStorage = (store: UseStore<TStore>) => {
+  logDebug("Loading store state from local storage.");
+  const initialStorageState: any = {};
+  for (const key in initialState()) {
+    const val = storageGet(key);
+    if (val != null) {
+      initialStorageState[key] = val;
+    }
+  }
+  store.setState(initialStorageState);
+};
+
 // Create store if it doesn't exist
-if (!window.__ZustandStore__) {
+if (window.__ZustandStore__) {
+  // This helps load any changes to classes that are stored in the store
+  setStoreFromStorage(window.__ZustandStore__);
+} else {
   logDebug("Creating new store.");
   window.__ZustandStore__ = create<TStore>(
     devtools(initialState, "Zustand Store")
@@ -116,16 +132,18 @@ interface TStateConfig {
   storeLocally: boolean;
   storeLocallyIfHost: boolean;
 }
+
 const defaultConfig: TStateConfig = {
   peerSync: false,
   storeLocally: true,
   storeLocallyIfHost: true,
 };
+
 const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Shared state
   tick: { peerSync: true },
   roomCode: { peerSync: true },
-  gameStatus: { peerSync: true, storeLocally: false, storeLocallyIfHost: true },
+  gameStatus: { peerSync: true },
   players: { peerSync: true },
   stocks: { peerSync: true },
 
@@ -157,6 +175,7 @@ const stateConfig: { [key in TStoreKey]: Partial<TStateConfig> } = {
   // Misc
   viewFullHistory: {},
 };
+
 export const getStateConfig = (key: TStoreKey): TStateConfig => ({
   ...defaultConfig,
   ...(stateConfig[key] || {}),

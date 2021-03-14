@@ -1,5 +1,5 @@
 import { Button, Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import { formatCurrency } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
 import PercentChange from "../PercentChange";
@@ -21,8 +21,6 @@ function PositionsTable({
   isWeekend,
   onSell,
 }: PropTypes) {
-  const [disabledBundleIds, setDisableBundleIds] = useState<string[]>([]);
-
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
@@ -66,13 +64,9 @@ function PositionsTable({
                       disabled={
                         isWeekend ||
                         bundle.isLiquidating ||
-                        bundle.capitalGainsTax(tick) === 1 ||
-                        disabledBundleIds.includes(bundle.id)
+                        bundle.capitalGainsTax(tick) === 1
                       }
-                      onClick={() => {
-                        setDisableBundleIds([...disabledBundleIds, bundle.id]);
-                        onSell(bundle.id);
-                      }}
+                      onClick={() => onSell(bundle.id)}
                     >
                       SELL
                     </Button>
