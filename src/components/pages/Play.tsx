@@ -7,7 +7,6 @@ import {
   Radio,
   HStack,
 } from "@chakra-ui/react";
-import { sum } from "lodash";
 import React, { useEffect, useState } from "react";
 import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
@@ -61,17 +60,12 @@ function Play() {
 
   // Computed
   const player = players.find(player => player.id === viewPlayerId);
+
   if (!player) {
     throw new Error("No player found!");
   }
 
-  const playerAssetValue = sum(
-    player.positionBundleList.flatMap(bundle =>
-      bundle.openPositionList.map(pos =>
-        pos.currentValue(stockPriceMap[bundle.stockTicker])
-      )
-    )
-  );
+  const playerPortfolio = player.getPortfolio(stockPriceMap);
 
   // Handlers
   const handleBuy = (ticker: string, qty: number, price: number) => {
@@ -98,6 +92,11 @@ function Play() {
             {stocks.map(stock => (
               <StockBox
                 stock={stock}
+                portfolioPercent={playerPortfolio.getPortfolioPercent(
+                  stock.ticker
+                )}
+                isOwnPlayer={viewPlayerId === playerId}
+                playerName={player.name}
                 playerCash={player.cash}
                 purchaseQuantities={PURCHASE_QUANTITIES}
                 viewFullHistory={viewFullHistory}
@@ -140,12 +139,12 @@ function Play() {
 
             <Text>
               <strong style={{ display: "block" }}>Player Asset Value:</strong>{" "}
-              {formatCurrency(playerAssetValue)}
+              {formatCurrency(playerPortfolio.totalValue)}
             </Text>
 
             <Text>
               <strong style={{ display: "block" }}>Player Total Value:</strong>{" "}
-              {formatCurrency(player.cash + playerAssetValue)}
+              {formatCurrency(player.cash + playerPortfolio.totalValue)}
             </Text>
           </VStack>
 

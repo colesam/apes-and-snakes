@@ -4,6 +4,7 @@ import { Position } from "../stock/Position";
 import { PositionBid, PositionBidType } from "../stock/PositionBid";
 import { PositionBundle } from "../stock/PositionBundle";
 import { ConnectionStatus } from "./ConnectionStatus";
+import { PlayerPortfolio } from "./PlayerPortfolio";
 
 interface TParams {
   id: string;
@@ -41,6 +42,19 @@ export class Player extends ImmerClass {
     this.positionBundles = positionBundles;
     this.positionBids = positionBids;
     this.cash = cash;
+  }
+
+  getPortfolio(stockPriceMap: { [key: string]: number }) {
+    const portfolio = new PlayerPortfolio();
+
+    for (const bundle of this.positionBundleList) {
+      portfolio.pushStockValue(
+        bundle.stockTicker,
+        bundle.currentValue(stockPriceMap[bundle.stockTicker])
+      );
+    }
+
+    return portfolio;
   }
 
   // Bundle/position methods

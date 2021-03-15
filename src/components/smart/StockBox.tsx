@@ -22,6 +22,9 @@ import Volume from "../render/stock/Volume";
 
 interface PropTypes {
   stock: Stock;
+  isOwnPlayer?: boolean;
+  playerName?: string;
+  portfolioPercent?: number;
   playerCash?: number;
   purchaseQuantities?: number[];
   viewFullHistory?: boolean;
@@ -32,6 +35,9 @@ interface PropTypes {
 
 function StockBox({
   stock,
+  isOwnPlayer = false,
+  playerName,
+  portfolioPercent,
   playerCash,
   purchaseQuantities,
   viewFullHistory = false,
@@ -136,6 +142,18 @@ function StockBox({
               </Text>
             </Tooltip>
           </Flex>
+          {portfolioPercent != null ? (
+            <Text
+              fontSize={"sm"}
+              as={"em"}
+              sx={{
+                visibility: portfolioPercent < 0.01 ? "hidden" : "visible",
+              }}
+            >
+              <strong>{Math.round(portfolioPercent * 1000) / 10}%</strong> of{" "}
+              {isOwnPlayer ? "your" : playerName + "'s"} portfolio
+            </Text>
+          ) : null}
         </Box>
         <CardStack
           cards={stock.pair.cards}
