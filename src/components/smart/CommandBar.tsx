@@ -1,4 +1,13 @@
-import { Button, Center, Divider, HStack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Divider,
+  Flex,
+  FormLabel,
+  HStack,
+  Switch,
+  Text,
+} from "@chakra-ui/react";
 import React from "react";
 import { TICKS_PER_WEEK, TICKS_PER_DAY } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
@@ -27,6 +36,7 @@ function CommandBar() {
   const tick = useStore(s => s.tick);
   const isHost = useStore(s => s.isHost);
   const viewFullHistory = useStore(s => s.viewFullHistory);
+  const sortStocks = useStore(s => s.sortStocks);
 
   const weekNum = Math.floor(tick / TICKS_PER_WEEK) + 1;
 
@@ -40,16 +50,40 @@ function CommandBar() {
       px={4}
       py={2}
     >
-      <Button
-        size="sm"
-        onClick={() =>
-          setStore(s => {
-            s.viewFullHistory = !viewFullHistory;
-          })
-        }
-      >
-        {viewFullHistory ? "Viewing Full History" : "Viewing This Week"}
-      </Button>
+      <Flex align={"center"}>
+        <FormLabel htmlFor={"full-price-history"} fontSize={"md"} mb={0}>
+          Full Price History
+        </FormLabel>
+        <Switch
+          isChecked={viewFullHistory}
+          onChange={() =>
+            setStore(s => {
+              s.viewFullHistory = !viewFullHistory;
+            })
+          }
+          id={"full-price-history"}
+        />
+      </Flex>
+
+      <Center height="20px">
+        <Divider orientation="vertical" />
+      </Center>
+
+      <Flex align={"center"}>
+        <FormLabel htmlFor={"full-price-history"} fontSize={"md"} mb={0}>
+          Sort Stocks By Portfolio %
+        </FormLabel>
+        <Switch
+          isChecked={sortStocks}
+          onChange={() =>
+            setStore(s => {
+              s.sortStocks = !sortStocks;
+            })
+          }
+          id={"full-price-history"}
+        />
+      </Flex>
+
       {isHost && (
         <>
           <Center height="20px">

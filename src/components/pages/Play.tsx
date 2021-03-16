@@ -36,6 +36,7 @@ function Play() {
   const tick = useStore(s => s.tick);
   const players = useStore(s => s.players);
   const stocks = useStore(s => s.stocks);
+  const sortStocks = useStore(s => s.sortStocks);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const stockPriceMap = useStore(StoreSelector.stockPriceMap);
@@ -67,6 +68,15 @@ function Play() {
 
   const playerPortfolio = player.getPortfolio(stockPriceMap);
 
+  const sortedStocks = [...stocks];
+  if (sortStocks) {
+    sortedStocks.sort(
+      (a, b) =>
+        playerPortfolio.getPortfolioPercent(b.ticker) -
+        playerPortfolio.getPortfolioPercent(a.ticker)
+    );
+  }
+
   // Handlers
   const handleBuy = (ticker: string, qty: number, price: number) => {
     PeerAction.openPosition(hostPeerId, secretKey, ticker, qty, price);
@@ -89,7 +99,7 @@ function Play() {
             <FlopDisplay spacing={8} />
           </Flex>
           <Flex justify={"space-around"} flexWrap={"wrap"}>
-            {stocks.map(stock => (
+            {sortedStocks.map(stock => (
               <StockBox
                 stock={stock}
                 portfolioPercent={playerPortfolio.getPortfolioPercent(

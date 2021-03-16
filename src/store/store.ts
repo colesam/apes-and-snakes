@@ -59,6 +59,7 @@ export interface TStore extends State {
 
   // Misc
   viewFullHistory: boolean;
+  sortStocks: boolean;
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
@@ -107,6 +108,7 @@ const stateConfig = {
 
   // Misc
   viewFullHistory: { init: () => false },
+  sortStocks: { init: () => false },
 } as { [key in TStoreKey]: TStateConfig };
 
 // State configuration
