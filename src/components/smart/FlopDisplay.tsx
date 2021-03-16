@@ -1,5 +1,5 @@
 import { HStack, HTMLChakraProps } from "@chakra-ui/react";
-import { reverse } from "lodash";
+import { first, reverse } from "lodash";
 import React from "react";
 import { Card } from "../../core/card/Card";
 import { useStore } from "../../store/store";
@@ -12,7 +12,7 @@ interface PropTypes extends HTMLChakraProps<"div"> {
 
 function FlopDisplay(styleProps: PropTypes) {
   const flop = useStore(s => s.flop);
-  const highlightFlopCards = useStore(s => s.highlightFlopCards);
+  const highlightCards = useStore(s => s.highlightCards);
   const retiredCard = useStore(s => s.retiredCard);
   const flopAge = useStore(s => s.tick - s.flopSetAt);
 
@@ -20,17 +20,12 @@ function FlopDisplay(styleProps: PropTypes) {
   const blankCard = new Card();
 
   return (
-    <HStack
-      align="center"
-      spacing={4}
-      borderWidth={1}
-      p={4}
-      borderColor={flopAge < 10 ? "red.400" : undefined}
-    >
+    <HStack align="center" spacing={4} borderWidth={1} p={5}>
       <CardRender card={blankCard} />
       <CardStack
         cards={reversedCards}
-        highlightCards={highlightFlopCards}
+        highlightCards={highlightCards}
+        alertCards={flopAge < 10 ? [first(reversedCards)!] : []}
         cardScale={1.4}
         {...styleProps}
       />

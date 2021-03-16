@@ -39,7 +39,6 @@ export interface TStore extends State {
 
   // Flop state
   flop: Flop;
-  highlightFlopCards: Card[];
   flopSetAt: number;
   retiredCard: Card;
 
@@ -60,6 +59,7 @@ export interface TStore extends State {
   // Misc
   viewFullHistory: boolean;
   sortStocks: boolean;
+  highlightCards: Card[];
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
@@ -81,11 +81,6 @@ const stateConfig = {
 
   // Flop state
   flop: { init: () => new Flop(), peerSync: true },
-  highlightFlopCards: {
-    init: () => [],
-    storeLocally: false,
-    storeLocallyIfHost: false,
-  },
   flopSetAt: { init: () => 0, peerSync: true },
   retiredCard: { init: () => new Card(), peerSync: true },
 
@@ -109,6 +104,11 @@ const stateConfig = {
   // Misc
   viewFullHistory: { init: () => false },
   sortStocks: { init: () => false },
+  highlightCards: {
+    init: () => [],
+    storeLocally: false,
+    storeLocallyIfHost: false,
+  },
 } as { [key in TStoreKey]: TStateConfig };
 
 // State configuration

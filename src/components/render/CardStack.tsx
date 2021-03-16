@@ -6,6 +6,7 @@ import Card from "./Card";
 export interface PropTypes extends HTMLChakraProps<"div"> {
   cards: TCard[];
   highlightCards?: TCard[];
+  alertCards?: TCard[];
   cardScale?: number;
   spacing?: number;
   highlightColor?: string;
@@ -14,17 +15,20 @@ export interface PropTypes extends HTMLChakraProps<"div"> {
 function CardStack({
   cards,
   highlightCards = [],
+  alertCards = [],
   cardScale,
   highlightColor,
   spacing = 4,
   ...props
 }: PropTypes) {
   const highlightCardStrings = highlightCards.map(card => card.toString());
+  const alertCardStrings = alertCards.map(card => card.toString());
   const cardElems = cards.map((card, i) => (
     <Card
       card={card}
       highlight={highlightCardStrings.includes(card.toString())}
-      // highlight={i === 0}
+      // alert={alertCardStrings.includes(card.toString())}
+      alert={i === 0}
       scale={cardScale}
       key={i}
     />

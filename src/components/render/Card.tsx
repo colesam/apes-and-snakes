@@ -15,13 +15,29 @@ interface PropTypes extends HTMLChakraProps<"div"> {
   card: TCard;
   scale?: number;
   highlight?: boolean;
+  alert?: boolean;
 }
 
-function Card({ card, scale, highlight = false, ...props }: PropTypes) {
+function Card({
+  card,
+  scale,
+  highlight = false,
+  alert = false,
+  ...props
+}: PropTypes) {
   const transformStyling = `
     ${scale ? `scale(${scale})` : ""}
-    ${highlight ? "translateY(-3px)" : ""}
+    ${highlight || alert ? "translateY(-5px)" : ""}
   `;
+
+  let boxShadow = "none";
+  if (highlight) {
+    const color = "#63b3ed"; // blue.300
+    boxShadow = `0 0 3px 2px ${color}, 0 0 0 2px ${color}`;
+  } else if (alert) {
+    const color = "#ff4949"; // custom red
+    boxShadow = `0 0 3px 2px ${color}, 0 0 0 2px ${color}`;
+  }
 
   return (
     <Box
@@ -31,10 +47,8 @@ function Card({ card, scale, highlight = false, ...props }: PropTypes) {
       transform={transformStyling}
       sx={{
         transition: "all 0.1s ease-in",
-        borderRadius: "2px",
-        boxShadow: highlight
-          ? "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
-          : "none",
+        borderRadius: "3px",
+        boxShadow,
       }}
       {...props}
     >
