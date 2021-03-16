@@ -27,8 +27,7 @@ function CardStack({
     <Card
       card={card}
       highlight={highlightCardStrings.includes(card.toString())}
-      // alert={alertCardStrings.includes(card.toString())}
-      alert={i === 0}
+      alert={alertCardStrings.includes(card.toString())}
       scale={cardScale}
       key={i}
     />

@@ -14,7 +14,7 @@ interface TParams {
   priceHistory: number[];
   rankHistory: RoundRank[];
   pair: Pair;
-  pairIsNew: boolean;
+  newPairCards: Card[];
   solvedHand: SolvedHand | null;
   buyVolume: number;
   sellVolume: number;
@@ -28,7 +28,7 @@ export class Stock extends ImmerClass {
   public priceHistory;
   public rankHistory;
   public pair;
-  public pairIsNew;
+  public newPairCards;
   public solvedHand;
   public buyVolume;
   public sellVolume;
@@ -40,7 +40,7 @@ export class Stock extends ImmerClass {
       priceHistory = [],
       rankHistory = [],
       pair = new Pair(),
-      pairIsNew = false,
+      newPairCards = [],
       solvedHand = null,
       buyVolume = 10_000,
       sellVolume = 10_000,
@@ -52,7 +52,7 @@ export class Stock extends ImmerClass {
     this.priceHistory = priceHistory;
     this.rankHistory = rankHistory;
     this.pair = pair;
-    this.pairIsNew = pairIsNew;
+    this.newPairCards = newPairCards;
     this.solvedHand = solvedHand;
     this.buyVolume = buyVolume;
     this.sellVolume = sellVolume;
@@ -60,7 +60,7 @@ export class Stock extends ImmerClass {
 
   setPair(pair: Pair, flop: Flop) {
     this.pair = pair;
-    this.pairIsNew = true;
+    this.newPairCards = pair.cards;
     this.updateSolvedHand(flop);
   }
 
@@ -82,16 +82,9 @@ export class Stock extends ImmerClass {
   }
 
   get relevantFlopCards(): Card[] {
-    const pairCardStrings = this.pair.cardStrings;
     return this.solvedHand
-      ? this.solvedHand.cardStrings
-          .filter(card => !pairCardStrings.includes(card))
-          .map(card => cardFromString(card))
+      ? this.solvedHand.cardStrings.map(card => cardFromString(card))
       : [];
-  }
-
-  get solvedHandRank(): number {
-    return this.solvedHand?.rank || -1;
   }
 
   get price() {

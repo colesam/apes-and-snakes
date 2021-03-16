@@ -9,7 +9,7 @@ export const PEER_DEV_SERVER = {
 // Game config
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 1300;
+export const TICK_SPEED = 500;
 
 export const STOCK_PRICE_FLOOR = 10;
 

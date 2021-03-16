@@ -45,6 +45,7 @@ function StockBox({
   onBuy,
 }: PropTypes) {
   const tick = useStore(s => s.tick);
+  const highlightCards = useStore(s => s.highlightCards);
   const rankColor = stock.rank > 3 ? "red" : "green";
 
   const thisWeek = Math.floor(tick / TICKS_PER_WEEK); // TODO
@@ -120,12 +121,12 @@ function StockBox({
                 _hover={{ cursor: "default" }}
                 onMouseEnter={() =>
                   setStore(s => {
-                    s.highlightFlopCards = stock.relevantFlopCards;
+                    s.highlightCards = stock.relevantFlopCards;
                   })
                 }
                 onMouseLeave={() =>
                   setStore(s => {
-                    s.highlightFlopCards = [];
+                    s.highlightCards = [];
                   })
                 }
               >
@@ -158,7 +159,8 @@ function StockBox({
         </Box>
         <CardStack
           cards={stock.pair.cards}
-          highlightColor={stock.pairIsNew ? "red.500" : undefined}
+          alertCards={stock.newPairCards}
+          highlightCards={highlightCards}
           transform={"translateY(-50%)"}
           position={"absolute"}
           right={"0"}

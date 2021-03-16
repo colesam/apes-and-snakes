@@ -1,3 +1,4 @@
+import { random } from "lodash";
 import {
   DRAW_PAIR_CHANCE,
   FLOP_SHIFT_CHANCE,
@@ -55,10 +56,16 @@ const runSingleTick = (tick: number) => (s: TStore) => {
     for (const stock of s.stocks) {
       // NOTE: Keep this loop separate so it doesn't affect prices mid tick
       if (Math.random() < DRAW_PAIR_CHANCE) {
-        s.deck.push(stock.pair.cards).shuffle();
-        stock.setPair(s.deck.drawPair(), s.flop);
+        const replaceIndex = random(1);
+        const replacedCard = stock.pair.cards[replaceIndex];
+
+        stock.pair.cards[replaceIndex] = s.deck.shuffle().drawOne();
+        stock.newPairCards.push(stock.pair.cards[replaceIndex]);
+        stock.updateSolvedHand(s.flop);
+
+        s.deck.push([replacedCard]).shuffle();
       } else {
-        stock.pairIsNew = false;
+        stock.newPairCards = [];
       }
     }
     StoreAction.rankStocks(s);
