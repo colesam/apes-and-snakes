@@ -13,6 +13,8 @@ export const updateStockBids = (stock: Stock) => (s: TStore) => {
 
 const updateSells = (stock: Stock) => (s: TStore) => {
   updateBids(stock, PositionBidType.CLOSE, (player, bid) => {
+    if (stock.sellVolume < 1_000) return;
+
     const bundle = bid.positionBundle;
     const position = head(bundle.openPositionList);
 
@@ -37,6 +39,8 @@ const updateSells = (stock: Stock) => (s: TStore) => {
 
 const updateBuys = (stock: Stock) => (s: TStore) => {
   updateBids(stock, PositionBidType.OPEN, (player, bid) => {
+    if (stock.buyVolume < 1_000) return;
+
     const bundle = bid.positionBundle;
     const purchasePrice = stock.price * 1_000;
 
