@@ -2,6 +2,7 @@ import { sum } from "lodash";
 import { TICKS_PER_WEEK } from "../../config";
 import { ImmerClass } from "../ImmerClass";
 import generateId from "../generateId";
+import { mapValuesToArray } from "../helpers";
 import { Position } from "./Position";
 
 interface TParams {
@@ -20,8 +21,6 @@ export class PositionBundle extends ImmerClass {
   public openedAtTick;
   public stockTicker;
   public positions;
-  public isSecured;
-  public isLiquidating;
 
   constructor(
     {
@@ -29,8 +28,6 @@ export class PositionBundle extends ImmerClass {
       openedAtTick = 0,
       stockTicker = "",
       positions = new Map<string, Position>(),
-      isSecured = false,
-      isLiquidating = false,
     } = {} as Partial<TParams>
   ) {
     super();
@@ -38,8 +35,6 @@ export class PositionBundle extends ImmerClass {
     this.openedAtTick = openedAtTick;
     this.stockTicker = stockTicker;
     this.positions = positions;
-    this.isSecured = isSecured;
-    this.isLiquidating = isLiquidating;
   }
 
   push(quantity: number, purchasePrice: number) {
@@ -48,7 +43,7 @@ export class PositionBundle extends ImmerClass {
   }
 
   get positionList(): Position[] {
-    return Array.from(this.positions).map(([, pos]) => pos);
+    return mapValuesToArray(this.positions);
   }
 
   get openPositionList(): Position[] {

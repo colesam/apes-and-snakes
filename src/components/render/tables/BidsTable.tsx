@@ -38,14 +38,15 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
         {player.positionBids.map(bid => {
           const stock = stocks.find(stock => stock.ticker === bid.stockTicker);
           const bundle = player.positionBundles.get(bid.positionBundleId);
-          const targetQty = bid.type === PositionBidType.BUY ? bid.quantity : 0;
+          const targetQty =
+            bid.type === PositionBidType.OPEN ? bid.quantity : 0;
           if (!bundle || !stock) return null;
           const isSqueezed =
-            bid.type === PositionBidType.BUY
+            bid.type === PositionBidType.OPEN
               ? stock.hasBuySqueeze
               : stock.hasSellSqueeze;
           const progress =
-            bid.type === PositionBidType.BUY
+            bid.type === PositionBidType.OPEN
               ? bundle.quantity / bid.quantity
               : (bid.quantity - bundle.quantity) / bid.quantity;
 

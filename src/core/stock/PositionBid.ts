@@ -1,46 +1,47 @@
 import { ImmerClass } from "../ImmerClass";
 import generateId from "../generateId";
+import { PositionBundle } from "./PositionBundle";
 
 interface TParams {
   id: string;
-  type: PositionBidType;
-  stockTicker: string;
-  quantity: number;
   playerId: string;
-  positionBundleId: string;
+  type: PositionBidType;
+  targetQuantity: number;
+  positionBundle: PositionBundle;
 }
 
 export enum PositionBidType {
-  BUY = "BUY",
-  SELL = "SELL",
+  OPEN = "OPEN",
+  CLOSE = "CLOSE",
 }
 
 export class PositionBid extends ImmerClass {
   protected readonly __class = "PositionBid";
 
   public id;
-  public type;
-  public stockTicker;
-  public quantity;
   public playerId;
-  public positionBundleId;
+  public type;
+  public targetQuantity;
+  public positionBundle;
 
   constructor(
     {
       id = generateId(),
-      type = PositionBidType.BUY,
-      stockTicker = "",
-      quantity = 0,
       playerId = "",
-      positionBundleId = "",
+      type = PositionBidType.OPEN,
+      targetQuantity = 0,
+      positionBundle = new PositionBundle(),
     } = {} as Partial<TParams>
   ) {
     super();
     this.id = id;
     this.type = type;
-    this.stockTicker = stockTicker;
-    this.quantity = quantity;
+    this.targetQuantity = targetQuantity;
     this.playerId = playerId;
-    this.positionBundleId = positionBundleId;
+    this.positionBundle = positionBundle;
+  }
+
+  get stockTicker() {
+    return this.positionBundle.stockTicker;
   }
 }

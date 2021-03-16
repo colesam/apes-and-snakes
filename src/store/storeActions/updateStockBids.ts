@@ -2,9 +2,8 @@ import { head, shuffle } from "lodash";
 import { Player } from "../../core/player/Player";
 import { Position } from "../../core/stock/Position";
 import { PositionBid, PositionBidType } from "../../core/stock/PositionBid";
-import { PositionBundle } from "../../core/stock/PositionBundle";
 import { Stock } from "../../core/stock/Stock";
-import { logError } from "../../util/log";
+import { logWarning } from "../../util/log";
 import { TStore } from "../store";
 
 export const updateStockBids = (stock: Stock) => (s: TStore) => {
@@ -13,11 +12,15 @@ export const updateStockBids = (stock: Stock) => (s: TStore) => {
 };
 
 const updateSells = (stock: Stock) => (s: TStore) => {
-  updateBids(stock, PositionBidType.SELL, (player, bundle, bid) => {
+  updateBids(stock, PositionBidType.CLOSE, (player, bid) => {
+    const bundle = bid.positionBundle;
     const position = head(bundle.openPositionList);
 
     if (!position) {
       // Should not get to this point
+      logWarning(
+        `Bundle #${bundle.id} in bid #${bid.id} does not have any open positions to sell. Closing bid.`
+      );
       player.closeBid(bid.id);
       return;
     }
@@ -29,15 +32,12 @@ const updateSells = (stock: Stock) => (s: TStore) => {
     player.cash += position.initialValue + taxedProfit;
     stock.sellVolume -= position.quantity;
     stock.buyVolume = Math.min(15_000, stock.buyVolume + position.quantity);
-
-    if (bundle.quantity === 0) {
-      player.closeBid(bid.id);
-    }
   })(s);
 };
 
 const updateBuys = (stock: Stock) => (s: TStore) => {
-  updateBids(stock, PositionBidType.BUY, (player, bundle, bid) => {
+  updateBids(stock, PositionBidType.OPEN, (player, bid) => {
+    const bundle = bid.positionBundle;
     const purchasePrice = stock.price * 1_000;
 
     if (player.cash < purchasePrice) {
@@ -54,21 +54,13 @@ const updateBuys = (stock: Stock) => (s: TStore) => {
     player.cash -= purchasePrice;
     stock.buyVolume -= 1_000;
     stock.sellVolume = Math.min(15_000, stock.sellVolume + 1_000);
-
-    if (bundle.quantity === bid.quantity) {
-      player.closeBid(bid.id);
-    }
   })(s);
 };
 
 const updateBids = (
   stock: Stock,
   bidType: PositionBidType,
-  handleBundle: (
-    player: Player,
-    bundle: PositionBundle,
-    bid: PositionBid
-  ) => void
+  handleBid: (player: Player, bid: PositionBid) => void
 ) => (s: TStore) => {
   const shuffledPlayers = shuffle(s.players);
 
@@ -79,15 +71,12 @@ const updateBids = (
 
     if (bids.length < 1) continue;
 
+    // Choose the first bid of its type for this player
     const bid = bids[0];
-    const bundle = player.positionBundles.get(bid.positionBundleId);
 
-    if (bundle) {
-      handleBundle(player, bundle, bid);
-    } else {
-      logError(
-        `Failed to find bundle #${bid.positionBundleId}, in bid #${bid.id}`
-      );
+    handleBid(player, bid);
+
+    if (bid.positionBundle.quantity === bid.targetQuantity) {
       player.closeBid(bid.id);
     }
   }

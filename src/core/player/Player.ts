@@ -1,7 +1,8 @@
 import { logError } from "../../util/log";
 import { ImmerClass } from "../ImmerClass";
+import { mapValuesToArray } from "../helpers";
 import { Position } from "../stock/Position";
-import { PositionBid, PositionBidType } from "../stock/PositionBid";
+import { PositionBid } from "../stock/PositionBid";
 import { PositionBundle } from "../stock/PositionBundle";
 import { ConnectionStatus } from "./ConnectionStatus";
 import { PlayerPortfolio } from "./PlayerPortfolio";
@@ -11,7 +12,7 @@ interface TParams {
   name: string;
   connectionStatus: ConnectionStatus;
   positionBundles: Map<string, PositionBundle>;
-  positionBids: PositionBid[];
+  positionBids: Map<string, PositionBid>;
   cash: number;
 }
 
@@ -31,7 +32,7 @@ export class Player extends ImmerClass {
       name = "",
       connectionStatus = ConnectionStatus.CONNECTED,
       positionBundles = new Map<string, PositionBundle>(),
-      positionBids = [],
+      positionBids = new Map<string, PositionBid>(),
       cash = 0,
     } = {} as Partial<TParams>
   ) {
@@ -63,7 +64,7 @@ export class Player extends ImmerClass {
   }
 
   get positionBundleList(): PositionBundle[] {
-    return Array.from(this.positionBundles).map(([, bundle]) => bundle);
+    return mapValuesToArray(this.positionBundles);
   }
 
   pushBundle(bundle: PositionBundle) {
@@ -74,30 +75,30 @@ export class Player extends ImmerClass {
   }
 
   // Bid methods
+  get positionBidList(): PositionBid[] {
+    return mapValuesToArray(this.positionBids);
+  }
+
   getBids(stockTicker: string) {
-    return this.positionBids.filter(p => p.stockTicker === stockTicker);
+    return this.positionBidList.filter(p => p.stockTicker === stockTicker);
   }
 
   pushBid(bid: PositionBid) {
-    this.positionBids.push(bid);
+    if (this.positionBids.has(bid.id)) {
+      throw new Error(`Cannot push duplicate bid id: ${bid.id}`);
+    }
+    this.positionBids.set(bid.id, bid);
   }
 
   closeBid(bidId: string) {
-    const index = this.positionBids.findIndex(bid => bidId === bid.id);
-    const bid = this.positionBids[index];
-    const bundle = this.positionBundles.get(bid.positionBundleId);
-
-    if (bundle) {
-      bundle.isSecured = true;
-      if (bid.type === PositionBidType.SELL) {
-        bundle.isLiquidating = false;
-      }
+    if (this.positionBids.has(bidId)) {
+      const bid = this.positionBids.get(bidId)!;
+      this.pushBundle(bid.positionBundle);
+      this.positionBids.delete(bid.id);
     } else {
       logError(
-        `Could not find bundle #${bid.positionBundleId} when closing bid #${bid.id}.`
+        `Failed to close bid #${bidId}. Could not locate in player #${this.id}.`
       );
     }
-
-    this.positionBids.splice(index, 1);
   }
 }

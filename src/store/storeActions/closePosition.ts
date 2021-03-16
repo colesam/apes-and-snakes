@@ -6,19 +6,16 @@ export const closePosition = (playerId: string, bundleId: string) => (
   s: TStore
 ) => {
   const player = StoreSelector.getPlayer(playerId)(s);
-  const bundle = player?.positionBundles.get(bundleId);
+  const positionBundle = player?.positionBundles.get(bundleId);
 
-  if (player && bundle) {
+  if (player && positionBundle) {
     const positionBid = new PositionBid({
-      stockTicker: bundle.stockTicker,
-      type: PositionBidType.SELL,
-      quantity: bundle.quantity,
       playerId: player.id,
-      positionBundleId: bundle.id,
+      type: PositionBidType.CLOSE,
+      targetQuantity: 0,
+      positionBundle,
     });
 
     player.pushBid(positionBid);
-
-    bundle.isLiquidating = true;
   }
 };

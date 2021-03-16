@@ -83,3 +83,6 @@ export const lengthInBytes = (str: string): number => {
 };
 
 export const lengthInKb = (str: string): number => lengthInBytes(str) / 1000;
+
+export const mapValuesToArray = <K, V>(map: Map<K, V>): V[] =>
+  Array.from(map).map(([, val]) => val);
