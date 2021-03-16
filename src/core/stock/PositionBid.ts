@@ -6,6 +6,7 @@ interface TParams {
   id: string;
   playerId: string;
   type: PositionBidType;
+  startingQuantity: number;
   targetQuantity: number;
   positionBundle: PositionBundle;
 }
@@ -21,6 +22,7 @@ export class PositionBid extends ImmerClass {
   public id;
   public playerId;
   public type;
+  public startingQuantity;
   public targetQuantity;
   public positionBundle;
 
@@ -29,6 +31,7 @@ export class PositionBid extends ImmerClass {
       id = generateId(),
       playerId = "",
       type = PositionBidType.OPEN,
+      startingQuantity = 0,
       targetQuantity = 0,
       positionBundle = new PositionBundle(),
     } = {} as Partial<TParams>
@@ -36,6 +39,7 @@ export class PositionBid extends ImmerClass {
     super();
     this.id = id;
     this.type = type;
+    this.startingQuantity = startingQuantity;
     this.targetQuantity = targetQuantity;
     this.playerId = playerId;
     this.positionBundle = positionBundle;

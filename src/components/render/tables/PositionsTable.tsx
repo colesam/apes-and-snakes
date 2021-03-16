@@ -21,6 +21,10 @@ function PositionsTable({
   isWeekend,
   onSell,
 }: PropTypes) {
+  const liquidatingBundleIds = player.positionBidList.map(
+    bid => bid.positionBundle.id
+  );
+
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
@@ -36,10 +40,7 @@ function PositionsTable({
       </Thead>
       <Tbody>
         {player.positionBundleList
-          .filter(
-            bundle =>
-              bundle.isSecured && bundle.quantity && !bundle.isLiquidated
-          )
+          .filter(bundle => bundle.quantity)
           .map(bundle => {
             const initialValue = bundle.initialValue;
             const currentValue = bundle.currentValue(
@@ -62,7 +63,7 @@ function PositionsTable({
                       isFullWidth
                       disabled={
                         isWeekend ||
-                        bundle.isLiquidating ||
+                        liquidatingBundleIds.includes(bundle.id) ||
                         bundle.capitalGainsTax(tick) === 1
                       }
                       onClick={() => onSell(bundle.id)}

@@ -93,7 +93,10 @@ export class Player extends ImmerClass {
   closeBid(bidId: string) {
     if (this.positionBids.has(bidId)) {
       const bid = this.positionBids.get(bidId)!;
-      this.pushBundle(bid.positionBundle);
+
+      // Don't use pushBundle because CLOSE bids overwrite position bundle on close
+      this.positionBundles.set(bid.positionBundle.id, bid.positionBundle);
+
       this.positionBids.delete(bid.id);
     } else {
       logError(

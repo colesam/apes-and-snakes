@@ -23,6 +23,7 @@ export const openPosition = (
       const positionBid = new PositionBid({
         playerId: player.id,
         type: PositionBidType.OPEN,
+        startingQuantity: 0,
         targetQuantity: quantity,
         positionBundle: new PositionBundle({
           openedAtTick: s.tick,

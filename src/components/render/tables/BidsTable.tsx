@@ -35,11 +35,9 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
         </Tr>
       </Thead>
       <Tbody>
-        {player.positionBids.map(bid => {
+        {player.positionBidList.map(bid => {
           const stock = stocks.find(stock => stock.ticker === bid.stockTicker);
-          const bundle = player.positionBundles.get(bid.positionBundleId);
-          const targetQty =
-            bid.type === PositionBidType.OPEN ? bid.quantity : 0;
+          const bundle = bid.positionBundle;
           if (!bundle || !stock) return null;
           const isSqueezed =
             bid.type === PositionBidType.OPEN
@@ -47,8 +45,8 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
               : stock.hasSellSqueeze;
           const progress =
             bid.type === PositionBidType.OPEN
-              ? bundle.quantity / bid.quantity
-              : (bid.quantity - bundle.quantity) / bid.quantity;
+              ? bundle.quantity / bid.targetQuantity
+              : (bid.startingQuantity - bundle.quantity) / bid.startingQuantity;
 
           return (
             <Tr
@@ -58,7 +56,7 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
             >
               <Td fontWeight={"bold"}>${bundle.stockTicker}</Td>
               <Td>{bundle.quantity / 1000}K</Td>
-              <Td>{targetQty / 1000}K</Td>
+              <Td>{bid.targetQuantity / 1000}K</Td>
               <Td>
                 <Flex justify="flex-end" align={"center"}>
                   <Progress

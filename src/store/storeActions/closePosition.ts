@@ -12,8 +12,9 @@ export const closePosition = (playerId: string, bundleId: string) => (
     const positionBid = new PositionBid({
       playerId: player.id,
       type: PositionBidType.CLOSE,
+      startingQuantity: positionBundle.quantity,
       targetQuantity: 0,
-      positionBundle,
+      positionBundle: positionBundle.clone,
     });
 
     player.pushBid(positionBid);

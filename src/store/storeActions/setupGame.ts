@@ -12,7 +12,7 @@ export const setupGame = (s: TStore) => {
   s.stockRollModifierMap = init.stockRollModifierMap;
 
   for (let player of s.players) {
-    player.positionBids = [];
+    player.positionBids = new Map();
     player.positionBundles = new Map();
     player.cash = 5_000_000;
   }

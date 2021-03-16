@@ -16,7 +16,7 @@ export const makeHandleCancelBid = (
   }
 
   // Validate bid
-  const positionBid = player.positionBids.find(bid => bid.id === payload.bidId);
+  const positionBid = player.positionBids.get(payload.bidId);
   if (!positionBid) {
     return error(
       new PeerError(

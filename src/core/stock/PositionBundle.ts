@@ -37,6 +37,21 @@ export class PositionBundle extends ImmerClass {
     this.positions = positions;
   }
 
+  /**
+   * Deep clone of this bundle. All IDs are persisted but objects can be mutated. Used for
+   * CLOSE bid types.
+   */
+  get clone(): PositionBundle {
+    const positionEntriesClones: [string, Position][] = Array.from(
+      this.positions
+    ).map(([key, pos]) => [key, new Position(pos)]);
+
+    return new PositionBundle({
+      ...this,
+      positions: new Map<string, Position>(positionEntriesClones),
+    });
+  }
+
   push(quantity: number, purchasePrice: number) {
     const position = new Position({ quantity, purchasePrice });
     this.positions.set(position.id, position);

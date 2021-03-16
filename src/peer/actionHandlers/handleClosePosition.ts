@@ -18,7 +18,7 @@ export const makeHandleClosePosition = (
 
   // Validate position
   const bundle = player.positionBundles.get(payload.bundleId);
-  if (!bundle || !bundle.isSecured) {
+  if (!bundle || bundle.quantity <= 0) {
     return error(
       new PeerError(
         `Could not find bundle #${payload.bundleId}. Failed to close position.`
