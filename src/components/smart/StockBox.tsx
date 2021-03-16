@@ -78,6 +78,7 @@ function StockBox({
 
   return (
     <VStack
+      bg={"white"}
       borderWidth={1}
       borderRadius={"md"}
       p={4}

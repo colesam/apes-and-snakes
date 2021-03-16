@@ -7,6 +7,7 @@ import {
   Radio,
   HStack,
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
 import generateId from "../../core/generateId";
@@ -100,22 +101,27 @@ function Play() {
           </Flex>
           <Flex justify={"space-around"} flexWrap={"wrap"}>
             {sortedStocks.map(stock => (
-              <StockBox
-                stock={stock}
-                portfolioPercent={playerPortfolio.getPortfolioPercent(
-                  stock.ticker
-                )}
-                isOwnPlayer={viewPlayerId === playerId}
-                playerName={player.name}
-                playerCash={player.cash}
-                purchaseQuantities={PURCHASE_QUANTITIES}
-                viewFullHistory={viewFullHistory}
-                disableTransactions={
-                  isWeekend(tick) || viewPlayerId !== playerId
-                }
-                onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
-                key={stock.name}
-              />
+              <motion.div
+                key={stock.ticker}
+                layout
+                transition={{ type: "spring", damping: 25, stiffness: 120 }}
+              >
+                <StockBox
+                  stock={stock}
+                  portfolioPercent={playerPortfolio.getPortfolioPercent(
+                    stock.ticker
+                  )}
+                  isOwnPlayer={viewPlayerId === playerId}
+                  playerName={player.name}
+                  playerCash={player.cash}
+                  purchaseQuantities={PURCHASE_QUANTITIES}
+                  viewFullHistory={viewFullHistory}
+                  disableTransactions={
+                    isWeekend(tick) || viewPlayerId !== playerId
+                  }
+                  onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
+                />
+              </motion.div>
             ))}
           </Flex>
         </Box>

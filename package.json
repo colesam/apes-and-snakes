@@ -16,7 +16,7 @@
     "@types/node": "^12.19.15",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
-    "framer-motion": "^3.2.2-rc.1",
+    "framer-motion": "^3.10.5",
     "immer": "^8.0.1",
     "lodash": "^4.17.20",
     "logrocket": "^1.0.14",
