@@ -68,22 +68,22 @@ function StockBox({ stock }: PropTypes) {
       p={4}
       minWidth={350}
       mb={8}
-      spacing={4}
+      spacing={2}
       align={"stretch"}
+      position={"relative"}
     >
       {/* General info section */}
-      <Flex justify={"space-between"} position={"relative"}>
+      <Flex justify={"space-between"} align={"start"}>
         <Box>
-          <Text display={"inline-block"}>{stock.name}</Text>
-
-          {/* Price and rank */}
-          <Flex
-            fontSize={"md"}
-            justify={"space-between"}
-            align={"center"}
-            width={"190px"}
-          >
-            <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
+          <Flex align={"center"}>
+            <Text
+              fontSize={"2xl"}
+              fontWeight={"bold"}
+              display={"inline-block"}
+              mr={4}
+            >
+              {stock.name}
+            </Text>
             <Rank
               rank={stock.rank}
               handDescription={stock.solvedHand?.descr}
@@ -91,6 +91,17 @@ function StockBox({ stock }: PropTypes) {
               onMouseEnter={handleRankMouseEnter}
               onMouseLeave={handleRankMouseLeave}
             />
+          </Flex>
+
+          {/* Price and rank */}
+          <Flex
+            fontSize={"md"}
+            justify={"space-between"}
+            align={"center"}
+            w={"100%"}
+            mb={2}
+          >
+            <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
           </Flex>
 
           {viewedPlayer && portfolio ? (
@@ -101,14 +112,13 @@ function StockBox({ stock }: PropTypes) {
             />
           ) : null}
         </Box>
-
         <CardStack
           cards={stock.pair.cards}
           alertCards={stock.newPairCards}
           highlightCards={highlightCards}
-          transform={"translateY(-50%)"}
-          position={"absolute"}
-          right={"0"}
+          cardScale={1.2}
+          p={1}
+          spacing={6}
         />
       </Flex>
 

@@ -24,7 +24,7 @@ function SideBar() {
   const isOwnPlayer = viewedPlayer.id === playerId;
 
   return (
-    <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
+    <VStack spacing={8} align={"flex-start"} p={4} w={"40%"} bg={"white"}>
       <Box>
         <Text fontWeight={"bold"}>View Player:</Text>
         <RadioGroup

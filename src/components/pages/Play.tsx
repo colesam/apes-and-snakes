@@ -31,7 +31,7 @@ function Play() {
     <Flex
       direction="column"
       align="stretch"
-      w="98vw"
+      w="100%"
       minHeight="100vh"
       color={"black"}
     >
