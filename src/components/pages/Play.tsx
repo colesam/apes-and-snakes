@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { NAMESPACE, PURCHASE_QUANTITIES } from "../../config";
+import { NAMESPACE } from "../../config";
 import generateId from "../../core/generateId";
 import { formatCurrency, isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
@@ -22,7 +22,6 @@ import BidsTable from "../render/tables/BidsTable";
 import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
 import FlopDisplay from "../smart/FlopDisplay";
-import StockBox from "../smart/StockBox";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
   const hostId = `${NAMESPACE} ${roomCode}`;
@@ -105,23 +104,7 @@ function Play() {
                 key={stock.ticker}
                 layout
                 transition={{ type: "spring", damping: 25, stiffness: 120 }}
-              >
-                <StockBox
-                  stock={stock}
-                  portfolioPercent={playerPortfolio.getPortfolioPercent(
-                    stock.ticker
-                  )}
-                  isOwnPlayer={viewPlayerId === playerId}
-                  playerName={player.name}
-                  playerCash={player.cash}
-                  purchaseQuantities={PURCHASE_QUANTITIES}
-                  viewFullHistory={viewFullHistory}
-                  disableTransactions={
-                    isWeekend(tick) || viewPlayerId !== playerId
-                  }
-                  onBuy={(qty, price) => handleBuy(stock.ticker, qty, price)}
-                />
-              </motion.div>
+              ></motion.div>
             ))}
           </Flex>
         </Box>

@@ -1,81 +1,64 @@
-import { StarIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  HStack,
-  Text,
-  Tooltip,
-  VStack,
-} from "@chakra-ui/react";
-import { last, isNumber } from "lodash";
+import { Box, Divider, Flex, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import { TICKS_PER_WEEK } from "../../config";
-import { formatCurrency } from "../../core/helpers";
+import { PURCHASE_QUANTITIES, TICKS_PER_WEEK } from "../../config";
+import { formatCurrency, isWeekend } from "../../core/helpers";
 import { Stock } from "../../core/stock/Stock";
+import { PeerAction } from "../../peer/PeerAction";
+import { StoreSelector } from "../../store/StoreSelector";
 import { setStore, useStore } from "../../store/store";
 import CardStack from "../render/CardStack";
-import PercentChange from "../render/PercentChange";
-import StockGraph from "../render/StockGraph";
+import BuyButtons from "../render/stock/BuyButtons";
+import PortfolioPercent from "../render/stock/PortfolioPercent";
+import PriceGraph from "../render/stock/PriceGraph";
+import Rank from "../render/stock/Rank";
 import Volume from "../render/stock/Volume";
 
 interface PropTypes {
   stock: Stock;
-  isOwnPlayer?: boolean;
-  playerName?: string;
-  portfolioPercent?: number;
-  playerCash?: number;
-  purchaseQuantities?: number[];
-  viewFullHistory?: boolean;
-  disableTransactions?: boolean;
-  onBuy?: (n: number, s: number) => void;
-  onSell?: (n: number) => void;
 }
 
-function StockBox({
-  stock,
-  isOwnPlayer = false,
-  playerName,
-  portfolioPercent,
-  playerCash,
-  purchaseQuantities,
-  viewFullHistory = false,
-  disableTransactions = true,
-  onBuy,
-}: PropTypes) {
+function StockBox({ stock }: PropTypes) {
+  // Store state
   const tick = useStore(s => s.tick);
+  const viewedPlayer = useStore(StoreSelector.viewedPlayer);
+  const portfolio = useStore(StoreSelector.viewedPlayerPortfolio);
+  const playerId = useStore(s => s.playerId);
   const highlightCards = useStore(s => s.highlightCards);
-  const rankColor = stock.rank > 3 ? "red" : "green";
+  const viewFullHistory = useStore(s => s.viewFullHistory);
+  const hostPeerId = useStore(s => s.hostPeerId);
+  const secretKey = useStore(s => s.secretKey);
 
-  const thisWeek = Math.floor(tick / TICKS_PER_WEEK); // TODO
+  // Computed
+  const isOwnPlayer = viewedPlayer?.id === playerId;
+
   let slicedPriceHistory = stock.priceHistory;
   if (!viewFullHistory) {
+    const thisWeek = Math.floor(tick / TICKS_PER_WEEK);
     slicedPriceHistory = slicedPriceHistory.slice(thisWeek * TICKS_PER_WEEK);
   }
 
-  const startPrice = slicedPriceHistory[0] || 0;
-  const currentPrice = last(slicedPriceHistory) || 0;
+  // Handlers
+  const handleRankMouseEnter = () => {
+    setStore(s => {
+      s.highlightCards = stock.relevantFlopCards;
+    });
+  };
 
-  let buyBtns;
-  if (purchaseQuantities && isNumber(playerCash)) {
-    buyBtns = purchaseQuantities.map(qty => (
-      <VStack w={"100%"} key={qty}>
-        <Button
-          size={"xs"}
-          isFullWidth
-          disabled={disableTransactions || currentPrice * qty > playerCash}
-          onClick={() => onBuy && onBuy(qty, currentPrice)}
-          key={`buy_${qty}`}
-        >
-          BUY {qty / 1000}K
-        </Button>
-        <Text fontSize={"sm"} color={"gray.500"}>
-          {formatPriceEst(currentPrice * qty)}
-        </Text>
-      </VStack>
-    ));
-  }
+  const handleRankMouseLeave = () => {
+    setStore(s => {
+      s.highlightCards = [];
+    });
+  };
+
+  const handleBuy = (quantity: number) => {
+    PeerAction.openPosition(
+      hostPeerId,
+      secretKey,
+      stock.ticker,
+      quantity,
+      stock.price
+    );
+  };
 
   return (
     <VStack
@@ -91,72 +74,34 @@ function StockBox({
       {/* General info section */}
       <Flex justify={"space-between"} position={"relative"}>
         <Box>
-          <HStack spacing={3} fontWeight={"semibold"} fontSize={"xl"}>
-            <Text display={"inline-block"}>{stock.name}</Text>
-            <Text display={"inline-block"} color={"gray.500"} fontSize={"sm"}>
-              ${stock.ticker}
-            </Text>
-          </HStack>
+          <Text display={"inline-block"}>{stock.name}</Text>
+
+          {/* Price and rank */}
           <Flex
             fontSize={"md"}
             justify={"space-between"}
             align={"center"}
             width={"190px"}
           >
-            <Text fontSize="xl">{formatCurrency(currentPrice)}</Text>
-            <PercentChange start={startPrice} end={currentPrice} />
-            <Tooltip
-              label={stock.solvedHand?.descr || " - "}
-              aria-label="Hand ranking"
-            >
-              <Text
-                position="relative"
-                color={`${rankColor}.600`}
-                bg={`${rankColor}.100`}
-                borderWidth={1}
-                borderColor={`${rankColor}.500`}
-                fontWeight={"bold"}
-                textAlign={"center"}
-                w={8}
-                _hover={{ cursor: "default" }}
-                onMouseEnter={() =>
-                  setStore(s => {
-                    s.highlightCards = stock.relevantFlopCards;
-                  })
-                }
-                onMouseLeave={() =>
-                  setStore(s => {
-                    s.highlightCards = [];
-                  })
-                }
-              >
-                {stock.handBonus.length > 0 && (
-                  <StarIcon
-                    position="absolute"
-                    color="yellow.400"
-                    right={0}
-                    transform="translate(50%, -50%)"
-                    w="13px"
-                    h="13px"
-                  />
-                )}
-                {stock.rank}
-              </Text>
-            </Tooltip>
+            <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
+            <Rank
+              rank={stock.rank}
+              handDescription={stock.solvedHand?.descr}
+              hasHandBonus={stock.handBonus.length > 0}
+              onMouseEnter={handleRankMouseEnter}
+              onMouseLeave={handleRankMouseLeave}
+            />
           </Flex>
-          {portfolioPercent != null ? (
-            <Text
-              fontSize={"sm"}
-              as={"em"}
-              sx={{
-                visibility: portfolioPercent < 0.01 ? "hidden" : "visible",
-              }}
-            >
-              <strong>{Math.round(portfolioPercent * 1000) / 10}%</strong> of{" "}
-              {isOwnPlayer ? "your" : playerName + "'s"} portfolio
-            </Text>
+
+          {viewedPlayer && portfolio ? (
+            <PortfolioPercent
+              percent={portfolio.getPortfolioPercent(stock.ticker)}
+              isOwnPlayer={isOwnPlayer}
+              playerName={viewedPlayer.name}
+            />
           ) : null}
         </Box>
+
         <CardStack
           cards={stock.pair.cards}
           alertCards={stock.newPairCards}
@@ -188,28 +133,26 @@ function StockBox({
       <Divider />
 
       {/* Stock graph section */}
-      <StockGraph
+      <PriceGraph
         priceHistory={slicedPriceHistory}
         viewFullHistory={viewFullHistory}
       />
 
       {/* Purchase buttons section */}
-      {buyBtns && (
+      {viewedPlayer && isOwnPlayer ? (
         <>
           <Divider />
-          <HStack w={"100%"}>{buyBtns}</HStack>
+          <BuyButtons
+            quantities={PURCHASE_QUANTITIES}
+            currentPrice={stock.price}
+            playerCash={viewedPlayer.cash}
+            disabled={isWeekend(tick)}
+            onBuy={qty => handleBuy(qty)}
+          />
         </>
-      )}
+      ) : null}
     </VStack>
   );
-}
-
-function formatPriceEst(price: number) {
-  if (price > 1_000_000) {
-    return `~${(price / 1_000_000).toFixed(1)}M`;
-  } else {
-    return `~${Math.ceil(price / 1_000)}K`;
-  }
 }
 
 export default StockBox;
