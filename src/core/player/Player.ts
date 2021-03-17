@@ -4,6 +4,7 @@ import { mapValuesToArray } from "../helpers";
 import { Position } from "../stock/Position";
 import { PositionBid } from "../stock/PositionBid";
 import { PositionBundle } from "../stock/PositionBundle";
+import { Stock } from "../stock/Stock";
 import { ConnectionStatus } from "./ConnectionStatus";
 import { PlayerPortfolio } from "./PlayerPortfolio";
 
@@ -45,13 +46,13 @@ export class Player extends ImmerClass {
     this.cash = cash;
   }
 
-  getPortfolio(stockPriceMap: { [key: string]: number }) {
+  getPortfolio(stocks: Map<string, Stock>) {
     const portfolio = new PlayerPortfolio();
 
     for (const bundle of this.positionBundleList) {
       portfolio.pushStockValue(
         bundle.stockTicker,
-        bundle.currentValue(stockPriceMap[bundle.stockTicker])
+        bundle.currentValue(stocks.get(bundle.stockTicker)!.price)
       );
     }
 

@@ -1,4 +1,4 @@
-import { Box, Flex, VStack } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
@@ -6,8 +6,6 @@ import { StoreAction } from "../../store/StoreAction";
 import { getStore, setStore, useStore } from "../../store/store";
 import { logDebug, logTime } from "../../util/log";
 import CommandBar from "../smart/CommandBar";
-import FlopDisplay from "../smart/FlopDisplay";
-import StockBox from "../smart/StockBox";
 
 function Spectate() {
   // Shared store
@@ -18,6 +16,7 @@ function Spectate() {
   useEffect(() => {
     console.log(PeerConnectionManager.peerId);
   }, []);
+
   useEffect(() => {
     const { tick } = getStore();
     let id: NodeJS.Timeout | null = null;
@@ -55,29 +54,9 @@ function Spectate() {
       align="stretch"
       w="98vw"
       minHeight="100vh"
-      bg={"white"}
       color={"black"}
     >
       <CommandBar />
-      <Flex justify={"space-between"}>
-        <Box w={"60%"} p={4}>
-          <Flex justify={"center"} mb={10}>
-            <FlopDisplay spacing={8} />
-          </Flex>
-          <Flex justify={"space-between"} flexWrap={"wrap"}>
-            {stocks.map(stock => (
-              <StockBox
-                stock={stock}
-                viewFullHistory={viewFullHistory}
-                key={stock.ticker}
-              />
-            ))}
-          </Flex>
-        </Box>
-        <VStack spacing={8} align={"flex-start"} w={"40%"}>
-          TODO
-        </VStack>
-      </Flex>
     </Flex>
   );
 }

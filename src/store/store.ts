@@ -33,7 +33,7 @@ export interface TStore extends State {
   players: Player[];
 
   // Stock state
-  stocks: Stock[];
+  stocks: Map<string, Stock>;
   stockRollModifierMap: Map<string, RollModifier[]>;
   stockVolatilityModifierMap: Map<string, VolatilityModifier[]>;
 
@@ -60,6 +60,7 @@ export interface TStore extends State {
   viewFullHistory: boolean;
   sortStocks: boolean;
   highlightCards: Card[];
+  viewedPlayerId: string;
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
@@ -73,7 +74,7 @@ const stateConfig = {
 
   // Stock state
   stocks: {
-    init: () => cloneDeep(stocks.slice(0, NUM_STOCKS)),
+    init: () => new Map(Array.from(cloneDeep(stocks)).slice(0, NUM_STOCKS)),
     peerSync: true,
   },
   stockRollModifierMap: { init: () => new Map() },
@@ -106,6 +107,11 @@ const stateConfig = {
   sortStocks: { init: () => false },
   highlightCards: {
     init: () => [],
+    storeLocally: false,
+    storeLocallyIfHost: false,
+  },
+  viewedPlayerId: {
+    init: () => "",
     storeLocally: false,
     storeLocallyIfHost: false,
   },

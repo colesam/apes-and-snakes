@@ -9,7 +9,6 @@ import Play from "./pages/Play";
 import Reconnect from "./pages/Reconnect";
 import Rehost from "./pages/Rehost";
 import Spectate from "./pages/Spectate";
-import Test from "./pages/Test";
 
 const AppContainer = styled.div`
   background-color: #282c34;
@@ -50,10 +49,6 @@ function App() {
 
       <Route path="/spectate">
         <Spectate />
-      </Route>
-
-      <Route path="/test">
-        <Test />
       </Route>
 
       <Route path="/">

@@ -3,7 +3,11 @@ import { ResponsiveLineCanvas as ResponsiveLine } from "@nivo/line";
 import { repeat } from "lodash";
 import React from "react";
 import styled from "styled-components";
-import { WEEKS_PER_GRAPH, WEEKEND_START, TICKS_PER_GRAPH } from "../../config";
+import {
+  WEEKS_PER_GRAPH,
+  WEEKEND_START,
+  TICKS_PER_GRAPH,
+} from "../../../config";
 
 interface PropTypes {
   priceHistory: number[];
@@ -14,7 +18,7 @@ const rounds = () => {
   return repeat("_", WEEKS_PER_GRAPH).split("");
 };
 
-function StockGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
+function PriceGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
   let priceData = priceHistory.map((price, i) => ({
     x: i + 1,
     y: price,
@@ -97,4 +101,4 @@ const GraphOverlay_marker = styled.div<any>`
   display: block;
 `;
 
-export default StockGraph;
+export default PriceGraph;

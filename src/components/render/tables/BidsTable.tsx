@@ -16,7 +16,7 @@ import { Stock } from "../../../core/stock/Stock";
 
 type PropTypes = {
   player: Player;
-  stocks: Stock[];
+  stocks: Map<string, Stock>;
   onCancelBid: (bidId: string) => void;
 };
 
@@ -36,13 +36,16 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
       </Thead>
       <Tbody>
         {player.positionBidList.map(bid => {
-          const stock = stocks.find(stock => stock.ticker === bid.stockTicker);
+          const stock = stocks.get(bid.stockTicker);
           const bundle = bid.positionBundle;
+
           if (!bundle || !stock) return null;
+
           const isSqueezed =
             bid.type === PositionBidType.OPEN
               ? stock.hasBuySqueeze
               : stock.hasSellSqueeze;
+
           const progress =
             bid.type === PositionBidType.OPEN
               ? bundle.quantity / bid.targetQuantity

@@ -17,7 +17,7 @@ export const shiftFlop = (s: TStore) => {
   s.flopSetAt = s.tick;
 
   // Update solved hands
-  for (const stock of s.stocks) {
+  for (const stock of s.stocks.values()) {
     stock.updateSolvedHand(s.flop);
   }
 

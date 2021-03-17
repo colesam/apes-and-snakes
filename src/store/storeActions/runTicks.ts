@@ -26,7 +26,7 @@ const runSingleTick = (tick: number) => (s: TStore) => {
   expireModifiers(s.stockVolatilityModifierMap, tick);
   expireModifiers(s.stockRollModifierMap, tick);
 
-  for (const stock of s.stocks) {
+  for (const stock of s.stocks.values()) {
     tickPrice(
       stock,
       s.stockVolatilityModifierMap.get(stock.ticker) || [],
@@ -53,7 +53,7 @@ const runSingleTick = (tick: number) => (s: TStore) => {
 
   // Updates at specific points of the week
   if (isStartOfWeek(tick)) {
-    for (const stock of s.stocks) {
+    for (const stock of s.stocks.values()) {
       // NOTE: Keep this loop separate so it doesn't affect prices mid tick
       if (Math.random() < DRAW_PAIR_CHANCE) {
         const replaceIndex = random(1);

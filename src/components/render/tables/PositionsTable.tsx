@@ -3,13 +3,14 @@ import { groupBy } from "lodash";
 import React from "react";
 import { formatCurrency } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
+import { Stock } from "../../../core/stock/Stock";
 import PercentChange from "../PercentChange";
 
 type PropTypes = {
   tick: number;
   player: Player;
   isOwnPlayer: boolean;
-  stockPriceMap: { [key: string]: number };
+  stocks: Map<string, Stock>;
   isWeekend: boolean;
   onSell: (bundleId: string) => void;
 };
@@ -18,7 +19,7 @@ function PositionsTable({
   tick,
   player,
   isOwnPlayer,
-  stockPriceMap,
+  stocks,
   isWeekend,
   onSell,
 }: PropTypes) {
@@ -53,7 +54,7 @@ function PositionsTable({
         {sortedPositions.map(bundle => {
           const initialValue = bundle.initialValue;
           const currentValue = bundle.currentValue(
-            stockPriceMap[bundle.stockTicker]
+            stocks.get(bundle.stockTicker)!.price
           );
           const capitalGainsTax = bundle.capitalGainsTax(tick) * 100;
           return (

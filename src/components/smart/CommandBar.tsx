@@ -70,7 +70,7 @@ function CommandBar() {
       </Center>
 
       <Flex align={"center"}>
-        <FormLabel htmlFor={"full-price-history"} fontSize={"md"} mb={0}>
+        <FormLabel htmlFor={"sort-stocks"} fontSize={"md"} mb={0}>
           Sort Stocks By Portfolio %
         </FormLabel>
         <Switch
@@ -80,7 +80,7 @@ function CommandBar() {
               s.sortStocks = !sortStocks;
             })
           }
-          id={"full-price-history"}
+          id={"sort-stocks"}
         />
       </Flex>
 
