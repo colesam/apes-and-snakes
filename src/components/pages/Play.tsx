@@ -7,7 +7,6 @@ import {
   Radio,
   HStack,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { NAMESPACE } from "../../config";
 import generateId from "../../core/generateId";
@@ -22,6 +21,7 @@ import BidsTable from "../render/tables/BidsTable";
 import PositionsTable from "../render/tables/PositionsTable";
 import CommandBar from "../smart/CommandBar";
 import FlopDisplay from "../smart/FlopDisplay";
+import StockGrid from "../smart/StockGrid";
 
 const attemptReconnectToHost = async (roomCode: string, secretKey: string) => {
   const hostId = `${NAMESPACE} ${roomCode}`;
@@ -95,18 +95,8 @@ function Play() {
       <CommandBar />
       <Flex justify="space-between">
         <Box p={4} w={"60%"}>
-          <Flex justify={"center"} mb={10}>
-            <FlopDisplay spacing={8} />
-          </Flex>
-          <Flex justify={"space-around"} flexWrap={"wrap"}>
-            {sortedStocks.map(stock => (
-              <motion.div
-                key={stock.ticker}
-                layout
-                transition={{ type: "spring", damping: 25, stiffness: 120 }}
-              ></motion.div>
-            ))}
-          </Flex>
+          <FlopDisplay mb={10} />
+          <StockGrid />
         </Box>
 
         <VStack spacing={8} align={"flex-start"} p={4} w={"40%"}>
