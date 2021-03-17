@@ -9,7 +9,7 @@ export const PEER_DEV_SERVER = {
 // Game config
 export const PING_INTERVAL = 5000;
 
-export const TICK_SPEED = 500;
+export const TICK_SPEED = 1500;
 
 export const STOCK_PRICE_FLOOR = 10;
 
@@ -51,7 +51,9 @@ export const NUM_STOCKS = 6;
 export const PURCHASE_QUANTITIES = [5_000, 10_000, 20_000];
 
 export const DRAW_PAIR_CHANCE = 0.15;
-export const FLOP_SHIFT_CHANCE = 5 / TICKS_PER_WEEK;
-export const FLOP_SHIFT_COOLDOWN = TICKS_PER_WEEK / 2;
+export const FLOPS_PER_WEEK = 2;
+export const FLOP_SHIFT_CHANCE = FLOPS_PER_WEEK / TICKS_PER_WEEK;
+export const EXPECTED_FLOP_LIFETIME = TICKS_PER_WEEK / FLOPS_PER_WEEK;
+export const FLOP_SHIFT_COOLDOWN = EXPECTED_FLOP_LIFETIME / 5;
 
 export const PLAYER_CASH_GROWTH_RATE = 0.05; // 5%

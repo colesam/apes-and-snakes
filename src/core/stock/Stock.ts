@@ -1,4 +1,5 @@
 import { last } from "lodash";
+import { logWarning } from "../../util/log";
 import { ImmerClass } from "../ImmerClass";
 import { getHandBonus } from "../card/BonusHand";
 import { Card, cardFromString } from "../card/Card";
@@ -60,11 +61,14 @@ export class Stock extends ImmerClass {
 
   setPair(pair: Pair, flop: Flop) {
     this.pair = pair;
-    this.newPairCards = pair.cards;
+    this.newPairCards = [...pair.cards];
     this.updateSolvedHand(flop);
   }
 
   updateSolvedHand(flop: Flop) {
+    if (this.pair.cards.length !== 2) {
+      logWarning("-- this.pair.cards --", this.pair.cards);
+    }
     this.solvedHand = solvedHandFromRawData(
       solveHand(
         new Hand({
