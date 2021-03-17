@@ -3,9 +3,9 @@ import { uniq } from "lodash";
 import { Hand as PokerSolver } from "pokersolver";
 import { Flop } from "./card/Flop";
 import { Hand } from "./card/Hand";
-import { Pair } from "./card/Pair";
 import { Rank } from "./card/Rank";
 import { Suit } from "./card/Suit";
+import { Stock } from "./stock/Stock";
 
 export type RawSolvedHand = {
   cardPool: { value: Rank; suit: Suit }[];
@@ -67,29 +67,30 @@ export const rankHands = (
 
 export type RoundRank = 1 | 2 | 3 | 4 | 5 | 6;
 
-export const mapPairsToRank = (
-  pairMap: {
-    [key: string]: Pair;
-  },
+export const calculateStockRankMap = (
+  stocks: Map<string, Stock>,
   flop: Flop
-): { [key: string]: RoundRank } => {
+): Map<string, RoundRank> => {
   const hands = [];
-  const handKeyMap: { [key: string]: keyof typeof pairMap } = {};
+  const handKeyStockTickerMap = new Map<string, string>();
 
-  for (const key in pairMap) {
-    const hand = new Hand({ pair: pairMap[key], flop });
+  for (const [stockTicker, stock] of stocks) {
+    const hand = new Hand({ pair: stock.pair, flop });
     hands.push(hand);
-    handKeyMap[hand.key] = key;
+    handKeyStockTickerMap.set(hand.key, stockTicker);
   }
 
   const rankedHands = rankHands(solve(hands));
 
-  return rankedHands.reduce((acc, [solvedHand, rank]) => {
-    const key = handKeyMap[getKey(solvedHand)];
-    // @ts-ignore
-    acc[key] = rank;
-    return acc;
-  }, {});
+  return new Map<string, RoundRank>(
+    rankedHands.map(
+      ([solvedHand, rank]) =>
+        [handKeyStockTickerMap.get(getKey(solvedHand)), rank] as [
+          string,
+          RoundRank
+        ]
+    )
+  );
 };
 
 const getKey = (hand: any) => {

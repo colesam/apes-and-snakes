@@ -28,7 +28,7 @@ beforeEach(() => {
 
 test("pushes 1_000 shares per tick if the stock is not squeezed", () => {
   const tick1 = produce(mockStore, (s: TStore) => {
-    for (const stock of s.stocks) {
+    for (const stock of s.stocks.values()) {
       StoreAction.updateStockBids(stock)(s);
     }
   });
@@ -40,7 +40,7 @@ test("pushes 1_000 shares per tick if the stock is not squeezed", () => {
   expect(tick1Positions[0].quantity).toBe(1_000);
 
   const tick2 = produce(tick1, (s: TStore) => {
-    for (const stock of s.stocks) {
+    for (const stock of s.stocks.values()) {
       StoreAction.updateStockBids(stock)(s);
     }
   });
@@ -54,7 +54,7 @@ test("pushes 1_000 shares per tick if the stock is not squeezed", () => {
 
 test("pushes no more than the available amount of stocks per call", () => {
   const mockStore = produce(mockStoreData, (s: TStore) => {
-    const intc = s.stocks.find(stock => stock.ticker === "INTC")!;
+    const intc = s.stocks.get("INTC")!;
     intc.buyVolume = 1_000;
 
     StoreAction.openPosition("s", "INTC", 5_000)(s);
@@ -62,7 +62,7 @@ test("pushes no more than the available amount of stocks per call", () => {
   });
 
   const tick1 = produce(mockStore, (s: TStore) => {
-    for (const stock of s.stocks) {
+    for (const stock of s.stocks.values()) {
       StoreAction.updateStockBids(stock)(s);
     }
   });
@@ -83,7 +83,7 @@ test("pushes no more than the available amount of stocks per call", () => {
 test("removes the bid if player doesn't have enough cash", () => {
   const tick1 = produce(mockStore, (s: TStore) => {
     s.players[0].cash = 0;
-    for (const stock of s.stocks) {
+    for (const stock of s.stocks.values()) {
       StoreAction.updateStockBids(stock)(s);
     }
   });
@@ -94,7 +94,7 @@ test("removes the bid if the target quantity is reached", () => {
   let update: TStore = mockStore;
   for (let i = 0; i < 5; i++) {
     update = produce(update, (s: TStore) => {
-      for (const stock of s.stocks) {
+      for (const stock of s.stocks.values()) {
         StoreAction.updateStockBids(stock)(s);
       }
     });
