@@ -102,9 +102,9 @@ function StockBox({
             <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
           </Flex>
 
-          {playerName && portfolioPercent ? (
+          {playerName ? (
             <PortfolioPercent
-              percent={portfolioPercent}
+              percent={portfolioPercent || 0}
               isOwnPlayer={isOwnPlayer}
               playerName={playerName}
             />

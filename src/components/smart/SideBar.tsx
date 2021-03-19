@@ -1,10 +1,11 @@
-import { Box, HStack, Radio, RadioGroup, Text, VStack } from "@chakra-ui/react";
+import { Heading, HStack, Radio, RadioGroup, VStack } from "@chakra-ui/react";
 import React from "react";
-import { formatCurrency, isWeekend } from "../../core/helpers";
+import { isWeekend } from "../../core/helpers";
 import { PeerAction } from "../../peer/PeerAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { setStore, useStore } from "../../store/store";
 import BidsTable from "../render/tables/BidsTable";
+import PlayerSummaryTable from "../render/tables/PlayerSummaryTable";
 import PositionsTable from "../render/tables/PositionsTable";
 
 function SideBar() {
@@ -24,44 +25,30 @@ function SideBar() {
   const isOwnPlayer = viewedPlayer.id === playerId;
 
   return (
-    <VStack spacing={8} align={"flex-start"} p={4} w={"40%"} bg={"white"}>
-      <Box>
-        <Text fontWeight={"bold"}>View Player:</Text>
-        <RadioGroup
-          value={viewedPlayer.id}
-          onChange={val => setStore({ viewedPlayerId: val.toString() })}
-        >
-          <HStack spacing={8}>
-            {[...players]
-              .sort(({ id }) => (id === playerId ? -1 : 1))
-              .map(p => (
-                <Radio value={p.id} key={p.id}>
-                  {p.name}
-                </Radio>
-              ))}
-          </HStack>
-        </RadioGroup>
-      </Box>
+    <VStack spacing={6} align={"flex-start"} p={4} w={"50%"} bg={"white"}>
+      <Heading fontSize={"lg"}>Players</Heading>
+      <RadioGroup
+        value={viewedPlayer.id}
+        onChange={val => setStore({ viewedPlayerId: val.toString() })}
+      >
+        <HStack spacing={8}>
+          {[...players]
+            .sort(({ id }) => (id === playerId ? -1 : 1))
+            .map(p => (
+              <Radio value={p.id} key={p.id}>
+                {p.name}
+              </Radio>
+            ))}
+        </HStack>
+      </RadioGroup>
 
-      <VStack mb={10} spacing={4} align="flex-start">
-        <Text>
-          <strong style={{ display: "block" }}>
-            Player Cash (3% increase per week):
-          </strong>{" "}
-          {formatCurrency(viewedPlayer.cash)}
-        </Text>
+      <Heading fontSize={"lg"}>Player Summary</Heading>
+      <PlayerSummaryTable
+        cash={viewedPlayer.cash}
+        assetsValue={portfolio.totalValue}
+      />
 
-        <Text>
-          <strong style={{ display: "block" }}>Player Asset Value:</strong>{" "}
-          {formatCurrency(portfolio.totalValue)}
-        </Text>
-
-        <Text>
-          <strong style={{ display: "block" }}>Player Total Value:</strong>{" "}
-          {formatCurrency(viewedPlayer.cash + portfolio.totalValue)}
-        </Text>
-      </VStack>
-
+      <Heading fontSize={"lg"}>Player Positions</Heading>
       <PositionsTable
         tick={tick}
         player={viewedPlayer}
@@ -74,13 +61,16 @@ function SideBar() {
       />
 
       {isOwnPlayer && (
-        <BidsTable
-          player={viewedPlayer}
-          stocks={stocks}
-          onCancelBid={bidId =>
-            PeerAction.cancelBid(hostPeerId, secretKey, bidId)
-          }
-        />
+        <>
+          <Heading fontSize={"lg"}>Your Bids</Heading>
+          <BidsTable
+            player={viewedPlayer}
+            stocks={stocks}
+            onCancelBid={bidId =>
+              PeerAction.cancelBid(hostPeerId, secretKey, bidId)
+            }
+          />
+        </>
       )}
     </VStack>
   );
