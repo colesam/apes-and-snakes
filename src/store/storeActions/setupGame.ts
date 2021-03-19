@@ -8,12 +8,14 @@ export const setupGame = (s: TStore) => {
   const init = initialState();
   s.tick = init.tick;
   s.stocks = init.stocks;
-  s.stockVolatilityModifierMap = init.stockVolatilityModifierMap;
-  s.stockRollModifierMap = init.stockRollModifierMap;
+
+  for (const stock of init.stocks.values()) {
+    s.stocks.set(stock.ticker, stock);
+  }
 
   for (let player of s.players) {
-    player.positionBids = new Map();
-    player.positionBundles = new Map();
+    player.positionBids.clear();
+    player.positionBundles.clear();
     player.cash = 5_000_000;
   }
 

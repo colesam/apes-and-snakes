@@ -65,7 +65,7 @@ export interface TStore extends State {
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
 
-const stateConfig = {
+export const stateConfig = {
   // Shared state
   tick: { init: () => 0, peerSync: true },
   roomCode: { init: () => "", peerSync: true },
@@ -156,6 +156,8 @@ const setStoreFromStorage = (store: UseStore<TStore>) => {
   }
   store.setState(initialStorageState);
 };
+//@ts-ignore
+window.setStoreFromStorage = setStoreFromStorage;
 
 // Create store if it doesn't exist
 if (window.__ZustandStore__) {
@@ -186,7 +188,7 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
           } else {
             return produce(s, update);
           }
-        });
+        }, true);
       } else {
         const { isHost } = getStore();
         useStore.setState(update);
@@ -195,7 +197,7 @@ export const setStore = (update: Partial<TStore> | ((s: TStore) => void)) => {
         }
       }
     },
-    150
+    75
   );
 };
 
@@ -203,11 +205,11 @@ export const resetStore = (clearStorage = false) => {
   if (clearStorage) {
     storageClear();
   }
-  setStore(initialState);
+  setStore(initialState());
 };
 
 export const applyPatchesToStore = (patches: Patch[]) => {
-  setStore(applyPatches(getStore(), patches));
+  setStore(s => applyPatches(s, patches));
 };
 
 // Helper methods

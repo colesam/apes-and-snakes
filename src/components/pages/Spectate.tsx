@@ -3,15 +3,12 @@ import React, { useEffect } from "react";
 import { TICK_SPEED, TICKS_PER_WEEK, SIM_WEEKS, NUM_WEEKS } from "../../config";
 import { PeerConnectionManager } from "../../peer/PeerConnectionManager";
 import { StoreAction } from "../../store/StoreAction";
-import { getStore, setStore, useStore } from "../../store/store";
+import { getStore, setStore } from "../../store/store";
 import { logDebug, logTime } from "../../util/log";
 import CommandBar from "../smart/CommandBar";
+import StockGrid from "../smart/StockGrid";
 
 function Spectate() {
-  // Shared store
-  const stocks = useStore(s => s.stocks);
-  const viewFullHistory = useStore(s => s.viewFullHistory);
-
   // Effects
   useEffect(() => {
     console.log(PeerConnectionManager.peerId);
@@ -57,6 +54,7 @@ function Spectate() {
       color={"black"}
     >
       <CommandBar />
+      <StockGrid />
     </Flex>
   );
 }

@@ -1,36 +1,45 @@
 import { Box, Divider, Flex, Text, VStack } from "@chakra-ui/react";
-import React from "react";
+import moize from "moize";
+import React, { useCallback } from "react";
 import { PURCHASE_QUANTITIES, TICKS_PER_WEEK } from "../../config";
+import { Card } from "../../core/card/Card";
 import { formatCurrency, isWeekend } from "../../core/helpers";
 import { Stock } from "../../core/stock/Stock";
-import { PeerAction } from "../../peer/PeerAction";
-import { StoreSelector } from "../../store/StoreSelector";
-import { setStore, useStore } from "../../store/store";
 import CardStack from "../render/CardStack";
 import BuyButtons from "../render/stock/BuyButtons";
 import PortfolioPercent from "../render/stock/PortfolioPercent";
 import PriceGraph from "../render/stock/PriceGraph";
 import Rank from "../render/stock/Rank";
-import Volume from "../render/stock/Volume";
+import VolumeSection from "../render/stock/VolumeSection";
 
 interface PropTypes {
   stock: Stock;
+  tick: number;
+  playerName?: string;
+  playerCash?: number;
+  isOwnPlayer?: boolean;
+  portfolioPercent?: number;
+  viewFullHistory: boolean;
+  highlightCards?: Card[];
+  onBuy: (stockTicker: string, quantity: number, price: number) => void;
+  onRankMouseEnter: (stockTicker: string) => void;
+  onRankMouseLeave: () => void;
 }
 
-function StockBox({ stock }: PropTypes) {
-  // Store state
-  const tick = useStore(s => s.tick);
-  const viewedPlayer = useStore(StoreSelector.viewedPlayer);
-  const portfolio = useStore(StoreSelector.viewedPlayerPortfolio);
-  const playerId = useStore(s => s.playerId);
-  const highlightCards = useStore(s => s.highlightCards);
-  const viewFullHistory = useStore(s => s.viewFullHistory);
-  const hostPeerId = useStore(s => s.hostPeerId);
-  const secretKey = useStore(s => s.secretKey);
-
+function StockBox({
+  stock,
+  tick,
+  playerName,
+  playerCash,
+  isOwnPlayer = false,
+  portfolioPercent,
+  viewFullHistory,
+  highlightCards = [],
+  onBuy,
+  onRankMouseEnter,
+  onRankMouseLeave,
+}: PropTypes) {
   // Computed
-  const isOwnPlayer = viewedPlayer?.id === playerId;
-
   let slicedPriceHistory = stock.priceHistory;
   if (!viewFullHistory) {
     const thisWeek = Math.floor(tick / TICKS_PER_WEEK);
@@ -38,27 +47,16 @@ function StockBox({ stock }: PropTypes) {
   }
 
   // Handlers
-  const handleRankMouseEnter = () => {
-    setStore(s => {
-      s.highlightCards = stock.relevantFlopCards;
-    });
-  };
+  const handleBuy = useCallback(
+    (quantity: number) => {
+      onBuy(stock.ticker, quantity, stock.price);
+    },
+    [stock]
+  );
 
-  const handleRankMouseLeave = () => {
-    setStore(s => {
-      s.highlightCards = [];
-    });
-  };
-
-  const handleBuy = (quantity: number) => {
-    PeerAction.openPosition(
-      hostPeerId,
-      secretKey,
-      stock.ticker,
-      quantity,
-      stock.price
-    );
-  };
+  const handleRankMouseEnter = useCallback(() => {
+    onRankMouseEnter(stock.ticker);
+  }, [stock]);
 
   return (
     <VStack
@@ -89,7 +87,7 @@ function StockBox({ stock }: PropTypes) {
               handDescription={stock.solvedHand?.descr}
               hasHandBonus={stock.handBonus.length > 0}
               onMouseEnter={handleRankMouseEnter}
-              onMouseLeave={handleRankMouseLeave}
+              onMouseLeave={onRankMouseLeave}
             />
           </Flex>
 
@@ -104,11 +102,11 @@ function StockBox({ stock }: PropTypes) {
             <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
           </Flex>
 
-          {viewedPlayer && portfolio ? (
+          {playerName && portfolioPercent ? (
             <PortfolioPercent
-              percent={portfolio.getPortfolioPercent(stock.ticker)}
+              percent={portfolioPercent}
               isOwnPlayer={isOwnPlayer}
-              playerName={viewedPlayer.name}
+              playerName={playerName}
             />
           ) : null}
         </Box>
@@ -124,21 +122,10 @@ function StockBox({ stock }: PropTypes) {
 
       <Divider />
 
-      {/* Volume section */}
-      <Flex justify="space-between">
-        <Box w="48%">
-          <Text fontWeight="bold" fontSize="sm">
-            Buy Volume:
-          </Text>
-          <Volume volume={stock.buyVolume} />
-        </Box>
-        <Box w="48%">
-          <Text fontWeight="bold" fontSize="sm">
-            Sell Volume:
-          </Text>
-          <Volume volume={stock.sellVolume} />
-        </Box>
-      </Flex>
+      <VolumeSection
+        buyVolume={stock.buyVolume}
+        sellVolume={stock.sellVolume}
+      />
 
       <Divider />
 
@@ -149,15 +136,15 @@ function StockBox({ stock }: PropTypes) {
       />
 
       {/* Purchase buttons section */}
-      {viewedPlayer && isOwnPlayer ? (
+      {playerName && playerCash && isOwnPlayer ? (
         <>
           <Divider />
           <BuyButtons
             quantities={PURCHASE_QUANTITIES}
             currentPrice={stock.price}
-            playerCash={viewedPlayer.cash}
+            playerCash={playerCash}
             disabled={isWeekend(tick)}
-            onBuy={qty => handleBuy(qty)}
+            onBuy={handleBuy}
           />
         </>
       ) : null}
@@ -165,4 +152,4 @@ function StockBox({ stock }: PropTypes) {
   );
 }
 
-export default StockBox;
+export default moize(StockBox, { isReact: true, profileName: "<StockBox />" });

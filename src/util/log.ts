@@ -41,10 +41,14 @@ export const logDebug = (msg: string, object?: any) =>
 export const logPing = (msg: string, object?: any) =>
   log(LogLevel.PING, msg, object);
 
-export const logTime = (msg: string, fn: () => any, warnThreshold?: number) => {
+export const logTime = <T>(
+  msg: string,
+  fn: () => T,
+  warnThreshold?: number
+): T => {
   const start = new Date().getTime();
 
-  fn();
+  const res = fn();
 
   const duration = new Date().getTime() - start;
 
@@ -54,4 +58,6 @@ export const logTime = (msg: string, fn: () => any, warnThreshold?: number) => {
       : LogLevel.TIME;
 
   log(level, msg, `Took ${duration}ms`);
+
+  return res;
 };

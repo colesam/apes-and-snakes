@@ -1,4 +1,5 @@
 import { HStack, HTMLChakraProps } from "@chakra-ui/react";
+import moize from "moize";
 import React from "react";
 import { Card as TCard } from "../../core/card/Card";
 import Card from "./Card";
@@ -47,4 +48,7 @@ function CardStack({
   );
 }
 
-export default CardStack;
+export default moize(CardStack, {
+  isReact: true,
+  profileName: "<CardStack />",
+});
