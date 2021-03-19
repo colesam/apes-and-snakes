@@ -33,7 +33,7 @@ function FlopDisplay(styleProps: HTMLChakraProps<"div">) {
   const blankCard = new Card();
 
   return (
-    <Flex fullWidth justify={"center"} {...styleProps}>
+    <Flex w={"100%"} justify={"center"} {...styleProps}>
       <Box p={2} pt={5} px={4} borderWidth={1} bg={"gray.100"}>
         <HStack align="center" spacing={4} mb={4}>
           <CardRender card={blankCard} />

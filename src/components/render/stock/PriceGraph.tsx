@@ -1,7 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { ResponsiveLineCanvas as ResponsiveLine } from "@nivo/line";
 import { repeat } from "lodash";
-import moize from "moize";
 import React from "react";
 import styled from "styled-components";
 import {
@@ -102,7 +101,10 @@ const GraphOverlay_marker = styled.div<any>`
   display: block;
 `;
 
-export default moize(PriceGraph, {
-  isReact: true,
-  profileName: "<PriceGraph />",
-});
+// https://github.com/immerjs/immer/issues/768 - preventing priceHistory ref from changing
+// export default moize(PriceGraph, {
+//   isReact: true,
+//   profileName: "<PriceGraph />",
+// });
+
+export default PriceGraph;
