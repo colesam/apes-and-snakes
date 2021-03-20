@@ -19,7 +19,7 @@ const AppContainer = styled.div`
   justify-content: center;
   color: white;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: scroll;
 `;
 
 function App() {

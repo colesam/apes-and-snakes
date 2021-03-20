@@ -20,13 +20,14 @@ function StockGrid() {
   const hostPeerId = useStore(s => s.hostPeerId);
   const secretKey = useStore(s => s.secretKey);
   const expandStockTicker = useStore(s => s.expandStockTicker);
+  const viewSidebar = useStore(s => s.viewSidebar);
 
   // Computed
   const isOwnPlayer = viewedPlayer?.id === playerId;
   const playerPortfolio = viewedPlayer?.getPortfolio(stocks);
 
   let stockList: Stock[] = Array.from(stocks.values());
-  if (expandStockTicker) {
+  if (viewSidebar && expandStockTicker) {
     stockList = stockList.filter(stock => stock.ticker === expandStockTicker);
   } else if (sortStocks && playerPortfolio) {
     stockList.sort(
@@ -80,7 +81,7 @@ function StockGrid() {
 
   return (
     // Eventually want to detect if user needs scroll, and then permanently enable scroll bar to avoid jittery animations
-    <Flex justify={"space-around"} flexWrap={"wrap"}>
+    <Flex justify={"space-around"} flexWrap={"wrap"} maxWidth={1200}>
       {stockList.map(stock => (
         <motion.div
           layout={"position"}
@@ -88,7 +89,7 @@ function StockGrid() {
           key={stock.ticker}
         >
           <StockBox
-            isCompact={expandStockTicker !== stock.ticker}
+            isCompact={viewSidebar && expandStockTicker !== stock.ticker}
             stock={stock}
             tick={tick}
             playerName={viewedPlayer?.name}

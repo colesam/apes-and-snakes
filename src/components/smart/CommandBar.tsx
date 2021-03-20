@@ -37,6 +37,7 @@ function CommandBar() {
   const isHost = useStore(s => s.isHost);
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const sortStocks = useStore(s => s.sortStocks);
+  const viewSidebar = useStore(s => s.viewSidebar);
 
   const weekNum = Math.floor(tick / TICKS_PER_WEEK) + 1;
 
@@ -81,6 +82,25 @@ function CommandBar() {
             })
           }
           id={"sort-stocks"}
+        />
+      </Flex>
+
+      <Center height="20px">
+        <Divider orientation="vertical" />
+      </Center>
+
+      <Flex align={"center"}>
+        <FormLabel htmlFor={"view-sidebar"} fontSize={"md"} mb={0}>
+          View Sidebar
+        </FormLabel>
+        <Switch
+          isChecked={viewSidebar}
+          onChange={() =>
+            setStore(s => {
+              s.viewSidebar = !viewSidebar;
+            })
+          }
+          id={"view-sidebar"}
         />
       </Flex>
 
