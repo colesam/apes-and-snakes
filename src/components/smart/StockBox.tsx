@@ -13,6 +13,7 @@ import Rank from "../render/stock/Rank";
 import VolumeSection from "../render/stock/VolumeSection";
 
 interface PropTypes {
+  compact?: boolean;
   stock: Stock;
   tick: number;
   playerName?: string;
@@ -24,9 +25,11 @@ interface PropTypes {
   onBuy: (stockTicker: string, quantity: number, price: number) => void;
   onRankMouseEnter: (stockTicker: string) => void;
   onRankMouseLeave: () => void;
+  onCompactClick: (stockTicker: string) => void;
 }
 
 function StockBox({
+  compact = false,
   stock,
   tick,
   playerName,
@@ -38,6 +41,7 @@ function StockBox({
   onBuy,
   onRankMouseEnter,
   onRankMouseLeave,
+  onCompactClick,
 }: PropTypes) {
   // Computed
   let slicedPriceHistory = stock.priceHistory;
@@ -58,6 +62,12 @@ function StockBox({
     onRankMouseEnter(stock.ticker);
   }, [stock]);
 
+  const handleClick = () => {
+    if (compact) {
+      onCompactClick(stock.ticker);
+    }
+  };
+
   return (
     <VStack
       bg={"white"}
@@ -69,6 +79,8 @@ function StockBox({
       spacing={2}
       align={"stretch"}
       position={"relative"}
+      cursor={compact ? "pointer" : "default"}
+      onClick={handleClick}
     >
       {/* General info section */}
       <Flex justify={"space-between"} align={"start"}>
@@ -120,34 +132,38 @@ function StockBox({
         />
       </Flex>
 
-      <Divider />
-
-      <VolumeSection
-        buyVolume={stock.buyVolume}
-        sellVolume={stock.sellVolume}
-      />
-
-      <Divider />
-
-      {/* Stock graph section */}
-      <PriceGraph
-        priceHistory={slicedPriceHistory}
-        viewFullHistory={viewFullHistory}
-      />
-
-      {/* Purchase buttons section */}
-      {playerName && playerCash && isOwnPlayer ? (
+      {!compact && (
         <>
           <Divider />
-          <BuyButtons
-            quantities={PURCHASE_QUANTITIES}
-            currentPrice={stock.price}
-            playerCash={playerCash}
-            disabled={isWeekend(tick)}
-            onBuy={handleBuy}
+
+          <VolumeSection
+            buyVolume={stock.buyVolume}
+            sellVolume={stock.sellVolume}
           />
+
+          <Divider />
+
+          {/* Stock graph section */}
+          <PriceGraph
+            priceHistory={slicedPriceHistory}
+            viewFullHistory={viewFullHistory}
+          />
+
+          {/* Purchase buttons section */}
+          {playerName && playerCash && isOwnPlayer ? (
+            <>
+              <Divider />
+              <BuyButtons
+                quantities={PURCHASE_QUANTITIES}
+                currentPrice={stock.price}
+                playerCash={playerCash}
+                disabled={isWeekend(tick)}
+                onBuy={handleBuy}
+              />
+            </>
+          ) : null}
         </>
-      ) : null}
+      )}
     </VStack>
   );
 }

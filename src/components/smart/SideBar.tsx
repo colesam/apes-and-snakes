@@ -25,7 +25,7 @@ function SideBar() {
   const isOwnPlayer = viewedPlayer.id === playerId;
 
   return (
-    <VStack spacing={6} align={"flex-start"} p={4} w={"50%"} bg={"white"}>
+    <VStack spacing={6} align={"flex-start"} p={4} w={"45%"} bg={"white"}>
       <Heading fontSize={"lg"}>Players</Heading>
       <RadioGroup
         value={viewedPlayer.id}

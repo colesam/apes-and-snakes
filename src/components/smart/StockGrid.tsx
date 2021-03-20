@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+import { Stock } from "../../core/stock/Stock";
 import { PeerAction } from "../../peer/PeerAction";
 import { StoreSelector } from "../../store/StoreSelector";
 import { setStore, useStore } from "../../store/store";
@@ -18,14 +19,17 @@ function StockGrid() {
   const viewFullHistory = useStore(s => s.viewFullHistory);
   const hostPeerId = useStore(s => s.hostPeerId);
   const secretKey = useStore(s => s.secretKey);
+  const expandStockTicker = useStore(s => s.expandStockTicker);
 
   // Computed
   const isOwnPlayer = viewedPlayer?.id === playerId;
   const playerPortfolio = viewedPlayer?.getPortfolio(stocks);
 
-  const sortedStocks = Array.from(stocks.values());
-  if (sortStocks && playerPortfolio) {
-    sortedStocks.sort(
+  let stockList: Stock[] = Array.from(stocks.values());
+  if (expandStockTicker) {
+    stockList = stockList.filter(stock => stock.ticker === expandStockTicker);
+  } else if (sortStocks && playerPortfolio) {
+    stockList.sort(
       (a, b) =>
         playerPortfolio.getPortfolioPercent(b.ticker) -
         playerPortfolio.getPortfolioPercent(a.ticker)
@@ -58,11 +62,28 @@ function StockGrid() {
     });
   }, []);
 
+  const handleCompactStockClick = useCallback((stockTicker: string) => {
+    // ...
+    setStore({ expandStockTicker: stockTicker });
+  }, []);
+
+  const handleEscapeKeyPress = useCallback(e => {
+    if (e.key === "Escape") {
+      setStore({ expandStockTicker: null });
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleEscapeKeyPress);
+    return () => document.removeEventListener("keydown", handleEscapeKeyPress);
+  }, []);
+
   return (
     <Flex justify={"space-around"} flexWrap={"wrap"}>
-      {sortedStocks.map(stock => (
+      {stockList.map(stock => (
         <motion.div layout transition={springTransition} key={stock.ticker}>
           <StockBox
+            compact={expandStockTicker !== stock.ticker}
             stock={stock}
             tick={tick}
             playerName={viewedPlayer?.name}
@@ -74,6 +95,7 @@ function StockGrid() {
             onBuy={handleBuy}
             onRankMouseEnter={handleRankMouseEnter}
             onRankMouseLeave={handleRankMouseLeave}
+            onCompactClick={handleCompactStockClick}
           />
         </motion.div>
       ))}
@@ -83,7 +105,7 @@ function StockGrid() {
 
 const springTransition = {
   type: "spring",
-  duration: 0.2,
+  duration: 0.1,
   damping: 25,
   stiffness: 120,
 };

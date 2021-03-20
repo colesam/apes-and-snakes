@@ -1,7 +1,7 @@
 import { Button, Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
 import { groupBy } from "lodash";
 import React from "react";
-import { compactPrice } from "../../../core/helpers";
+import { formatCurrency } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
 import { Stock } from "../../../core/stock/Stock";
 import PercentChange from "../PercentChange";
@@ -40,12 +40,12 @@ function PositionsTable({
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
       <Thead>
-        <Tr>
-          <Th w={100}>Stock</Th>
-          <Th w={100}>Qty</Th>
-          <Th w={200}>Acq Value</Th>
-          <Th w={150}>Value</Th>
-          <Th w={150}>% Gain</Th>
+        <Tr sx={{ whiteSpace: "no-wrap" }}>
+          <Th>Stock</Th>
+          <Th>Qty</Th>
+          <Th>Acq Value</Th>
+          <Th>Value</Th>
+          <Th>% Gain</Th>
           <Th>CGT</Th>
           {isOwnPlayer && <Th w={100} />}
         </Tr>
@@ -71,8 +71,8 @@ function PositionsTable({
                 {stocks.get(bundle.stockTicker)!.name}
               </Td>
               <Td>{bundle.quantity / 1000}K</Td>
-              <Td>{compactPrice(initialValue)}</Td>
-              <Td>{compactPrice(currentValue)}</Td>
+              <Td>{formatCurrency(initialValue)}</Td>
+              <Td>{formatCurrency(currentValue)}</Td>
               <Td>
                 <PercentChange start={initialValue} end={currentValue} />
               </Td>
