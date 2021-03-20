@@ -1,6 +1,6 @@
 import { Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
 import React from "react";
-import { formatCurrency } from "../../../core/helpers";
+import { formatCurrencyNoDecimal } from "../../../core/helpers";
 
 type PropTypes = {
   cash: number;
@@ -19,10 +19,10 @@ function PlayerSummaryTable({ cash, assetsValue }: PropTypes) {
       </Thead>
       <Tbody>
         <Tr>
-          <Td>{formatCurrency(cash)}</Td>
-          <Td>{formatCurrency(assetsValue)}</Td>
+          <Td>{formatCurrencyNoDecimal(cash)}</Td>
+          <Td>{formatCurrencyNoDecimal(assetsValue)}</Td>
           <Td fontWeight={"bold"} textAlign={"right"}>
-            {formatCurrency(cash + assetsValue)}
+            {formatCurrencyNoDecimal(cash + assetsValue)}
           </Td>
         </Tr>
       </Tbody>

@@ -1,7 +1,7 @@
 import { Button, Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
 import { groupBy } from "lodash";
 import React from "react";
-import { formatCurrency } from "../../../core/helpers";
+import { formatCurrencyNoDecimal } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
 import { Stock } from "../../../core/stock/Stock";
 import PercentChange from "../PercentChange";
@@ -71,8 +71,8 @@ function PositionsTable({
                 {stocks.get(bundle.stockTicker)!.name}
               </Td>
               <Td>{bundle.quantity / 1000}K</Td>
-              <Td>{formatCurrency(initialValue)}</Td>
-              <Td>{formatCurrency(currentValue)}</Td>
+              <Td>{formatCurrencyNoDecimal(initialValue)}</Td>
+              <Td>{formatCurrencyNoDecimal(currentValue)}</Td>
               <Td>
                 <PercentChange start={initialValue} end={currentValue} />
               </Td>

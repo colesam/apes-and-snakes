@@ -54,6 +54,9 @@ export const withCommas = (x: number) =>
 
 export const formatCurrency = (x: number) => "$" + withCommas(x);
 
+export const formatCurrencyNoDecimal = (x: number) =>
+  formatCurrency(x).slice(0, -3);
+
 export const isWeekend = (tick: number) => {
   const relativeTick = tick % TICKS_PER_WEEK;
   return (

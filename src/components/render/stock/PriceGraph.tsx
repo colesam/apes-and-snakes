@@ -64,6 +64,7 @@ function PriceGraph({ priceHistory, viewFullHistory = false }: PropTypes) {
         lineWidth={2}
         pointSize={4}
         pointColor={{ theme: "background" }}
+        isInteractive={false}
       />
     </Box>
   );

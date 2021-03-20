@@ -18,6 +18,8 @@ const AppContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: white;
+  overflow-x: hidden;
+  overflow-y: hidden;
 `;
 
 function App() {

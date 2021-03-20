@@ -79,11 +79,16 @@ function StockGrid() {
   }, []);
 
   return (
+    // Eventually want to detect if user needs scroll, and then permanently enable scroll bar to avoid jittery animations
     <Flex justify={"space-around"} flexWrap={"wrap"}>
       {stockList.map(stock => (
-        <motion.div layout transition={springTransition} key={stock.ticker}>
+        <motion.div
+          layout={"position"}
+          transition={springTransition}
+          key={stock.ticker}
+        >
           <StockBox
-            compact={expandStockTicker !== stock.ticker}
+            isCompact={expandStockTicker !== stock.ticker}
             stock={stock}
             tick={tick}
             playerName={viewedPlayer?.name}
@@ -104,10 +109,9 @@ function StockGrid() {
 }
 
 const springTransition = {
-  type: "spring",
-  duration: 0.1,
-  damping: 25,
-  stiffness: 120,
+  type: "tween",
+  duration: 0.3,
+  ease: "easeInOut",
 };
 
 export default StockGrid;

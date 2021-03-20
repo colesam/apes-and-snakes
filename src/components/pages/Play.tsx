@@ -38,11 +38,9 @@ function Play() {
     >
       <CommandBar />
       <Flex justify="space-between" align={"stretch"} flexGrow={1}>
-        <Flex direction={"column"} w={"55%"} pt={4}>
+        <Flex direction={"column"} w={"55%"} pt={4} overflowY={"hidden"}>
           <FlopDisplay mb={10} />
-          <Box overflowY={"auto"} height={0} flexGrow={1}>
-            <StockGrid />
-          </Box>
+          <StockGrid />
         </Flex>
         <SideBar />
         <Box
