@@ -10,7 +10,6 @@ function Volume({ volume }: PropTypes) {
     <Progress
       value={getProgressPercent(volume)}
       colorScheme={getColor(volume)}
-      hasStripe
     />
   );
 }

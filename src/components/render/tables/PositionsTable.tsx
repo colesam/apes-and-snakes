@@ -1,4 +1,13 @@
-import { Button, Table, Tr, Thead, Tbody, Td, Th } from "@chakra-ui/react";
+import {
+  Button,
+  Table,
+  Tr,
+  Thead,
+  Tbody,
+  Td,
+  Th,
+  Flex,
+} from "@chakra-ui/react";
 import { groupBy } from "lodash";
 import React from "react";
 import { formatCurrencyNoDecimal } from "../../../core/helpers";
@@ -42,11 +51,10 @@ function PositionsTable({
       <Thead>
         <Tr sx={{ whiteSpace: "no-wrap" }}>
           <Th>Stock</Th>
-          <Th>Qty</Th>
-          <Th>Acq Value</Th>
-          <Th>Value</Th>
-          <Th>% Gain</Th>
-          <Th>CGT</Th>
+          <Th textAlign={"right"}>Qty</Th>
+          <Th textAlign={"right"}>Value</Th>
+          <Th textAlign={"right"}>Change</Th>
+          <Th textAlign={"right"}>CGT</Th>
           {isOwnPlayer && <Th w={100} />}
         </Tr>
       </Thead>
@@ -70,13 +78,16 @@ function PositionsTable({
               <Td fontWeight={"bold"}>
                 {stocks.get(bundle.stockTicker)!.name}
               </Td>
-              <Td>{bundle.quantity / 1000}K</Td>
-              <Td>{formatCurrencyNoDecimal(initialValue)}</Td>
-              <Td>{formatCurrencyNoDecimal(currentValue)}</Td>
-              <Td>
-                <PercentChange start={initialValue} end={currentValue} />
+              <Td textAlign={"right"}>{bundle.quantity / 1000}K</Td>
+              <Td textAlign={"right"}>
+                {formatCurrencyNoDecimal(currentValue)}
               </Td>
-              <Td>{capitalGainsTax.toFixed(0)}%</Td>
+              <Td>
+                <Flex justify={"flex-end"}>
+                  <PercentChange start={initialValue} end={currentValue} />
+                </Flex>
+              </Td>
+              <Td textAlign={"right"}>{capitalGainsTax.toFixed(0)}%</Td>
               {isOwnPlayer && (
                 <Td>
                   <Button

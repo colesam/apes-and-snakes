@@ -42,13 +42,26 @@ function SideBar() {
         </HStack>
       </RadioGroup>
 
-      <Heading fontSize={"lg"}>Player Summary</Heading>
+      <Heading fontSize={"lg"}>Summary</Heading>
       <PlayerSummaryTable
         cash={viewedPlayer.cash}
         assetsValue={portfolio.totalValue}
       />
 
-      <Heading fontSize={"lg"}>Player Positions</Heading>
+      {isOwnPlayer && (
+        <>
+          <Heading fontSize={"lg"}>Orders</Heading>
+          <BidsTable
+            player={viewedPlayer}
+            stocks={stocks}
+            onCancelBid={bidId =>
+              PeerAction.cancelBid(hostPeerId, secretKey, bidId)
+            }
+          />
+        </>
+      )}
+
+      <Heading fontSize={"lg"}>Positions</Heading>
       <PositionsTable
         tick={tick}
         player={viewedPlayer}
@@ -59,19 +72,6 @@ function SideBar() {
           PeerAction.closePosition(hostPeerId, secretKey, bundleId)
         }
       />
-
-      {isOwnPlayer && (
-        <>
-          <Heading fontSize={"lg"}>Your Bids</Heading>
-          <BidsTable
-            player={viewedPlayer}
-            stocks={stocks}
-            onCancelBid={bidId =>
-              PeerAction.cancelBid(hostPeerId, secretKey, bidId)
-            }
-          />
-        </>
-      )}
     </VStack>
   );
 }
