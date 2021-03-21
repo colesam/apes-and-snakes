@@ -7,10 +7,11 @@ import Bid from "../Bid";
 type PropTypes = {
   player: Player;
   stocks: Map<string, Stock>;
-  onCancelBid: (bidId: string) => void;
+  onTickerClick: (ticker: string) => void;
+  onCloseBid: (bidId: string) => void;
 };
 
-function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
+function BidsTable({ player, stocks, onTickerClick, onCloseBid }: PropTypes) {
   const [disabledBidIds, setDisabledBidIds] = useState<string[]>([]);
 
   if (player.positionBidList.length === 0) {
@@ -25,7 +26,15 @@ function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
 
         if (!bundle || !stock) return null;
 
-        return <Bid bid={bid} stock={stock} key={bid.id} />;
+        return (
+          <Bid
+            bid={bid}
+            stock={stock}
+            onTickerClick={onTickerClick}
+            onCloseBid={onCloseBid}
+            key={bid.id}
+          />
+        );
       })}
     </VStack>
   );

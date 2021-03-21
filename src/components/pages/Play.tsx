@@ -39,13 +39,7 @@ function Play() {
     >
       <CommandBar />
       <Flex justify="space-between" align={"stretch"} flexGrow={1}>
-        <Flex
-          direction={"column"}
-          align={"center"}
-          w={"100%"}
-          pt={4}
-          overflowY={"hidden"}
-        >
+        <Flex direction={"column"} align={"center"} w={"100%"} pt={4}>
           <FlopDisplay mb={10} />
           <StockGrid />
         </Flex>

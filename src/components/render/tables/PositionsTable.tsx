@@ -13,6 +13,7 @@ import React from "react";
 import { formatCurrencyNoDecimal } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
 import { Stock } from "../../../core/stock/Stock";
+import StockTicker from "../../StockTicker";
 import PercentChange from "../PercentChange";
 
 type PropTypes = {
@@ -22,6 +23,7 @@ type PropTypes = {
   stocks: Map<string, Stock>;
   isWeekend: boolean;
   onSell: (bundleId: string) => void;
+  onTickerClick: (stockTicker: string) => void;
 };
 
 function PositionsTable({
@@ -31,6 +33,7 @@ function PositionsTable({
   stocks,
   isWeekend,
   onSell,
+  onTickerClick,
 }: PropTypes) {
   const liquidatingBundleIds = player.positionBidList.map(
     bid => bid.positionBundle.id
@@ -70,7 +73,10 @@ function PositionsTable({
           return (
             <Tr key={bundle.id} data-bundle-id={bundle.id}>
               <Td fontWeight={"bold"}>
-                {stocks.get(bundle.stockTicker)!.name}
+                <StockTicker
+                  ticker={bundle.stockTicker}
+                  onClick={(e, ticker) => onTickerClick(ticker)}
+                />
               </Td>
               <Td textAlign={"right"}>{bundle.quantity / 1000}K</Td>
               <Td textAlign={"right"}>

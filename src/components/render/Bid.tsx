@@ -11,13 +11,16 @@ import {
 import React, { useState } from "react";
 import { PositionBid, PositionBidType } from "../../core/stock/PositionBid";
 import { Stock } from "../../core/stock/Stock";
+import StockTicker from "../StockTicker";
 
 type PropTypes = {
   bid: PositionBid;
   stock: Stock;
+  onTickerClick: (ticker: string) => void;
+  onCloseBid: (bidId: string) => void;
 };
 
-function Bid({ bid, stock }: PropTypes) {
+function Bid({ bid, stock, onTickerClick, onCloseBid }: PropTypes) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const bundle = bid.positionBundle;
@@ -61,20 +64,13 @@ function Bid({ bid, stock }: PropTypes) {
     >
       <Flex justify={"space-between"} w={"100%"}>
         <Text fontSize={"md"}>
-          <Text
-            display={"inline-block"}
-            fontWeight={"bold"}
-            borderBottomWidth={2}
-            borderColor={"gray.600"}
-            borderStyle={"dashed"}
-            mr={2}
-            cursor={"pointer"}
-            _hover={{
-              background: "gray.200",
+          <StockTicker
+            ticker={stock.ticker}
+            onClick={(e, ticker) => {
+              e.stopPropagation();
+              onTickerClick(ticker);
             }}
-          >
-            ${stock.ticker}
-          </Text>
+          />
           {bidTypeString}
         </Text>
         <Box w={"200px"}>
@@ -113,6 +109,7 @@ function Bid({ bid, stock }: PropTypes) {
           isFullWidth
           display={"block"}
           mt={4}
+          onClick={() => onCloseBid(bid.id)}
         >
           STOP ORDER
         </Button>

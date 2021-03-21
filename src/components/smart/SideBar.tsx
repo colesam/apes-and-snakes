@@ -83,6 +83,7 @@ function SideBar() {
           onSell={bundleId =>
             PeerAction.closePosition(hostPeerId, secretKey, bundleId)
           }
+          onTickerClick={ticker => setStore({ expandStockTicker: ticker })}
         />
       </Box>
 
@@ -94,7 +95,8 @@ function SideBar() {
           <BidsTable
             player={viewedPlayer}
             stocks={stocks}
-            onCancelBid={bidId =>
+            onTickerClick={ticker => setStore({ expandStockTicker: ticker })}
+            onCloseBid={bidId =>
               PeerAction.cancelBid(hostPeerId, secretKey, bidId)
             }
           />
