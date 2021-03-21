@@ -34,7 +34,7 @@ function FlopDisplay(styleProps: HTMLChakraProps<"div">) {
 
   return (
     <Flex w={"100%"} justify={"center"} {...styleProps}>
-      <Box p={2} pt={5} px={4} borderWidth={1} bg={"gray.100"}>
+      <Box p={2} pt={5} px={4} borderWidth={1} borderRadius={"md"} bg={"white"}>
         <HStack align="center" spacing={4} mb={4}>
           <CardRender card={blankCard} />
           <CardStack

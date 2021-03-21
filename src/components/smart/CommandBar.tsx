@@ -1,13 +1,4 @@
-import {
-  Button,
-  Center,
-  Divider,
-  Flex,
-  FormLabel,
-  HStack,
-  Switch,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Flex, FormLabel, HStack, Switch } from "@chakra-ui/react";
 import React from "react";
 import { TICKS_PER_WEEK, TICKS_PER_DAY } from "../../config";
 import { StoreAction } from "../../store/StoreAction";
@@ -45,9 +36,10 @@ function CommandBar() {
 
   return (
     <HStack
-      bg="gray.400"
+      spacing={10}
+      bg="gray.800"
+      color={"white"}
       borderBottomWidth={1}
-      borderColor="gray.600"
       px={4}
       py={2}
     >
@@ -66,10 +58,6 @@ function CommandBar() {
         />
       </Flex>
 
-      <Center height="20px">
-        <Divider orientation="vertical" />
-      </Center>
-
       <Flex align={"center"}>
         <FormLabel htmlFor={"sort-stocks"} fontSize={"md"} mb={0}>
           Sort Stocks By Portfolio %
@@ -84,10 +72,6 @@ function CommandBar() {
           id={"sort-stocks"}
         />
       </Flex>
-
-      <Center height="20px">
-        <Divider orientation="vertical" />
-      </Center>
 
       <Flex align={"center"}>
         <FormLabel htmlFor={"view-sidebar"} fontSize={"md"} mb={0}>
@@ -105,25 +89,14 @@ function CommandBar() {
       </Flex>
 
       {isHost && (
-        <>
-          <Center height="20px">
-            <Divider orientation="vertical" />
-          </Center>
-          <Button
-            size="sm"
-            colorScheme={"red"}
-            onClick={() => setStore(StoreAction.setupGame)}
-          >
-            Reset Game
-          </Button>
-        </>
+        <Button
+          size="sm"
+          colorScheme={"red"}
+          onClick={() => setStore(StoreAction.setupGame)}
+        >
+          Reset Game
+        </Button>
       )}
-      <Center height="20px">
-        <Divider orientation="vertical" />
-      </Center>
-      <Text>
-        Week # {weekNum} ({day(dayNum)})
-      </Text>
     </HStack>
   );
 }

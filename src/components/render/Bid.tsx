@@ -6,6 +6,7 @@ import {
   Button,
   Collapse,
   Checkbox,
+  Divider,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { PositionBid, PositionBidType } from "../../core/stock/PositionBid";
@@ -100,6 +101,7 @@ function Bid({ bid, stock }: PropTypes) {
       </Flex>
 
       <Collapse in={isExpanded} animateOpacity>
+        <Divider mt={4} />
         <Box p={1} pt={0} mt={4}>
           <Checkbox>
             <Text fontSize={"sm"}>Automatically stop order on squeeze</Text>

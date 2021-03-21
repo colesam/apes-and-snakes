@@ -1,4 +1,5 @@
 import {
+  Text,
   Button,
   Table,
   Tr,
@@ -8,7 +9,6 @@ import {
   Th,
   Flex,
 } from "@chakra-ui/react";
-import { groupBy } from "lodash";
 import React from "react";
 import { formatCurrencyNoDecimal } from "../../../core/helpers";
 import { Player } from "../../../core/player/Player";
@@ -44,7 +44,9 @@ function PositionsTable({
       return primarySort || secondarySort;
     });
 
-  const tickers = Object.keys(groupBy(sortedPositions, "stockTicker"));
+  if (sortedPositions.length === 0) {
+    return <Text>No Active Positions</Text>;
+  }
 
   return (
     <Table variant="simple" size={"sm"} bg={"white"}>
@@ -54,8 +56,8 @@ function PositionsTable({
           <Th textAlign={"right"}>Qty</Th>
           <Th textAlign={"right"}>Value</Th>
           <Th textAlign={"right"}>Change</Th>
-          <Th textAlign={"right"}>CGT</Th>
-          {isOwnPlayer && <Th w={100} />}
+          <Th textAlign={"right"}>C.G. Tax</Th>
+          {isOwnPlayer && <Th />}
         </Tr>
       </Thead>
       <Tbody>
@@ -66,15 +68,7 @@ function PositionsTable({
           );
           const capitalGainsTax = bundle.capitalGainsTax(tick) * 100;
           return (
-            <Tr
-              bg={
-                tickers.indexOf(bundle.stockTicker) % 2 === 1
-                  ? "gray.50"
-                  : "white"
-              }
-              key={bundle.id}
-              data-bundle-id={bundle.id}
-            >
+            <Tr key={bundle.id} data-bundle-id={bundle.id}>
               <Td fontWeight={"bold"}>
                 {stocks.get(bundle.stockTicker)!.name}
               </Td>

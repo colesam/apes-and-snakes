@@ -1,4 +1,4 @@
-import { VStack } from "@chakra-ui/react";
+import { VStack, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { Player } from "../../../core/player/Player";
 import { Stock } from "../../../core/stock/Stock";
@@ -12,6 +12,10 @@ type PropTypes = {
 
 function BidsTable({ player, stocks, onCancelBid }: PropTypes) {
   const [disabledBidIds, setDisabledBidIds] = useState<string[]>([]);
+
+  if (player.positionBidList.length === 0) {
+    return <Text>No Active Orders</Text>;
+  }
 
   return (
     <VStack spacing={4} w={"100%"}>
