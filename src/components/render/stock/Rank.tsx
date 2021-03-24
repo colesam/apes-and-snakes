@@ -30,7 +30,7 @@ function Rank({
         borderWidth={1}
         borderColor={`${rankColor}.500`}
         boxSize={8}
-        _hover={{ cursor: "default" }}
+        cursor={"pointer"}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >

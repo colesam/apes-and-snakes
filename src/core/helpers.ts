@@ -54,6 +54,9 @@ export const withCommas = (x: number) =>
 
 export const formatCurrency = (x: number) => "$" + withCommas(x);
 
+export const formatCurrencyNoDecimal = (x: number) =>
+  formatCurrency(x).slice(0, -3);
+
 export const isWeekend = (tick: number) => {
   const relativeTick = tick % TICKS_PER_WEEK;
   return (
@@ -86,3 +89,11 @@ export const lengthInKb = (str: string): number => lengthInBytes(str) / 1000;
 
 export const mapValuesToArray = <K, V>(map: Map<K, V>): V[] =>
   Array.from(map).map(([, val]) => val);
+
+export const compactPrice = (price: number): string => {
+  if (price > 1_000_000) {
+    return `${(price / 1_000_000).toFixed(2)}M`;
+  } else {
+    return `${Math.ceil(price / 1_000)}K`;
+  }
+};

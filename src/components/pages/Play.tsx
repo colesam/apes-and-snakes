@@ -14,6 +14,7 @@ import StockGrid from "../smart/StockGrid";
 function Play() {
   // Private store
   const ping = useStore(s => s.ping);
+  const viewSidebar = useStore(s => s.viewSidebar);
   const previousRoomCode = useStore(s => s.previousRoomCode);
   const secretKey = useStore(s => s.secretKey);
 
@@ -33,15 +34,16 @@ function Play() {
       align="stretch"
       w="100%"
       minHeight="100vh"
+      maxHeight={"100vh"}
       color={"black"}
     >
       <CommandBar />
-      <Flex justify="space-between">
-        <Box p={4} w={"60%"}>
+      <Flex justify="space-between" align={"stretch"} flexGrow={1}>
+        <Flex direction={"column"} align={"center"} w={"100%"} pt={4}>
           <FlopDisplay mb={10} />
           <StockGrid />
-        </Box>
-        <SideBar />
+        </Flex>
+        {viewSidebar && <SideBar />}
         <Box
           position={"absolute"}
           right={"20px"}

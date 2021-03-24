@@ -11,13 +11,19 @@ import Rehost from "./pages/Rehost";
 import Spectate from "./pages/Spectate";
 
 const AppContainer = styled.div`
-  background-color: #282c34;
+  background-color: #f5f5f5;
+  background-image: radial-gradient(circle, #ebebeb 1px, #f5f5f5 0px);
+  background-repeat: repeat;
+  background-size: 20px 20px;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: white;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 function App() {

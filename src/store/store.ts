@@ -61,6 +61,8 @@ export interface TStore extends State {
   sortStocks: boolean;
   highlightCards: Card[];
   viewedPlayerId: string;
+  expandStockTicker: string | null;
+  viewSidebar: boolean;
 }
 export type TStoreKey = keyof TStore;
 export type TStoreEntries = [TStoreKey, TStore[TStoreKey]][];
@@ -115,6 +117,8 @@ export const stateConfig = {
     storeLocally: false,
     storeLocallyIfHost: false,
   },
+  expandStockTicker: { init: () => null },
+  viewSidebar: { init: () => true },
 } as { [key in TStoreKey]: TStateConfig };
 
 // State configuration

@@ -1,4 +1,5 @@
 import { Box, Divider, Flex, Text, VStack } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import moize from "moize";
 import React, { useCallback } from "react";
 import { PURCHASE_QUANTITIES, TICKS_PER_WEEK } from "../../config";
@@ -13,6 +14,7 @@ import Rank from "../render/stock/Rank";
 import VolumeSection from "../render/stock/VolumeSection";
 
 interface PropTypes {
+  isCompact?: boolean;
   stock: Stock;
   tick: number;
   playerName?: string;
@@ -24,9 +26,11 @@ interface PropTypes {
   onBuy: (stockTicker: string, quantity: number, price: number) => void;
   onRankMouseEnter: (stockTicker: string) => void;
   onRankMouseLeave: () => void;
+  onCompactClick: (stockTicker: string) => void;
 }
 
 function StockBox({
+  isCompact = false,
   stock,
   tick,
   playerName,
@@ -38,6 +42,7 @@ function StockBox({
   onBuy,
   onRankMouseEnter,
   onRankMouseLeave,
+  onCompactClick,
 }: PropTypes) {
   // Computed
   let slicedPriceHistory = stock.priceHistory;
@@ -58,20 +63,27 @@ function StockBox({
     onRankMouseEnter(stock.ticker);
   }, [stock]);
 
+  const handleClick = () => {
+    if (isCompact) {
+      onCompactClick(stock.ticker);
+    }
+  };
+
   return (
     <VStack
       bg={"white"}
       borderWidth={1}
       borderRadius={"md"}
-      p={4}
       minWidth={350}
       mb={8}
-      spacing={2}
+      spacing={0}
       align={"stretch"}
       position={"relative"}
+      cursor={isCompact ? "pointer" : "default"}
+      onClick={handleClick}
     >
       {/* General info section */}
-      <Flex justify={"space-between"} align={"start"}>
+      <Flex justify={"space-between"} align={"start"} p={4}>
         <Box>
           <Flex align={"center"}>
             <Text
@@ -102,9 +114,9 @@ function StockBox({
             <Text fontSize="xl">{formatCurrency(stock.price)}</Text>
           </Flex>
 
-          {playerName && portfolioPercent ? (
+          {playerName ? (
             <PortfolioPercent
-              percent={portfolioPercent}
+              percent={portfolioPercent || 0}
               isOwnPlayer={isOwnPlayer}
               playerName={playerName}
             />
@@ -120,36 +132,67 @@ function StockBox({
         />
       </Flex>
 
-      <Divider />
+      <AnimatePresence>
+        {!isCompact && (
+          <motion.section
+            initial={"collapsed"}
+            animate={"open"}
+            exit={"collapsed"}
+            variants={collapseVariants}
+            transition={collapseTransition}
+          >
+            <VStack spacing={4} p={4} pt={0} w={"100%"} align={"stretch"}>
+              <Divider />
 
-      <VolumeSection
-        buyVolume={stock.buyVolume}
-        sellVolume={stock.sellVolume}
-      />
+              <VolumeSection
+                buyVolume={stock.buyVolume}
+                sellVolume={stock.sellVolume}
+              />
 
-      <Divider />
+              <Divider />
 
-      {/* Stock graph section */}
-      <PriceGraph
-        priceHistory={slicedPriceHistory}
-        viewFullHistory={viewFullHistory}
-      />
+              {/* Stock graph section */}
+              <PriceGraph
+                priceHistory={slicedPriceHistory}
+                viewFullHistory={viewFullHistory}
+              />
 
-      {/* Purchase buttons section */}
-      {playerName && playerCash && isOwnPlayer ? (
-        <>
-          <Divider />
-          <BuyButtons
-            quantities={PURCHASE_QUANTITIES}
-            currentPrice={stock.price}
-            playerCash={playerCash}
-            disabled={isWeekend(tick)}
-            onBuy={handleBuy}
-          />
-        </>
-      ) : null}
+              {/* Purchase buttons section */}
+              {playerName && playerCash && isOwnPlayer ? (
+                <>
+                  <Divider />
+                  <BuyButtons
+                    quantities={PURCHASE_QUANTITIES}
+                    currentPrice={stock.price}
+                    playerCash={playerCash}
+                    disabled={isWeekend(tick)}
+                    onBuy={handleBuy}
+                  />
+                </>
+              ) : null}
+            </VStack>
+          </motion.section>
+        )}
+      </AnimatePresence>
     </VStack>
   );
 }
+
+const collapseVariants = {
+  open: {
+    height: "auto",
+    overflow: "hidden",
+    opacity: 1,
+  },
+  collapsed: {
+    height: 0,
+    opacity: 0,
+  },
+};
+
+const collapseTransition = {
+  duration: 0.3,
+  ease: "easeInOut",
+};
 
 export default moize(StockBox, { isReact: true, profileName: "<StockBox />" });
