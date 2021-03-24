@@ -3,7 +3,7 @@ import React from "react";
 
 type PropTypes = {
   ticker: string;
-  onClick?: (e: React.MouseEvent, ticker: string) => void;
+  onClick?: (ticker: string) => void;
 };
 
 function StockTicker({ ticker, onClick = () => {} }: PropTypes) {
@@ -25,7 +25,10 @@ function StockTicker({ ticker, onClick = () => {} }: PropTypes) {
       _hover={{
         background: "gray.200",
       }}
-      onClick={e => onClick(e, ticker)}
+      onClick={e => {
+        e.stopPropagation(); // parent can manually propagate if desired
+        onClick(ticker);
+      }}
     >
       ${ticker}
     </Button>

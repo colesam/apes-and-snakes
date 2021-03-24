@@ -23,7 +23,7 @@ type PropTypes = {
   stocks: Map<string, Stock>;
   isWeekend: boolean;
   onSell: (bundleId: string) => void;
-  onTickerClick: (stockTicker: string) => void;
+  onTickerClick: (ticker: string) => void;
 };
 
 function PositionsTable({
@@ -75,7 +75,7 @@ function PositionsTable({
               <Td fontWeight={"bold"}>
                 <StockTicker
                   ticker={bundle.stockTicker}
-                  onClick={(e, ticker) => onTickerClick(ticker)}
+                  onClick={onTickerClick}
                 />
               </Td>
               <Td textAlign={"right"}>{bundle.quantity / 1000}K</Td>

@@ -64,13 +64,7 @@ function Bid({ bid, stock, onTickerClick, onCloseBid }: PropTypes) {
     >
       <Flex justify={"space-between"} w={"100%"}>
         <Text fontSize={"md"}>
-          <StockTicker
-            ticker={stock.ticker}
-            onClick={(e, ticker) => {
-              e.stopPropagation();
-              onTickerClick(ticker);
-            }}
-          />
+          <StockTicker ticker={stock.ticker} onClick={onTickerClick} />
           {bidTypeString}
         </Text>
         <Box w={"200px"}>
